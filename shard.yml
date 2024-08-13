@@ -1,0 +1,17 @@
+name: exif
+version: 0.1.0
+
+authors:
+  - Sijawusz Pur Rahnama <sija@sija.pl>
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba
+    version: ~> 1.6.0
+
+crystal: '>= 1.13.1'
+
+libraries:
+  libexif: ">= 0.6.24"
+
+license: MIT

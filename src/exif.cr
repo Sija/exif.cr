@@ -1,0 +1,2 @@
+module Exif
+end
