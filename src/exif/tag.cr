@@ -17,9 +17,12 @@ end
 
 enum LibEXIF::EXIFTag
   # Returns the tag with the given EXIF *name* (i.e. `"FNumber"`), or `nil`.
+  #
+  # NOTE: Names of GPS tags return `nil`, use `GPSTag.from_name?` instead.
   def self.from_name?(name : String) : self?
     tag = LibEXIF.exif_tag_from_name(name)
-    tag unless tag.value.zero?
+    # libexif resolves GPS tag names too, which overlap numerically with other tags
+    tag unless tag.value.zero? || LibEXIF::EXIFGPSTag.from_name?(name)
   end
 
   # Returns the tag with the given EXIF *name* (i.e. `"FNumber"`).

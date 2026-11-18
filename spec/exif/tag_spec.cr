@@ -17,6 +17,11 @@ describe EXIF::Tag do
       EXIF::Tag.from_name("ExposureTime").should eq EXIF::Tag::ExposureTime
     end
 
+    it "returns nil for GPS tag names" do
+      EXIF::Tag.from_name?("GPSLatitude").should be_nil
+      EXIF::Tag.from_name?("GPSVersionID").should be_nil
+    end
+
     it "returns nil for unknown names" do
       EXIF::Tag.from_name?("Bogus").should be_nil
       expect_raises(ArgumentError) { EXIF::Tag.from_name("Bogus") }
