@@ -160,6 +160,17 @@ describe EXIF::Entry do
   end
 
   describe "#delete" do
+    it "keeps detached entries formattable" do
+      data = canon_data
+      data.delete(:model).to_s.should eq "Canon PowerShot S70"
+      data.delete(:orientation).to_s.should eq "6"
+      data.delete(:f_number).to_s.should eq "28/10"
+      data.delete(:maker_note).to_s.should eq "904 bytes undefined data"
+
+      data[:bits_per_sample] = [8, 8, 8]
+      data.delete(:bits_per_sample).to_s.should eq "8, 8, 8"
+    end
+
     it "detaches the entry" do
       data = canon_data
       entry = data[:make].delete

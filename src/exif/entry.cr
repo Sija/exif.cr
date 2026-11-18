@@ -121,11 +121,24 @@ module EXIF
     end
 
     # Returns the human-readable (localized) value of the entry, as formatted by libexif.
+    #
+    # NOTE: libexif can't format entries removed from their IFD (it needs their
+    # byte order), so these are formatted from their decoded `#value` instead.
     def to_s(io : IO) : Nil
+      return format_value(io, value) unless ifd?
+
       maxlen = Math.max(1024, bytesize * 6 + 64)
       buffer = Bytes.new(maxlen)
       value = retain { |ptr| LibEXIF.exif_entry_get_value(ptr, buffer, maxlen) }
       io << String.new(value) unless value.null?
+    end
+
+    private def format_value(io : IO, value : Value) : Nil
+      case value
+      when Bytes then io << value.size << " bytes undefined data"
+      when Array then value.join(io, ", ")
+      else            io << value
+      end
     end
 
     # Fixes the format and components of the entry to bring it into specification.
