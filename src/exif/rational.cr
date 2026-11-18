@@ -60,23 +60,35 @@ module EXIF
     # Returns the value as an integer, truncating any fractional part.
     def to_i : Int64
       raise DivisionByZeroError.new if undefined?
-      numerator.to_i64 // denominator.to_i64
+      numerator.to_i64.tdiv(denominator.to_i64)
     end
 
-    # Returns the reduced form of this rational.
+    # Returns the reduced form of this rational, with a positive denominator.
     def reduce : self
-      gcd = numerator.gcd(denominator)
-      return self if gcd.zero? || gcd == 1
-      self.class.new(numerator // gcd, denominator // gcd)
+      n, d = normalized
+      n == numerator && d == denominator ? self : self.class.new(n, d)
+    end
+
+    # Returns the components in lowest terms, with a positive denominator.
+    # Undefined rationals (with a zero denominator) are returned as is.
+    protected def normalized : {Int64, Int64}
+      n, d = numerator.to_i64, denominator.to_i64
+      return {n, d} if d.zero?
+
+      gcd = n.gcd(d)
+      n, d = n // gcd, d // gcd
+      d.negative? ? {-n, -d} : {n, d}
     end
 
     def <=>(other : Rational) : Int32?
       to_f <=> other.to_f
     end
 
+    # Returns `true` if both rationals represent the same value.
+    #
+    # Undefined rationals are only equal to ones with identical components.
     def ==(other : Rational) : Bool
-      numerator.to_i64 * other.denominator.to_i64 == other.numerator.to_i64 * denominator.to_i64 &&
-        undefined? == other.undefined?
+      normalized == other.normalized
     end
 
     def ==(other : Number) : Bool
@@ -84,9 +96,7 @@ module EXIF
     end
 
     def hash(hasher)
-      reduced = reduce
-      hasher = reduced.numerator.hash(hasher)
-      reduced.denominator.hash(hasher)
+      normalized.hash(hasher)
     end
 
     def to_s(io : IO) : Nil

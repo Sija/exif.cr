@@ -117,6 +117,13 @@ describe EXIF::Entry do
     end
   end
 
+  it "hashes consistently with equality" do
+    data = canon_data
+    data[:make].hash.should eq data[:make].hash
+    Set{data[:make], data[:make]}.size.should eq 1
+    data[:make].should_not eq data[:model]
+  end
+
   describe "#delete" do
     it "detaches the entry" do
       data = canon_data

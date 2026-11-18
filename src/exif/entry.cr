@@ -127,8 +127,13 @@ module EXIF
       self
     end
 
+    # Returns `true` if both wrap the same libexif entry.
     def ==(other : Entry) : Bool
       @ptr == other.to_unsafe
+    end
+
+    def hash(hasher)
+      @ptr.address.hash(hasher)
     end
 
     def inspect(io : IO) : Nil
