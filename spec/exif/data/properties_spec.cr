@@ -111,6 +111,30 @@ describe EXIF::Data do
       data.gps = nil
       data.ifd(:gps).empty?.should be_true
     end
+
+    it "replaces stale GPS entries when setting the position" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(1.0, 2.0, 3.0)
+      data[:gps_dest_latitude_ref] = "N"
+      data[:gps_map_datum] = "WGS-84"
+
+      data.gps = EXIF::GPS.new(4.0, 5.0)
+      data.has_key?(:gps_dest_latitude_ref).should be_false
+      data.has_key?(:gps_map_datum).should be_false
+      data.has_key?(:gps_altitude).should be_false
+      data.gps.should eq EXIF::GPS.new(4.0, 5.0)
+    end
+
+    it "rejects invalid GPS positions, leaving the existing one intact" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(1.0, 2.0)
+
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(91.0, 0.0) }
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, -180.5) }
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(Float64::NAN, 0.0) }
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, 0.0, Float64::INFINITY) }
+      data.gps.should eq EXIF::GPS.new(1.0, 2.0)
+    end
   end
 end
 

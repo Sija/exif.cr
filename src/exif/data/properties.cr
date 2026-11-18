@@ -128,11 +128,22 @@ module EXIF
     end
 
     # Sets the GPS position (or removes it, if `nil`).
+    #
+    # NOTE: Any existing GPS entries (i.e. `GPSTag::GPSTimeStamp` or
+    # `GPSTag::GPSDestLatitude`) are removed, since they might no longer apply.
+    #
+    # Raises `ValueError` if the latitude or longitude is out of range.
     def gps=(gps : GPS?) : GPS?
-      unless gps
-        ifd(:gps).each(&.delete)
-        return
+      if gps
+        unless gps.latitude.abs <= 90 && gps.longitude.abs <= 180
+          raise ValueError.new("Invalid GPS position: #{gps}")
+        end
+        if (altitude = gps.altitude) && !altitude.finite?
+          raise ValueError.new("Invalid GPS altitude: #{altitude}")
+        end
       end
+      ifd(:gps).each(&.delete)
+      return unless gps
 
       self[GPSTag::GPSVersionID] = Bytes[2, 2, 0, 0]
       self[GPSTag::GPSLatitudeRef] = gps.latitude.negative? ? "S" : "N"
@@ -143,9 +154,6 @@ module EXIF
       if altitude = gps.altitude
         self[GPSTag::GPSAltitudeRef] = Bytes[altitude.negative? ? 1 : 0]
         self[GPSTag::GPSAltitude] = URational.new(altitude.abs)
-      else
-        delete(GPSTag::GPSAltitudeRef)
-        delete(GPSTag::GPSAltitude)
       end
       gps
     end
