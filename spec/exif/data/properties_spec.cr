@@ -64,6 +64,32 @@ describe EXIF::Data do
       data.date_time_original(location).should eq Time.local(2009, 10, 10, 16, 42, 32, location: location)
     end
 
+    it "returns nil for malformed times" do
+      data = EXIF::Data.new
+      data[:date_time] = "2024:13:45 25:61:61"
+      data.date_time.should be_nil
+
+      data[:date_time] = "    :  :     :  :  "
+      data.date_time.should be_nil
+
+      data[:date_time] = "0000:00:00 00:00:00"
+      data.date_time.should be_nil
+    end
+
+    it "ignores malformed time offsets" do
+      data = EXIF::Data.new
+      data[:date_time] = "2024:01:02 03:04:05"
+
+      data[:offset_time] = "+99:00"
+      data.date_time.should eq Time.utc(2024, 1, 2, 3, 4, 5)
+
+      data[:offset_time] = "CET"
+      data.date_time.should eq Time.utc(2024, 1, 2, 3, 4, 5)
+
+      data[:offset_time] = "+05:30"
+      data.date_time.try(&.offset).should eq 5.5 * 3600
+    end
+
     it "writes string properties" do
       data = EXIF::Data.new
       data.artist = "Jane Doe"

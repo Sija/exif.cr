@@ -217,20 +217,33 @@ module EXIF
       end
     end
 
+    # Returns the time from the *tag* entry, or `nil` if missing or malformed.
     private def parse_time(tag : Tag, offset_tag : Tag, subsec_tag : Tag, location : Time::Location) : Time?
       return unless string = string?(tag)
 
-      if (offset = string?(offset_tag)) && (match = offset.match(/\A([+-])(\d{2}):(\d{2})\z/))
-        seconds = match[2].to_i * 3600 + match[3].to_i * 60
-        location = Time::Location.fixed(match[1] == "-" ? -seconds : seconds)
+      location = parse_offset(offset_tag) || location
+      time = begin
+        Time.parse(string, TIME_FORMAT, location)
+      rescue Time::Format::Error | ArgumentError
+        # Malformed (i.e. `"    :  :     :  :  "`) or out of range (i.e. month 13)
+        return
       end
-      time = Time.parse(string, TIME_FORMAT, location)
 
       if (subsec = string?(subsec_tag)) && subsec.each_char.all?(&.ascii_number?)
         time += (("0." + subsec).to_f * 1_000_000_000).round.to_i.nanoseconds
       end
       time
-    rescue Time::Format::Error
+    end
+
+    # Returns the time zone from the *tag* entry (i.e. `"+01:00"`),
+    # or `nil` if missing or malformed.
+    private def parse_offset(tag : Tag) : Time::Location?
+      return unless offset = string?(tag)
+      return unless match = offset.match(/\A([+-])(\d{2}):(\d{2})\z/)
+
+      seconds = match[2].to_i * 3600 + match[3].to_i * 60
+      Time::Location.fixed(match[1] == "-" ? -seconds : seconds)
+    rescue Time::Location::InvalidTimezoneOffsetError
     end
 
     private def write_time(time : Time?, tag : Tag, offset_tag : Tag, subsec_tag : Tag) : Time?
