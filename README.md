@@ -1,34 +1,186 @@
-# exif
+# exif.cr [![CI](https://github.com/Sija/exif.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/Sija/exif.cr/actions/workflows/ci.yml) [![Releases](https://img.shields.io/github/release/Sija/exif.cr.svg)](https://github.com/Sija/exif.cr/releases) [![License](https://img.shields.io/github/license/Sija/exif.cr.svg)](https://github.com/Sija/exif.cr/blob/master/LICENSE)
 
-TODO: Write a description here
+**exif.cr** provides an FFI for [libexif][libexif].
+It also includes a facade to read, modify and write EXIF metadata in a more idiomatic Crystal way.
+
+## Features
+
+- Reading EXIF data from JPEG files, `IO`s, byte slices and raw EXIF blocks
+- Typed entry values (`String`, `Int64`, `Float64`, rationals, arrays, ...)
+- Human-readable (localized) entry values, as formatted by libexif
+- Semantic accessors for common tags (camera, exposure, time, orientation, GPS, ...)
+- Creating, modifying and removing entries
+- Embedding EXIF data into JPEG files (and stripping it)
+- Thumbnail access (r/w)
+- Maker notes (Canon, Fuji, Olympus, Pentax, Apple) [^1]
+
+[^1]: Read-only, as supported by libexif
 
 ## Installation
 
-1. Add the dependency to your `shard.yml`:
+### Prerequisites
 
-   ```yaml
-   dependencies:
-     exif:
-       github: Sija/exif.cr
-   ```
+  * Crystal: `>= 1.13.1`
+  * libexif: `>= 0.6.24`
 
-2. Run `shards install`
+To install libexif, you can use `homebrew` or `apt-get`, depending on the platform:
+
+#### macOS
+
+```
+$ brew install libexif
+```
+
+#### Debian/Ubuntu
+
+```
+$ apt-get install libexif-dev
+```
+
+### Shard
+
+Add this to your application's `shard.yml`:
+
+```yaml
+dependencies:
+  exif:
+    github: Sija/exif.cr
+```
 
 ## Usage
 
 ```crystal
 require "exif"
+
+# load EXIF data from a JPEG file
+data = EXIF::Data.open("photo.jpg")
+
+# ...or return `nil` instead of raising `EXIF::NoDataError` if there's none
+data = EXIF::Data.open?("photo.jpg")
+
+# ...or from an `IO` (reading only as much as needed), or a `Bytes` slice
+data = File.open("photo.jpg") { |file| EXIF::Data.new(file) }
+data = EXIF::Data.new(bytes)
+
+# use semantic accessors
+data.model         # => "Canon PowerShot S70"
+data.taken_at      # => 2009-10-10 16:42:32 UTC
+data.orientation   # => EXIF::Orientation::RightTop
+data.exposure_time # => EXIF::URational(1/250)
+data.f_number      # => 2.8
+data.gps           # => EXIF::GPS(@latitude=52.2297, @longitude=21.0122, @altitude=110.5)
+
+# ...or access the entries directly
+entry = data[:f_number]
+entry.name   # => "FNumber"
+entry.title  # => "F-Number"
+entry.ifd    # => EXIF::IFD::EXIF
+entry.format # => EXIF::Format::Rational
+entry.value  # => EXIF::URational(28/10)
+entry.to_s   # => "f/2.8"
+
+# GPS tags have their own enum, since they overlap with other tags
+data[:gps_latitude].value # => [EXIF::URational(52/1), EXIF::URational(13/1), ...]
+
+# missing entries
+data[:artist]  # raises KeyError
+data[:artist]? # => nil
+
+# iterate over all entries...
+data.each do |entry|
+  puts "#{entry.title}: #{entry}"
+end
+
+# ...or the ones within a given IFD
+data.ifd(:exif).map(&.name) # => ["ExposureTime", "FNumber", ...]
+
+# vendor-specific maker notes
+data.maker_note?.try &.each do |entry|
+  puts "#{entry.title}: #{entry.value}"
+end
+
+# embedded thumbnail
+if thumbnail = data.thumbnail?
+  File.write("thumbnail.jpg", thumbnail)
+end
 ```
 
-TODO: Write usage instructions here
+### Writing
+
+```crystal
+data = EXIF::Data.open("photo.jpg")
+
+# set values, entries are created within the proper IFD if needed
+data[:artist] = "Jane Doe"
+data[:image_width] = 4000
+data[:f_number] = 5.6 # => stored as EXIF::URational(28/5)
+data[:bits_per_sample] = [8, 8, 8]
+data[:user_comment] = "Zażółć gęślą jaźń" # => character code is handled for you
+
+# ...or use semantic setters
+data.copyright = "(c) Jane Doe"
+data.date_time_original = Time.local
+data.orientation = :top_left
+data.gps = EXIF::GPS.new(52.2297, 21.0122, altitude: 110.5)
+
+# remove entries
+data.delete(:maker_note)
+data.artist = nil
+
+# write it back into the image (replacing any existing EXIF data)...
+data.save("photo.jpg")
+
+# ...or into another one
+data.save("copy.jpg", source: "other.jpg")
+
+# raw EXIF block (APP1 payload), e.g. to embed it yourself
+data.to_slice # => Bytes[69, 120, 105, 102, 0, 0, ...]
+
+# strip EXIF data from a JPEG image
+EXIF::JPEG.strip(File.read("photo.jpg").to_slice)
+```
+
+### Options
+
+By default, libexif fixes the data to follow the specification when loading,
+which might add or remove entries. Pass `options` to change that:
+
+```crystal
+EXIF::Data.open("photo.jpg", options: :none)
+EXIF::Data.open("photo.jpg", options: EXIF::Options::IgnoreUnknownTags)
+```
+
+### Logging
+
+libexif messages are forwarded to the `exif` [`Log`](https://crystal-lang.org/api/Log.html) source:
+
+```crystal
+Log.setup("exif.*", :debug)
+```
+
+## Examples
+
+See the [`examples`](examples) directory, e.g.:
+
+```
+$ crystal run examples/dump.cr -- photo.jpg
+$ crystal run examples/summary.cr -- photo.jpg
+$ crystal run examples/geotag.cr -- photo.jpg 52.2297 21.0122
+$ crystal run examples/strip.cr -- photo.jpg
+```
 
 ## Development
 
-TODO: Write development instructions here
+```
+$ crystal spec 
+$ ./lib/ameba/bin/ameba.cr
+```
+
+Test fixture `spec/fixtures/canon.jpg` comes from the [libexif test suite](https://github.com/libexif/libexif/tree/master/test/testdata).
 
 ## Contributing
 
-1. Fork it (<https://github.com/Sija/exif/fork>)
+1. Fork it (<https://github.com/Sija/exif.cr/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -37,3 +189,5 @@ TODO: Write development instructions here
 ## Contributors
 
 - [Sijawusz Pur Rahnama](https://github.com/Sija) - creator and maintainer
+
+[libexif]: https://github.com/libexif/libexif
