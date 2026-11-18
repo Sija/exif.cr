@@ -42,3 +42,6 @@ jobs:
 
       - name: Run specs
         run: crystal spec --order random
+
+      - name: Run specs (release)
+        run: crystal spec --order random --release
