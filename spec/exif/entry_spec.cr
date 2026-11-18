@@ -77,6 +77,37 @@ describe EXIF::Entry do
       EXIF::Data.new(data.to_slice)[:xp_title].value.should eq "Tytuł"
     end
 
+    it "leaves the entry intact when the value can't be stored" do
+      data = EXIF::Data.new
+      data[:orientation] = 6
+      expect_raises(EXIF::ValueError) { data[:orientation].value = 70_000 }
+      expect_raises(EXIF::ValueError) { data[:orientation].value = [1, 70_000] }
+      data[:orientation].value.should eq 6
+      data[:orientation].components.should eq 1
+
+      data[:model] = "Canon"
+      expect_raises(EXIF::ValueError) { data[:model].value = 1 }
+      data[:model].value.should eq "Canon"
+    end
+
+    it "raises ValueError for out of range floats" do
+      data = EXIF::Data.new
+      expect_raises(EXIF::ValueError) { data[:f_number] = -2.8 }
+      expect_raises(EXIF::ValueError) { data[:f_number] = Float64::NAN }
+      data.has_key?(:f_number).should be_false
+    end
+
+    it "infers the format for tags without a default value" do
+      data = EXIF::Data.new
+      data[:offset_time] = "+01:00"
+      data[:offset_time].format.should eq EXIF::Format::Ascii
+
+      data.delete(:offset_time)
+      data[:offset_time] = -0.5
+      data[:offset_time].format.should eq EXIF::Format::SRational
+      data[:offset_time].value.should eq EXIF::SRational.new(-1, 2)
+    end
+
     it "raises on mismatched values" do
       data = EXIF::Data.new
       data[:orientation] = 1
