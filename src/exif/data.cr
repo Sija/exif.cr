@@ -184,6 +184,7 @@ module EXIF
     #
     # If there's no such entry, it's created in the IFD
     # the tag belongs to (see `Tag#default_ifd`).
+    # Setting `nil` removes the entry.
     def []=(tag : AnyTag, value) : Nil
       if entry = self[tag]?
         entry.value = value
@@ -191,6 +192,11 @@ module EXIF
         ifd = tag.default_ifd || raise ArgumentError.new("Cannot determine IFD for tag: #{tag}")
         ifd(ifd)[tag] = value
       end
+    end
+
+    # :ditto:
+    def []=(tag : AnyTag, value : Nil) : Nil
+      delete(tag)
     end
 
     # Removes the entry for the given *tag*, returning it (or `nil` if not found).

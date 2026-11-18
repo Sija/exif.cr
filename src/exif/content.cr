@@ -80,6 +80,7 @@ module EXIF
     end
 
     # Sets the *value* of the entry for the given *tag*, creating it if needed.
+    # Setting `nil` removes the entry.
     def []=(tag : AnyTag, value) : Nil
       entry = self[tag]?
       created = entry.nil?
@@ -90,6 +91,11 @@ module EXIF
         entry.delete if created
         raise ex
       end
+    end
+
+    # :ditto:
+    def []=(tag : AnyTag, value : Nil) : Nil
+      delete(tag)
     end
 
     # Removes the entry for the given *tag*, returning it (or `nil` if not found).

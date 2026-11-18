@@ -104,6 +104,18 @@ describe EXIF::Data do
       data[:gps_altitude].tag.should eq EXIF::GPSTag::GPSAltitude
     end
 
+    it "removes entries when set to nil" do
+      data = canon_data
+      data[:model] = nil
+      data.has_key?(:model).should be_false
+
+      data.ifd(:exif)[:f_number] = nil
+      data.has_key?(:f_number).should be_false
+
+      data[:artist] = nil # missing
+      data.has_key?(:artist).should be_false
+    end
+
     it "doesn't leave half-created entries on errors" do
       data = EXIF::Data.new
       expect_raises(EXIF::ValueError) { data[:orientation] = "nope" }
