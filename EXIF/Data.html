@@ -1,0 +1,2733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.21.0">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="exif">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="exif">
+  <title>EXIF::Data - exif master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          exif
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="exif/EXIF" data-name="exif">
+      <a href="../EXIF.html">EXIF</a>
+      
+        <ul>
+  
+  <li class=" " data-id="exif/EXIF/AnyTag" data-name="exif::anytag">
+      <a href="../EXIF/AnyTag.html">AnyTag</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/ByteOrder" data-name="exif::byteorder">
+      <a href="../EXIF/ByteOrder.html">ByteOrder</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Content" data-name="exif::content">
+      <a href="../EXIF/Content.html">Content</a>
+      
+    </li>
+  
+  <li class=" current" data-id="exif/EXIF/Data" data-name="exif::data">
+      <a href="../EXIF/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/DataType" data-name="exif::datatype">
+      <a href="../EXIF/DataType.html">DataType</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Entry" data-name="exif::entry">
+      <a href="../EXIF/Entry.html">Entry</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Error" data-name="exif::error">
+      <a href="../EXIF/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Format" data-name="exif::format">
+      <a href="../EXIF/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/GPS" data-name="exif::gps">
+      <a href="../EXIF/GPS.html">GPS</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/GPSTag" data-name="exif::gpstag">
+      <a href="../EXIF/GPSTag.html">GPSTag</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/IFD" data-name="exif::ifd">
+      <a href="../EXIF/IFD.html">IFD</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/JPEG" data-name="exif::jpeg">
+      <a href="../EXIF/JPEG.html">JPEG</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/JPEGError" data-name="exif::jpegerror">
+      <a href="../EXIF/JPEGError.html">JPEGError</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/LogCode" data-name="exif::logcode">
+      <a href="../EXIF/LogCode.html">LogCode</a>
+      
+    </li>
+  
+  <li class="parent " data-id="exif/EXIF/MakerNote" data-name="exif::makernote">
+      <a href="../EXIF/MakerNote.html">MakerNote</a>
+      
+        <ul>
+  
+  <li class=" " data-id="exif/EXIF/MakerNote/Entry" data-name="exif::makernote::entry">
+      <a href="../EXIF/MakerNote/Entry.html">Entry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/NoDataError" data-name="exif::nodataerror">
+      <a href="../EXIF/NoDataError.html">NoDataError</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Options" data-name="exif::options">
+      <a href="../EXIF/Options.html">Options</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Orientation" data-name="exif::orientation">
+      <a href="../EXIF/Orientation.html">Orientation</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Rational" data-name="exif::rational(t)">
+      <a href="../EXIF/Rational.html">Rational</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Scalar" data-name="exif::scalar">
+      <a href="../EXIF/Scalar.html">Scalar</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/SRational" data-name="exif::srational">
+      <a href="../EXIF/SRational.html">SRational</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/SupportLevel" data-name="exif::supportlevel">
+      <a href="../EXIF/SupportLevel.html">SupportLevel</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Tag" data-name="exif::tag">
+      <a href="../EXIF/Tag.html">Tag</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/URational" data-name="exif::urational">
+      <a href="../EXIF/URational.html">URational</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Value" data-name="exif::value">
+      <a href="../EXIF/Value.html">Value</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/ValueError" data-name="exif::valueerror">
+      <a href="../EXIF/ValueError.html">ValueError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> EXIF::<wbr>Data
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../EXIF/Data.html">EXIF::Data</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Represents the entire EXIF data found in an image.</p>
+<pre><code class="language-crystal">data <span class="o">=</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.open(<span class="s">&quot;photo.jpg&quot;</span>)
+
+data[<span class="n">:model</span>].to_s <span class="c"># =&gt; &quot;Canon PowerShot S70&quot;</span>
+data[<span class="n">:gps_latitude</span>]?.try <span class="o">&amp;</span>.value
+data.ifd(<span class="n">:exif</span>).size <span class="c"># =&gt; 30</span>
+data.each { <span class="o">|</span>entry<span class="o">|</span> puts <span class="s">&quot;</span><span class="i">#{</span>entry.title<span class="i">}</span><span class="s">: </span><span class="i">#{</span>entry<span class="i">}</span><span class="s">&quot;</span> }
+
+data[<span class="n">:artist</span>] <span class="o">=</span> <span class="s">&quot;Jane Doe&quot;</span>
+data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
+
+
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">Enumerable(<a href="../EXIF/Entry.html">EXIF::Entry</a>)</li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L15" target="_blank">
+        exif/data.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L2" target="_blank">
+        exif/data/properties.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="BUFFER_SIZE">
+        <strong>BUFFER_SIZE</strong> = <code><span class="n">8192</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Size of the chunks read by <code><a href="../EXIF/Data.html#new%28options%3AOptions%3DOptions.default%29-class-method">.new(io)</a></code>.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="TIME_FORMAT">
+        <strong>TIME_FORMAT</strong> = <code><span class="s">&quot;%Y:%m:%d %H:%M:%S&quot;</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Format of the EXIF date/time strings.</p>
+      </dd>
+      
+    
+  </dl>
+
+
+
+  
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28options%3AOptions%3DOptions.default%29-class-method" class="signature"><strong>.new</strong>(options : Options = <span class="t">Options</span>.default)</a>
+        
+          <div class="summary"><p>Creates a new, empty EXIF data structure.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28bytes%3ABytes%2Coptions%3AOptions%3DOptions.default%29%3Aself-class-method" class="signature"><strong>.new</strong>(bytes : Bytes, options : Options = <span class="t">Options</span>.default) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Loads EXIF data from a JPEG image or a raw EXIF block (starting with an <code>Exif\0\0</code> header) held in <em>bytes</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28io%3AIO%2Coptions%3AOptions%3DOptions.default%29%3Aself-class-method" class="signature"><strong>.new</strong>(io : IO, options : Options = <span class="t">Options</span>.default) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Loads EXIF data from the given <em>io</em>, reading only as much of it as needed.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#open%28path%3APath%7CString%2Coptions%3AOptions%3DOptions.default%29%3Aself-class-method" class="signature"><strong>.open</strong>(path : Path | String, options : Options = <span class="t">Options</span>.default) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Loads EXIF data from the file at the given <em>path</em>.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#open%3F%28path%3APath%7CString%2Coptions%3AOptions%3DOptions.default%29%3Aself%7CNil-class-method" class="signature"><strong>.open?</strong>(path : Path | String, options : Options = <span class="t">Options</span>.default) : <span class="k">self</span> | Nil</a>
+        
+          <div class="summary"><p>Loads EXIF data from the file at the given <em>path</em>, returning <code>nil</code> if it contains none.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28tag%3ATag%29%3AEntry-instance-method" class="signature"><strong>#[]</strong>(tag : Tag) : Entry</a>
+        
+          <div class="summary"><p>Returns the entry for the given <em>tag</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28tag%3AGPSTag%29%3AEntry-instance-method" class="signature"><strong>#[]</strong>(tag : GPSTag) : Entry</a>
+        
+          <div class="summary"><p>Returns the entry for the given <em>tag</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3D%28tag%3ATag%2Cvalue%29%3ANil-instance-method" class="signature"><strong>#[]=</strong>(tag : Tag, value) : Nil</a>
+        
+          <div class="summary"><p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3D%28tag%3AGPSTag%2Cvalue%29%3ANil-instance-method" class="signature"><strong>#[]=</strong>(tag : GPSTag, value) : Nil</a>
+        
+          <div class="summary"><p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3F%28tag%3ATag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#[]?</strong>(tag : Tag) : Entry | Nil</a>
+        
+          <div class="summary"><p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3F%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#[]?</strong>(tag : GPSTag) : Entry | Nil</a>
+        
+          <div class="summary"><p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#artist%3AString%7CNil-instance-method" class="signature"><strong>#artist</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Artist">Tag::Artist</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#artist%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#artist=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Artist">Tag::Artist</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#body_serial_number%3AString%7CNil-instance-method" class="signature"><strong>#body_serial_number</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#BodySerialNumber">Tag::BodySerialNumber</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#body_serial_number%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#body_serial_number=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#BodySerialNumber">Tag::BodySerialNumber</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#byte_order%3AByteOrder-instance-method" class="signature"><strong>#byte_order</strong> : ByteOrder</a>
+        
+          <div class="summary"><p>Returns the byte order in use.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#byte_order%3D%28byte_order%3AByteOrder%29%3AByteOrder-instance-method" class="signature"><strong>#byte_order=</strong>(byte_order : ByteOrder) : ByteOrder</a>
+        
+          <div class="summary"><p>Sets the byte order, converting all existing entries.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#camera_owner_name%3AString%7CNil-instance-method" class="signature"><strong>#camera_owner_name</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#CameraOwnerName">Tag::CameraOwnerName</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#camera_owner_name%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#camera_owner_name=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#CameraOwnerName">Tag::CameraOwnerName</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#copyright%3AString%7CNil-instance-method" class="signature"><strong>#copyright</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Copyright">Tag::Copyright</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#copyright%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#copyright=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Copyright">Tag::Copyright</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data_type%3ADataType-instance-method" class="signature"><strong>#data_type</strong> : DataType</a>
+        
+          <div class="summary"><p>Returns the type of image data this EXIF data applies to.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data_type%3D%28data_type%3ADataType%29%3ADataType-instance-method" class="signature"><strong>#data_type=</strong>(data_type : DataType) : DataType</a>
+        
+          <div class="summary"><p>Sets the type of image data this EXIF data applies to.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#date_time%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method" class="signature"><strong>#date_time</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil</a>
+        
+          <div class="summary"><p>Returns the time from the <code><a href="../LibEXIF/EXIFTag.html#DateTime">Tag::DateTime</a></code> entry, taking the <code><a href="../LibEXIF/EXIFTag.html#OffsetTime">Tag::OffsetTime</a></code> and <code><a href="../LibEXIF/EXIFTag.html#SubSecTime">Tag::SubSecTime</a></code> entries into account.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#date_time%3D%28time%3ATime%7CNil%29%3ATime%7CNil-instance-method" class="signature"><strong>#date_time=</strong>(time : Time | Nil) : Time | Nil</a>
+        
+          <div class="summary"><p>Sets the <code><a href="../LibEXIF/EXIFTag.html#DateTime">Tag::DateTime</a></code> and <code><a href="../LibEXIF/EXIFTag.html#OffsetTime">Tag::OffsetTime</a></code> entries (or removes them, if <code>nil</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#date_time_digitized%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method" class="signature"><strong>#date_time_digitized</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil</a>
+        
+          <div class="summary"><p>Returns the time from the <code><a href="../LibEXIF/EXIFTag.html#DateTimeDigitized">Tag::DateTimeDigitized</a></code> entry, taking the <code><a href="../LibEXIF/EXIFTag.html#OffsetTimeDigitized">Tag::OffsetTimeDigitized</a></code> and <code><a href="../LibEXIF/EXIFTag.html#SubSecTimeDigitized">Tag::SubSecTimeDigitized</a></code> entries into account.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#date_time_digitized%3D%28time%3ATime%7CNil%29%3ATime%7CNil-instance-method" class="signature"><strong>#date_time_digitized=</strong>(time : Time | Nil) : Time | Nil</a>
+        
+          <div class="summary"><p>Sets the <code><a href="../LibEXIF/EXIFTag.html#DateTimeDigitized">Tag::DateTimeDigitized</a></code> and <code><a href="../LibEXIF/EXIFTag.html#OffsetTimeDigitized">Tag::OffsetTimeDigitized</a></code> entries (or removes them, if <code>nil</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#date_time_original%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method" class="signature"><strong>#date_time_original</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil</a>
+        
+          <div class="summary"><p>Returns the time from the <code><a href="../LibEXIF/EXIFTag.html#DateTimeOriginal">Tag::DateTimeOriginal</a></code> entry, taking the <code><a href="../LibEXIF/EXIFTag.html#OffsetTimeOriginal">Tag::OffsetTimeOriginal</a></code> and <code><a href="../LibEXIF/EXIFTag.html#SubSecTimeOriginal">Tag::SubSecTimeOriginal</a></code> entries into account.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#date_time_original%3D%28time%3ATime%7CNil%29%3ATime%7CNil-instance-method" class="signature"><strong>#date_time_original=</strong>(time : Time | Nil) : Time | Nil</a>
+        
+          <div class="summary"><p>Sets the <code><a href="../LibEXIF/EXIFTag.html#DateTimeOriginal">Tag::DateTimeOriginal</a></code> and <code><a href="../LibEXIF/EXIFTag.html#OffsetTimeOriginal">Tag::OffsetTimeOriginal</a></code> entries (or removes them, if <code>nil</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete%28tag%3ATag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#delete</strong>(tag : Tag) : Entry | Nil</a>
+        
+          <div class="summary"><p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#delete</strong>(tag : GPSTag) : Entry | Nil</a>
+        
+          <div class="summary"><p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each%28%26%3AEntry-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(& : Entry -> ) : Nil</a>
+        
+          <div class="summary"><p>Yields each entry across all IFDs.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#embed%28jpeg%3ABytes%29%3ABytes-instance-method" class="signature"><strong>#embed</strong>(jpeg : Bytes) : Bytes</a>
+        
+          <div class="summary"><p>Returns a copy of the given <em>jpeg</em> image with this EXIF data embedded.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#empty%3F%3ABool-instance-method" class="signature"><strong>#empty?</strong> : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if there are no entries.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#exposure_bias%3AFloat64%7CNil-instance-method" class="signature"><strong>#exposure_bias</strong> : Float64 | Nil</a>
+        
+          <div class="summary"><p>Returns the exposure bias (in EV), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#exposure_time%3AURational%7CNil-instance-method" class="signature"><strong>#exposure_time</strong> : URational | Nil</a>
+        
+          <div class="summary"><p>Returns the exposure time (in seconds), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#f_number%3AFloat64%7CNil-instance-method" class="signature"><strong>#f_number</strong> : Float64 | Nil</a>
+        
+          <div class="summary"><p>Returns the F-number, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fix%3Aself-instance-method" class="signature"><strong>#fix</strong> : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Fixes the EXIF data to bring it into specification (adds mandatory entries, removes not-recorded ones, ...).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flash_fired%3F%3ABool%7CNil-instance-method" class="signature"><strong>#flash_fired?</strong> : Bool | Nil</a>
+        
+          <div class="summary"><p>Returns whether the flash fired, or <code>nil</code> if unknown.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#focal_length%3AFloat64%7CNil-instance-method" class="signature"><strong>#focal_length</strong> : Float64 | Nil</a>
+        
+          <div class="summary"><p>Returns the focal length (in millimeters), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#focal_length_in_35mm_film%3AInt64%7CNil-instance-method" class="signature"><strong>#focal_length_in_35mm_film</strong> : Int64 | Nil</a>
+        
+          <div class="summary"><p>Returns the 35mm-equivalent focal length (in millimeters), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#gps%3AGPS%7CNil-instance-method" class="signature"><strong>#gps</strong> : GPS | Nil</a>
+        
+          <div class="summary"><p>Returns the GPS position, or <code>nil</code> if not recorded.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#gps%3D%28gps%3AGPS%7CNil%29%3AGPS%7CNil-instance-method" class="signature"><strong>#gps=</strong>(gps : GPS | Nil) : GPS | Nil</a>
+        
+          <div class="summary"><p>Sets the GPS position (or removes it, if <code>nil</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#has_key%3F%28tag%3ATag%29%3ABool-instance-method" class="signature"><strong>#has_key?</strong>(tag : Tag) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#has_key%3F%28tag%3AGPSTag%29%3ABool-instance-method" class="signature"><strong>#has_key?</strong>(tag : GPSTag) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#height%3AInt64%7CNil-instance-method" class="signature"><strong>#height</strong> : Int64 | Nil</a>
+        
+          <div class="summary"><p>Returns the image height (in pixels), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ifd%28ifd%3AIFD%29%3AContent-instance-method" class="signature"><strong>#ifd</strong>(ifd : IFD) : Content</a>
+        
+          <div class="summary"><p>Returns the content of the given <em>ifd</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ifds%3AArray%28Content%29-instance-method" class="signature"><strong>#ifds</strong> : Array(Content)</a>
+        
+          <div class="summary"><p>Returns the contents of all IFDs.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#image_description%3AString%7CNil-instance-method" class="signature"><strong>#image_description</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageDescription">Tag::ImageDescription</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#image_description%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#image_description=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageDescription">Tag::ImageDescription</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#image_unique_id%3AString%7CNil-instance-method" class="signature"><strong>#image_unique_id</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageUniqueID">Tag::ImageUniqueID</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#image_unique_id%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#image_unique_id=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageUniqueID">Tag::ImageUniqueID</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#inspect%28io%3AIO%29%3ANil-instance-method" class="signature"><strong>#inspect</strong>(io : IO) : Nil</a>
+        
+          <div class="summary"><p>Appends a String representation of this object which includes its class name, its object address and the values of all instance variables.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#iso%3AInt64%7CNil-instance-method" class="signature"><strong>#iso</strong> : Int64 | Nil</a>
+        
+          <div class="summary"><p>Returns the ISO speed, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#lens_make%3AString%7CNil-instance-method" class="signature"><strong>#lens_make</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#LensMake">Tag::LensMake</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#lens_make%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#lens_make=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#LensMake">Tag::LensMake</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#lens_model%3AString%7CNil-instance-method" class="signature"><strong>#lens_model</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#LensModel">Tag::LensModel</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#lens_model%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#lens_model=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#LensModel">Tag::LensModel</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#make%3AString%7CNil-instance-method" class="signature"><strong>#make</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Make">Tag::Make</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#make%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#make=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Make">Tag::Make</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#maker_note%3F%3AMakerNote%7CNil-instance-method" class="signature"><strong>#maker_note?</strong> : MakerNote | Nil</a>
+        
+          <div class="summary"><p>Returns the parsed maker note, or <code>nil</code> if missing or unsupported.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#model%3AString%7CNil-instance-method" class="signature"><strong>#model</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Model">Tag::Model</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#model%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#model=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Model">Tag::Model</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#options%3D%28options%3AOptions%29%3AOptions-instance-method" class="signature"><strong>#options=</strong>(options : Options) : Options</a>
+        
+          <div class="summary"><p>Sets the options affecting loading and saving.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#orientation%3AOrientation%7CNil-instance-method" class="signature"><strong>#orientation</strong> : Orientation | Nil</a>
+        
+          <div class="summary"><p>Returns the image orientation, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#orientation%3D%28orientation%3AOrientation%7CNil%29%3AOrientation%7CNil-instance-method" class="signature"><strong>#orientation=</strong>(orientation : Orientation | Nil) : Orientation | Nil</a>
+        
+          <div class="summary"><p>Sets the image orientation (or removes it, if <code>nil</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#save%28path%3APath%7CString%2Csource%3APath%7CString%3Dpath%29%3ANil-instance-method" class="signature"><strong>#save</strong>(path : Path | String, source : Path | String = path) : Nil</a>
+        
+          <div class="summary"><p>Writes the JPEG image read from <em>source</em> with this EXIF data embedded to <em>path</em>, replacing any existing EXIF data.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3AInt32-instance-method" class="signature"><strong>#size</strong> : Int32</a>
+        
+          <div class="summary"><p>Returns the total number of entries across all IFDs.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#software%3AString%7CNil-instance-method" class="signature"><strong>#software</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Software">Tag::Software</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#software%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#software=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Software">Tag::Software</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#taken_at%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method" class="signature"><strong>#taken_at</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil</a>
+        
+          <div class="summary"><p>Returns the time the image was taken (alias of <code><a href="../EXIF/Data.html#date_time_original%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#date_time_original</a></code>, falling back to <code><a href="../EXIF/Data.html#date_time%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#date_time</a></code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#thumbnail%3D%28bytes%3ABytes%7CNil%29%3ABytes%7CNil-instance-method" class="signature"><strong>#thumbnail=</strong>(bytes : Bytes | Nil) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the embedded thumbnail.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#thumbnail%3F%3ABytes%7CNil-instance-method" class="signature"><strong>#thumbnail?</strong> : Bytes | Nil</a>
+        
+          <div class="summary"><p>Returns the embedded thumbnail (usually a JPEG image), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_h%3AHash%28String%2CHash%28String%2CString%29%29-instance-method" class="signature"><strong>#to_h</strong> : Hash(String, Hash(String, String))</a>
+        
+          <div class="summary"><p>Returns a nested hash of IFD names to entry names to their formatted values.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_slice%3ABytes-instance-method" class="signature"><strong>#to_slice</strong> : Bytes</a>
+        
+          <div class="summary"><p>Returns the raw EXIF block (including the <code>Exif\0\0</code> header), suitable for embedding as a JPEG APP1 segment.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_unsafe%3APointer%28LibEXIF%3A%3AEXIFData%29-instance-method" class="signature"><strong>#to_unsafe</strong> : Pointer(LibEXIF::EXIFData)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#user_comment%3AString%7CNil-instance-method" class="signature"><strong>#user_comment</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#UserComment">Tag::UserComment</a></code> entry, or <code>nil</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#user_comment%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method" class="signature"><strong>#user_comment=</strong>(value : String | Nil) : String | Nil</a>
+        
+          <div class="summary"><p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#UserComment">Tag::UserComment</a></code> entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#width%3AInt64%7CNil-instance-method" class="signature"><strong>#width</strong> : Int64 | Nil</a>
+        
+          <div class="summary"><p>Returns the image width (in pixels), or <code>nil</code>.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(options:Options=Options.default)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(options : <a href="../EXIF/Options.html">Options</a> = <span class="t">Options</span>.default)
+
+        <a class="method-permalink" href="#new%28options%3AOptions%3DOptions.default%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new, empty EXIF data structure.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(bytes:Bytes,options:Options=Options.default):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(bytes : Bytes, options : <a href="../EXIF/Options.html">Options</a> = <span class="t">Options</span>.default) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#new%28bytes%3ABytes%2Coptions%3AOptions%3DOptions.default%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads EXIF data from a JPEG image or a raw EXIF block
+(starting with an <code>Exif\0\0</code> header) held in <em>bytes</em>.</p>
+<p>Raises <code><a href="../EXIF/NoDataError.html">NoDataError</a></code> if no EXIF data is found.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L36" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(io:IO,options:Options=Options.default):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(io : IO, options : <a href="../EXIF/Options.html">Options</a> = <span class="t">Options</span>.default) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#new%28io%3AIO%2Coptions%3AOptions%3DOptions.default%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads EXIF data from the given <em>io</em>, reading only as much of it as needed.</p>
+<p>Raises <code><a href="../EXIF/NoDataError.html">NoDataError</a></code> if no EXIF data is found.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L51" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="open(path:Path|String,options:Options=Options.default):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>open</strong>(path : Path | String, options : <a href="../EXIF/Options.html">Options</a> = <span class="t">Options</span>.default) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#open%28path%3APath%7CString%2Coptions%3AOptions%3DOptions.default%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads EXIF data from the file at the given <em>path</em>.</p>
+<p>Raises <code><a href="../EXIF/NoDataError.html">NoDataError</a></code> if no EXIF data is found.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L63" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+  
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="open?(path:Path|String,options:Options=Options.default):self|Nil-class-method">
+      <div class="signature">
+        
+        def self.<strong>open?</strong>(path : Path | String, options : <a href="../EXIF/Options.html">Options</a> = <span class="t">Options</span>.default) : <span class="k">self</span> | Nil
+
+        <a class="method-permalink" href="#open%3F%28path%3APath%7CString%2Coptions%3AOptions%3DOptions.default%29%3Aself%7CNil-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads EXIF data from the file at the given <em>path</em>, returning <code>nil</code>
+if it contains none.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L69" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="[](tag:Tag):Entry-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : <a href="../EXIF/Entry.html">Entry</a>
+
+        <a class="method-permalink" href="#%5B%5D%28tag%3ATag%29%3AEntry-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the entry for the given <em>tag</em>.</p>
+<p>Raises <code>KeyError</code> if there's no such entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L184" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="[](tag:GPSTag):Entry-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : <a href="../EXIF/Entry.html">Entry</a>
+
+        <a class="method-permalink" href="#%5B%5D%28tag%3AGPSTag%29%3AEntry-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the entry for the given <em>tag</em>.</p>
+<p>Raises <code>KeyError</code> if there's no such entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L189" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="[]=(tag:Tag,value):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>[]=</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>, value) : Nil
+
+        <a class="method-permalink" href="#%5B%5D%3D%28tag%3ATag%2Cvalue%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p>
+<p>If there's no such entry, it's created in the IFD
+the tag belongs to (see <code>Tag#default_ifd</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L207" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="[]=(tag:GPSTag,value):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>[]=</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>, value) : Nil
+
+        <a class="method-permalink" href="#%5B%5D%3D%28tag%3AGPSTag%2Cvalue%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p>
+<p>If there's no such entry, it's created in the IFD
+the tag belongs to (see <code>Tag#default_ifd</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L217" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="[]?(tag:Tag):Entry|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>[]?</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+
+        <a class="method-permalink" href="#%5B%5D%3F%28tag%3ATag%29%3AEntry%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p>
+<p><code><a href="../EXIF/Tag.html">Tag</a></code>s are looked up in the <code><a href="../LibEXIF/EXIFIfd.html#Zero">IFD::Zero</a></code>, <code><a href="../LibEXIF/EXIFIfd.html#EXIF">IFD::EXIF</a></code>, <code><a href="../LibEXIF/EXIFIfd.html#Interoperability">IFD::Interoperability</a></code>
+and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) IFDs in turn, <code><a href="../EXIF/GPSTag.html">GPSTag</a></code>s in the <code><a href="../LibEXIF/EXIFIfd.html#GPS">IFD::GPS</a></code> one.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L167" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="[]?(tag:GPSTag):Entry|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>[]?</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+
+        <a class="method-permalink" href="#%5B%5D%3F%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p>
+<p><code><a href="../EXIF/Tag.html">Tag</a></code>s are looked up in the <code><a href="../LibEXIF/EXIFIfd.html#Zero">IFD::Zero</a></code>, <code><a href="../LibEXIF/EXIFIfd.html#EXIF">IFD::EXIF</a></code>, <code><a href="../LibEXIF/EXIFIfd.html#Interoperability">IFD::Interoperability</a></code>
+and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) IFDs in turn, <code><a href="../EXIF/GPSTag.html">GPSTag</a></code>s in the <code><a href="../LibEXIF/EXIFIfd.html#GPS">IFD::GPS</a></code> one.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L177" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="artist:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>artist</strong> : String | Nil
+
+        <a class="method-permalink" href="#artist%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Artist">Tag::Artist</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="artist=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>artist=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#artist%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Artist">Tag::Artist</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="body_serial_number:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>body_serial_number</strong> : String | Nil
+
+        <a class="method-permalink" href="#body_serial_number%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#BodySerialNumber">Tag::BodySerialNumber</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="body_serial_number=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>body_serial_number=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#body_serial_number%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#BodySerialNumber">Tag::BodySerialNumber</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="byte_order:ByteOrder-instance-method">
+      <div class="signature">
+        
+        def <strong>byte_order</strong> : <a href="../EXIF/ByteOrder.html">ByteOrder</a>
+
+        <a class="method-permalink" href="#byte_order%3AByteOrder-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the byte order in use.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L114" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="byte_order=(byte_order:ByteOrder):ByteOrder-instance-method">
+      <div class="signature">
+        
+        def <strong>byte_order=</strong>(byte_order : <a href="../EXIF/ByteOrder.html">ByteOrder</a>) : <a href="../EXIF/ByteOrder.html">ByteOrder</a>
+
+        <a class="method-permalink" href="#byte_order%3D%28byte_order%3AByteOrder%29%3AByteOrder-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the byte order, converting all existing entries.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L119" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="camera_owner_name:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>camera_owner_name</strong> : String | Nil
+
+        <a class="method-permalink" href="#camera_owner_name%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#CameraOwnerName">Tag::CameraOwnerName</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="camera_owner_name=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>camera_owner_name=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#camera_owner_name%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#CameraOwnerName">Tag::CameraOwnerName</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="copyright:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>copyright</strong> : String | Nil
+
+        <a class="method-permalink" href="#copyright%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Copyright">Tag::Copyright</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="copyright=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>copyright=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#copyright%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Copyright">Tag::Copyright</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data_type:DataType-instance-method">
+      <div class="signature">
+        
+        def <strong>data_type</strong> : <a href="../EXIF/DataType.html">DataType</a>
+
+        <a class="method-permalink" href="#data_type%3ADataType-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the type of image data this EXIF data applies to.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L125" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data_type=(data_type:DataType):DataType-instance-method">
+      <div class="signature">
+        
+        def <strong>data_type=</strong>(data_type : <a href="../EXIF/DataType.html">DataType</a>) : <a href="../EXIF/DataType.html">DataType</a>
+
+        <a class="method-permalink" href="#data_type%3D%28data_type%3ADataType%29%3ADataType-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the type of image data this EXIF data applies to.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L130" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="date_time(location:Time::Location=Time::Location::UTC):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>date_time</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil
+
+        <a class="method-permalink" href="#date_time%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the time from the <code><a href="../LibEXIF/EXIFTag.html#DateTime">Tag::DateTime</a></code> entry, taking the
+<code><a href="../LibEXIF/EXIFTag.html#OffsetTime">Tag::OffsetTime</a></code> and <code><a href="../LibEXIF/EXIFTag.html#SubSecTime">Tag::SubSecTime</a></code> entries into account.</p>
+<p>When no time offset is recorded, the time is assumed to be in the given <em>location</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="date_time=(time:Time|Nil):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>date_time=</strong>(time : Time | Nil) : Time | Nil
+
+        <a class="method-permalink" href="#date_time%3D%28time%3ATime%7CNil%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the <code><a href="../LibEXIF/EXIFTag.html#DateTime">Tag::DateTime</a></code> and <code><a href="../LibEXIF/EXIFTag.html#OffsetTime">Tag::OffsetTime</a></code> entries (or removes them, if <code>nil</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="date_time_digitized(location:Time::Location=Time::Location::UTC):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>date_time_digitized</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil
+
+        <a class="method-permalink" href="#date_time_digitized%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the time from the <code><a href="../LibEXIF/EXIFTag.html#DateTimeDigitized">Tag::DateTimeDigitized</a></code> entry, taking the
+<code><a href="../LibEXIF/EXIFTag.html#OffsetTimeDigitized">Tag::OffsetTimeDigitized</a></code> and <code><a href="../LibEXIF/EXIFTag.html#SubSecTimeDigitized">Tag::SubSecTimeDigitized</a></code> entries into account.</p>
+<p>When no time offset is recorded, the time is assumed to be in the given <em>location</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="date_time_digitized=(time:Time|Nil):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>date_time_digitized=</strong>(time : Time | Nil) : Time | Nil
+
+        <a class="method-permalink" href="#date_time_digitized%3D%28time%3ATime%7CNil%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the <code><a href="../LibEXIF/EXIFTag.html#DateTimeDigitized">Tag::DateTimeDigitized</a></code> and <code><a href="../LibEXIF/EXIFTag.html#OffsetTimeDigitized">Tag::OffsetTimeDigitized</a></code> entries (or removes them, if <code>nil</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="date_time_original(location:Time::Location=Time::Location::UTC):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>date_time_original</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil
+
+        <a class="method-permalink" href="#date_time_original%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the time from the <code><a href="../LibEXIF/EXIFTag.html#DateTimeOriginal">Tag::DateTimeOriginal</a></code> entry, taking the
+<code><a href="../LibEXIF/EXIFTag.html#OffsetTimeOriginal">Tag::OffsetTimeOriginal</a></code> and <code><a href="../LibEXIF/EXIFTag.html#SubSecTimeOriginal">Tag::SubSecTimeOriginal</a></code> entries into account.</p>
+<p>When no time offset is recorded, the time is assumed to be in the given <em>location</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="date_time_original=(time:Time|Nil):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>date_time_original=</strong>(time : Time | Nil) : Time | Nil
+
+        <a class="method-permalink" href="#date_time_original%3D%28time%3ATime%7CNil%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the <code><a href="../LibEXIF/EXIFTag.html#DateTimeOriginal">Tag::DateTimeOriginal</a></code> and <code><a href="../LibEXIF/EXIFTag.html#OffsetTimeOriginal">Tag::OffsetTimeOriginal</a></code> entries (or removes them, if <code>nil</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(tag:Tag):Entry|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+
+        <a class="method-permalink" href="#delete%28tag%3ATag%29%3AEntry%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L222" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(tag:GPSTag):Entry|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+
+        <a class="method-permalink" href="#delete%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L227" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each(&amp;:Entry-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(& : <a href="../EXIF/Entry.html">Entry</a> -> ) : Nil
+
+        <a class="method-permalink" href="#each%28%26%3AEntry-%3E%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Yields each entry across all IFDs.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L147" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="embed(jpeg:Bytes):Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>embed</strong>(jpeg : Bytes) : Bytes
+
+        <a class="method-permalink" href="#embed%28jpeg%3ABytes%29%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a copy of the given <em>jpeg</em> image with this EXIF data embedded.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L280" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="empty?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>empty?</strong> : Bool
+
+        <a class="method-permalink" href="#empty%3F%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if there are no entries.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L159" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="exposure_bias:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>exposure_bias</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#exposure_bias%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the exposure bias (in EV), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L94" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="exposure_time:URational|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>exposure_time</strong> : <a href="../EXIF/URational.html">URational</a> | Nil
+
+        <a class="method-permalink" href="#exposure_time%3AURational%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the exposure time (in seconds), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L79" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="f_number:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>f_number</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#f_number%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the F-number, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L84" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="finalize-instance-method">
+      <div class="signature">
+        
+        def <strong>finalize</strong>
+
+        <a class="method-permalink" href="#finalize-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L93" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fix:self-instance-method">
+      <div class="signature">
+        
+        def <strong>fix</strong> : <span class="k">self</span>
+
+        <a class="method-permalink" href="#fix%3Aself-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Fixes the EXIF data to bring it into specification
+(adds mandatory entries, removes not-recorded ones, ...).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L260" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flash_fired?:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>flash_fired?</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#flash_fired%3F%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns whether the flash fired, or <code>nil</code> if unknown.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L109" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="focal_length:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>focal_length</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#focal_length%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the focal length (in millimeters), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L99" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="focal_length_in_35mm_film:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>focal_length_in_35mm_film</strong> : Int64 | Nil
+
+        <a class="method-permalink" href="#focal_length_in_35mm_film%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the 35mm-equivalent focal length (in millimeters), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L104" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="gps:GPS|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>gps</strong> : <a href="../EXIF/GPS.html">GPS</a> | Nil
+
+        <a class="method-permalink" href="#gps%3AGPS%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the GPS position, or <code>nil</code> if not recorded.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L114" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="gps=(gps:GPS|Nil):GPS|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>gps=</strong>(gps : <a href="../EXIF/GPS.html">GPS</a> | Nil) : <a href="../EXIF/GPS.html">GPS</a> | Nil
+
+        <a class="method-permalink" href="#gps%3D%28gps%3AGPS%7CNil%29%3AGPS%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the GPS position (or removes it, if <code>nil</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L131" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="has_key?(tag:Tag):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>has_key?</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : Bool
+
+        <a class="method-permalink" href="#has_key%3F%28tag%3ATag%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L194" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="has_key?(tag:GPSTag):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>has_key?</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : Bool
+
+        <a class="method-permalink" href="#has_key%3F%28tag%3AGPSTag%29%3ABool-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L199" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="height:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>height</strong> : Int64 | Nil
+
+        <a class="method-permalink" href="#height%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the image height (in pixels), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L74" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ifd(ifd:IFD):Content-instance-method">
+      <div class="signature">
+        
+        def <strong>ifd</strong>(ifd : <a href="../EXIF/IFD.html">IFD</a>) : <a href="../EXIF/Content.html">Content</a>
+
+        <a class="method-permalink" href="#ifd%28ifd%3AIFD%29%3AContent-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the content of the given <em>ifd</em>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L136" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ifds:Array(Content)-instance-method">
+      <div class="signature">
+        
+        def <strong>ifds</strong> : Array(<a href="../EXIF/Content.html">Content</a>)
+
+        <a class="method-permalink" href="#ifds%3AArray%28Content%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the contents of all IFDs.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L142" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="image_description:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>image_description</strong> : String | Nil
+
+        <a class="method-permalink" href="#image_description%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageDescription">Tag::ImageDescription</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="image_description=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>image_description=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#image_description%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageDescription">Tag::ImageDescription</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="image_unique_id:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>image_unique_id</strong> : String | Nil
+
+        <a class="method-permalink" href="#image_unique_id%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageUniqueID">Tag::ImageUniqueID</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="image_unique_id=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>image_unique_id=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#image_unique_id%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#ImageUniqueID">Tag::ImageUniqueID</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="inspect(io:IO):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>inspect</strong>(io : IO) : Nil
+
+        <a class="method-permalink" href="#inspect%28io%3AIO%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Reference
+            </div>
+          
+          <p>Appends a String representation of this object
+which includes its class name, its object address
+and the values of all instance variables.</p>
+<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Person</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@name : <span class="t">String</span>, @age : <span class="t">Int32</span>)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">Person</span>.new(<span class="s">&quot;John&quot;</span>, <span class="n">32</span>).inspect <span class="c"># =&gt; #&lt;Person:0x10fd31f20 @name=&quot;John&quot;, @age=32&gt;</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L297" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="iso:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>iso</strong> : Int64 | Nil
+
+        <a class="method-permalink" href="#iso%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the ISO speed, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L89" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="lens_make:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>lens_make</strong> : String | Nil
+
+        <a class="method-permalink" href="#lens_make%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#LensMake">Tag::LensMake</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="lens_make=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>lens_make=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#lens_make%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#LensMake">Tag::LensMake</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="lens_model:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>lens_model</strong> : String | Nil
+
+        <a class="method-permalink" href="#lens_model%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#LensModel">Tag::LensModel</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="lens_model=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>lens_model=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#lens_model%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#LensModel">Tag::LensModel</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="make:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>make</strong> : String | Nil
+
+        <a class="method-permalink" href="#make%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Make">Tag::Make</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="make=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>make=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#make%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Make">Tag::Make</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="maker_note?:MakerNote|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>maker_note?</strong> : <a href="../EXIF/MakerNote.html">MakerNote</a> | Nil
+
+        <a class="method-permalink" href="#maker_note%3F%3AMakerNote%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the parsed maker note, or <code>nil</code> if missing or unsupported.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L253" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="model:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>model</strong> : String | Nil
+
+        <a class="method-permalink" href="#model%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Model">Tag::Model</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="model=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>model=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#model%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Model">Tag::Model</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="options=(options:Options):Options-instance-method">
+      <div class="signature">
+        
+        def <strong>options=</strong>(options : <a href="../EXIF/Options.html">Options</a>) : <a href="../EXIF/Options.html">Options</a>
+
+        <a class="method-permalink" href="#options%3D%28options%3AOptions%29%3AOptions-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the options affecting loading and saving.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L102" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="orientation:Orientation|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>orientation</strong> : <a href="../EXIF/Orientation.html">Orientation</a> | Nil
+
+        <a class="method-permalink" href="#orientation%3AOrientation%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the image orientation, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L58" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="orientation=(orientation:Orientation|Nil):Orientation|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>orientation=</strong>(orientation : <a href="../EXIF/Orientation.html">Orientation</a> | Nil) : <a href="../EXIF/Orientation.html">Orientation</a> | Nil
+
+        <a class="method-permalink" href="#orientation%3D%28orientation%3AOrientation%7CNil%29%3AOrientation%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the image orientation (or removes it, if <code>nil</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L63" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="save(path:Path|String,source:Path|String=path):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>save</strong>(path : Path | String, source : Path | String = path) : Nil
+
+        <a class="method-permalink" href="#save%28path%3APath%7CString%2Csource%3APath%7CString%3Dpath%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Writes the JPEG image read from <em>source</em> with this EXIF data
+embedded to <em>path</em>, replacing any existing EXIF data.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L286" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size:Int32-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong> : Int32
+
+        <a class="method-permalink" href="#size%3AInt32-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the total number of entries across all IFDs.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L154" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="software:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>software</strong> : String | Nil
+
+        <a class="method-permalink" href="#software%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#Software">Tag::Software</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="software=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>software=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#software%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#Software">Tag::Software</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="taken_at(location:Time::Location=Time::Location::UTC):Time|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>taken_at</strong>(location : Time::Location = <span class="t">Time</span><span class="t">::</span><span class="t">Location</span><span class="t">::</span><span class="t">UTC</span>) : Time | Nil
+
+        <a class="method-permalink" href="#taken_at%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the time the image was taken (alias of <code><a href="../EXIF/Data.html#date_time_original%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#date_time_original</a></code>,
+falling back to <code><a href="../EXIF/Data.html#date_time%28location%3ATime%3A%3ALocation%3DTime%3A%3ALocation%3A%3AUTC%29%3ATime%7CNil-instance-method">#date_time</a></code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="thumbnail=(bytes:Bytes|Nil):Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>thumbnail=</strong>(bytes : Bytes | Nil) : Bytes | Nil
+
+        <a class="method-permalink" href="#thumbnail%3D%28bytes%3ABytes%7CNil%29%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the embedded thumbnail.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L238" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="thumbnail?:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>thumbnail?</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#thumbnail%3F%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the embedded thumbnail (usually a JPEG image), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L232" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_h:Hash(String,Hash(String,String))-instance-method">
+      <div class="signature">
+        
+        def <strong>to_h</strong> : Hash(String, Hash(String, String))
+
+        <a class="method-permalink" href="#to_h%3AHash%28String%2CHash%28String%2CString%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a nested hash of IFD names to entry names to their formatted values.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L291" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_slice:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>to_slice</strong> : Bytes
+
+        <a class="method-permalink" href="#to_slice%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the raw EXIF block (including the <code>Exif\0\0</code> header),
+suitable for embedding as a JPEG APP1 segment.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L267" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_unsafe:Pointer(LibEXIF::EXIFData)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_unsafe</strong> : Pointer(LibEXIF::EXIFData)
+
+        <a class="method-permalink" href="#to_unsafe%3APointer%28LibEXIF%3A%3AEXIFData%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data.cr#L97" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="user_comment:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>user_comment</strong> : String | Nil
+
+        <a class="method-permalink" href="#user_comment%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value of the <code><a href="../LibEXIF/EXIFTag.html#UserComment">Tag::UserComment</a></code> entry, or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="user_comment=(value:String|Nil):String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>user_comment=</strong>(value : String | Nil) : String | Nil
+
+        <a class="method-permalink" href="#user_comment%3D%28value%3AString%7CNil%29%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets (or removes, if <code>nil</code>) the value of the <code><a href="../LibEXIF/EXIFTag.html#UserComment">Tag::UserComment</a></code> entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="width:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>width</strong> : Int64 | Nil
+
+        <a class="method-permalink" href="#width%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the image width (in pixels), or <code>nil</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/data/properties.cr#L69" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>

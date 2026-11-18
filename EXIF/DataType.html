@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.21.0">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="exif">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="exif">
+  <title>EXIF::DataType - exif master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          exif
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="exif/EXIF" data-name="exif">
+      <a href="../EXIF.html">EXIF</a>
+      
+        <ul>
+  
+  <li class=" " data-id="exif/EXIF/AnyTag" data-name="exif::anytag">
+      <a href="../EXIF/AnyTag.html">AnyTag</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/ByteOrder" data-name="exif::byteorder">
+      <a href="../EXIF/ByteOrder.html">ByteOrder</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Content" data-name="exif::content">
+      <a href="../EXIF/Content.html">Content</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Data" data-name="exif::data">
+      <a href="../EXIF/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" current" data-id="exif/EXIF/DataType" data-name="exif::datatype">
+      <a href="../EXIF/DataType.html">DataType</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Entry" data-name="exif::entry">
+      <a href="../EXIF/Entry.html">Entry</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Error" data-name="exif::error">
+      <a href="../EXIF/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Format" data-name="exif::format">
+      <a href="../EXIF/Format.html">Format</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/GPS" data-name="exif::gps">
+      <a href="../EXIF/GPS.html">GPS</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/GPSTag" data-name="exif::gpstag">
+      <a href="../EXIF/GPSTag.html">GPSTag</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/IFD" data-name="exif::ifd">
+      <a href="../EXIF/IFD.html">IFD</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/JPEG" data-name="exif::jpeg">
+      <a href="../EXIF/JPEG.html">JPEG</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/JPEGError" data-name="exif::jpegerror">
+      <a href="../EXIF/JPEGError.html">JPEGError</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/LogCode" data-name="exif::logcode">
+      <a href="../EXIF/LogCode.html">LogCode</a>
+      
+    </li>
+  
+  <li class="parent " data-id="exif/EXIF/MakerNote" data-name="exif::makernote">
+      <a href="../EXIF/MakerNote.html">MakerNote</a>
+      
+        <ul>
+  
+  <li class=" " data-id="exif/EXIF/MakerNote/Entry" data-name="exif::makernote::entry">
+      <a href="../EXIF/MakerNote/Entry.html">Entry</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/NoDataError" data-name="exif::nodataerror">
+      <a href="../EXIF/NoDataError.html">NoDataError</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Options" data-name="exif::options">
+      <a href="../EXIF/Options.html">Options</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Orientation" data-name="exif::orientation">
+      <a href="../EXIF/Orientation.html">Orientation</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Rational" data-name="exif::rational(t)">
+      <a href="../EXIF/Rational.html">Rational</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Scalar" data-name="exif::scalar">
+      <a href="../EXIF/Scalar.html">Scalar</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/SRational" data-name="exif::srational">
+      <a href="../EXIF/SRational.html">SRational</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/SupportLevel" data-name="exif::supportlevel">
+      <a href="../EXIF/SupportLevel.html">SupportLevel</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Tag" data-name="exif::tag">
+      <a href="../EXIF/Tag.html">Tag</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/URational" data-name="exif::urational">
+      <a href="../EXIF/URational.html">URational</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/Value" data-name="exif::value">
+      <a href="../EXIF/Value.html">Value</a>
+      
+    </li>
+  
+  <li class=" " data-id="exif/EXIF/ValueError" data-name="exif::valueerror">
+      <a href="../EXIF/ValueError.html">ValueError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    alias
+  </span> EXIF::<wbr>DataType
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Type of the image data to which the EXIF data applies.</p>
+
+
+
+  <h2>
+    <a id="alias-definition" class="anchor" href="#alias-definition">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Alias Definition
+  </h2>
+  <code>LibEXIF::EXIFDataType</code>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/Sija/exif.cr/blob/4943728/src/exif/enums.cr#L6" target="_blank">
+        exif/enums.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  <div class="methods-inherited">
+    
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+
+</div>
+
+</body>
+</html>
