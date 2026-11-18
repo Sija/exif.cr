@@ -18,6 +18,28 @@ describe EXIF::Data do
       data.iso.should be_nil
     end
 
+    it "ignores thumbnail (IFD1) entries" do
+      data = EXIF::Data.new
+      data.ifd(:one)[:image_width] = 160
+      data.ifd(:one)[:orientation] = 3
+      data.ifd(:one)[:make] = "Thumb"
+
+      data.width.should be_nil
+      data.orientation.should be_nil
+      data.make.should be_nil
+
+      data.orientation = :right_top
+      data.make = "Canon"
+      data.ifd(:zero)[:orientation].value.should eq 6
+      data.ifd(:zero)[:make].value.should eq "Canon"
+      data.ifd(:one)[:orientation].value.should eq 3
+      data.ifd(:one)[:make].value.should eq "Thumb"
+
+      data.make = nil
+      data.ifd(:zero).has_key?(:make).should be_false
+      data.ifd(:one).has_key?(:make).should be_true
+    end
+
     it "reads times" do
       data = canon_data
       data.date_time.should eq Time.utc(2009, 10, 10, 16, 42, 32)
