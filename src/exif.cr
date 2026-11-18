@@ -41,20 +41,38 @@ module EXIF
   class_getter log : LibEXIF::EXIFLog* do
     LibEXIF.exif_log_new.tap do |log|
       LibEXIF.exif_log_set_func(log, ->(_log, code, domain, format, args, _data) {
-        buffer = uninitialized UInt8[1024]
-        LibEXIF.vsnprintf(buffer.to_unsafe, buffer.size, format, args)
-        message = String.new(buffer.to_unsafe)
-        source = domain.null? ? "libexif" : String.new(domain)
-
-        EXIF::Log.for(source).tap do |logger|
-          case code
-          when .corrupt_data? then logger.warn { message }
-          when .no_memory?    then logger.error { message }
-          else                     logger.debug { message }
-          end
+        # Messages are only formatted if the given severity is enabled
+        logger = EXIF.logger(domain)
+        case code
+        when .corrupt_data? then logger.warn { EXIF.format_message(format, args) }
+        when .no_memory?    then logger.error { EXIF.format_message(format, args) }
+        else                     logger.debug { EXIF.format_message(format, args) }
         end
       }, nil)
     end
+  end
+
+  @@loggers = {} of LibC::Char* => ::Log
+  @@loggers_mutex = Mutex.new
+
+  # :nodoc:
+  #
+  # Returns the logger for the given libexif *domain*.
+  #
+  # NOTE: libexif domains are static strings, so loggers are cached by their pointers.
+  def self.logger(domain : LibC::Char*) : ::Log
+    @@loggers_mutex.synchronize do
+      @@loggers[domain] ||= Log.for(domain.null? ? "libexif" : String.new(domain))
+    end
+  end
+
+  # :nodoc:
+  #
+  # Formats a libexif log message (a `printf` *format* with its `va_list` *args*).
+  def self.format_message(format : LibC::Char*, args : Void*) : String
+    buffer = uninitialized UInt8[1024]
+    LibEXIF.vsnprintf(buffer.to_unsafe, buffer.size, format, args)
+    String.new(buffer.to_unsafe)
   end
 
   # :nodoc:
