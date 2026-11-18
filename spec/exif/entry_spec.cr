@@ -31,6 +31,16 @@ describe EXIF::Entry do
     end
   end
 
+  it "decodes non-UTF-8 text as ISO-8859-1" do
+    data = EXIF::Data.new
+    data[:make] = String.new(Bytes[0x4E, 0x69, 0x6B, 0xF3, 0x6E])
+    data[:make].value.should eq "Nikón"
+    data.make.try(&.valid_encoding?).should be_true
+
+    data[:user_comment] = "ASCII\0\0\0Caf".to_slice + Bytes[0xE9]
+    data.user_comment.should eq "Café"
+  end
+
   describe "#value=" do
     it "encodes integers" do
       data = EXIF::Data.new

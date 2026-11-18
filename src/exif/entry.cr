@@ -226,8 +226,10 @@ module EXIF
         values.size == 1 ? values.first : values
       end
 
+      # Decodes text as UTF-8, falling back to ISO-8859-1 (commonly used by cameras).
       private def decode_string(bytes : Bytes) : String
-        String.new(bytes)
+        string = String.new(bytes)
+        string.valid_encoding? ? string : String.new(bytes, "ISO-8859-1")
       end
 
       private def decode_user_comment(bytes : Bytes) : String
