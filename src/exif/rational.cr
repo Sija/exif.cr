@@ -14,19 +14,42 @@ module EXIF
       @denominator = T.new(denominator)
     end
 
-    # Approximates the given floating-point *value* with a rational number.
+    # Returns the closest rational approximation of the given floating-point
+    # *value* whose components fit within `T`, using continued fractions.
+    #
+    # ```
+    # EXIF::URational.new(2.8)     # => EXIF::URational(14/5)
+    # EXIF::URational.new(1.0 / 3) # => EXIF::URational(1/3)
+    # EXIF::SRational.new(-0.0001) # => EXIF::SRational(-1/10000)
+    # ```
+    #
+    # Raises `ValueError` for non-finite values and `OverflowError`
+    # for values out of `T`'s range.
     def self.new(value : Float) : self
       raise ValueError.new("Cannot represent #{value} as a rational") unless value.finite?
 
-      denominator = 1_i64
-      until (value * denominator).round == value * denominator || denominator >= 1_000_000
-        denominator *= 10
-      end
-      numerator = (value * denominator).round.to_i64
-      gcd = numerator.gcd(denominator)
-      gcd = 1_i64 if gcd.zero?
+      target = value.abs.to_f64
+      max = T::MAX.to_i64
+      raise OverflowError.new if target > max
 
-      new(numerator // gcd, denominator // gcd)
+      # Convergents h/k of the continued fraction expansion
+      h0, h1 = 0_i64, 1_i64
+      k0, k1 = 1_i64, 0_i64
+      x = target
+      loop do
+        a = x.floor
+        break if a * h1 + h0 > max || a * k1 + k0 > max
+
+        a = a.to_i64
+        h0, h1 = h1, a * h1 + h0
+        k0, k1 = k1, a * k1 + k0
+
+        fraction = x - a
+        break if fraction.zero? || h1 / k1 == target
+        x = 1.0 / fraction
+      end
+
+      new(value.negative? ? -h1 : h1, k1)
     end
 
     protected def self.from(value : LibEXIF::EXIFRational | LibEXIF::EXIFSRational) : self

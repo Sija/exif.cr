@@ -10,7 +10,29 @@ describe EXIF::Rational do
   it "approximates floats" do
     EXIF::URational.new(2.8).should eq EXIF::URational.new(14, 5)
     EXIF::URational.new(110.5).should eq EXIF::URational.new(221, 2)
+    EXIF::URational.new(0.0).should eq EXIF::URational.new(0, 1)
+    EXIF::URational.new(42.0).should eq EXIF::URational.new(42, 1)
     EXIF::SRational.new(-0.25).should eq EXIF::SRational.new(-1, 4)
+  end
+
+  it "finds the closest approximation within range" do
+    EXIF::URational.new(1.0 / 3).should eq EXIF::URational.new(1, 3)
+    EXIF::URational.new(1e-7).should eq EXIF::URational.new(1, 10_000_000)
+    EXIF::URational.new(1.0 / 250).should eq EXIF::URational.new(1, 250)
+    EXIF::URational.new(Math::PI).to_f.should be_close(Math::PI, 1e-15)
+    EXIF::URational.new(Math::PI).denominator.should be <= UInt32::MAX
+
+    # smaller than the smallest representable fraction
+    EXIF::URational.new(1e-12).should eq EXIF::URational.new(0, 1)
+    EXIF::URational.new(4_000_000_000.5).denominator.should eq 1
+  end
+
+  it "raises on non-finite or out of range floats" do
+    expect_raises(EXIF::ValueError) { EXIF::URational.new(Float64::NAN) }
+    expect_raises(EXIF::ValueError) { EXIF::URational.new(Float64::INFINITY) }
+    expect_raises(OverflowError) { EXIF::URational.new(5_000_000_000.0) }
+    expect_raises(OverflowError) { EXIF::URational.new(-0.5) }
+    expect_raises(OverflowError) { EXIF::SRational.new(3_000_000_000.0) }
   end
 
   it "compares by value" do
