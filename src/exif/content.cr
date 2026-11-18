@@ -45,7 +45,7 @@ module EXIF
     # Yields each entry.
     def each(& : Entry ->) : Nil
       # Collect upfront, so that the block can safely modify the content
-      data.entries_of(@ptr).each { |entry| yield entry }
+      data.retain { data.entries_of(@ptr) }.each { |entry| yield entry }
     end
 
     # Returns all entry tags.
@@ -106,7 +106,8 @@ module EXIF
     # Fixes the entries to bring them into specification
     # (adds mandatory entries, removes not-recorded ones, ...).
     def fix : self
-      LibEXIF.exif_content_fix(@ptr)
+      ptr = @ptr
+      data.retain { LibEXIF.exif_content_fix(ptr) }
       self
     end
 

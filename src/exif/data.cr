@@ -37,7 +37,7 @@ module EXIF
       # libexif's loader only handles JPEG streams
       if bytes[0, JPEG::EXIF_HEADER.size]? == JPEG::EXIF_HEADER
         return new(options).tap do |data|
-          LibEXIF.exif_data_load_data(data, bytes, bytes.size.to_u32)
+          data.retain { |ptr| LibEXIF.exif_data_load_data(ptr, bytes, bytes.size.to_u32) }
         end
       end
       load(options) do |loader|
@@ -83,7 +83,7 @@ module EXIF
         raise NoDataError.new if buf.null? || size.zero?
 
         new(options).tap do |data|
-          LibEXIF.exif_data_load_data(data, buf, size)
+          data.retain { |ptr| LibEXIF.exif_data_load_data(ptr, buf, size) }
         end
       ensure
         LibEXIF.exif_loader_unref(loader)
@@ -94,17 +94,39 @@ module EXIF
       LibEXIF.exif_data_unref(@ptr)
     end
 
+    # :nodoc:
+    #
+    # Yields the raw libexif data, holding an extra reference to it meanwhile.
+    #
+    # Wrappers only pass their raw pointers to libexif, so a wrapper which isn't
+    # used afterwards (i.e. a temporary) might get garbage collected in the middle
+    # of a libexif call, or while its memory is being read; i.e. libexif's log
+    # callback allocates, which can trigger a collection within `exif_data_load_data`.
+    # The extra reference keeps the libexif data (with all of its IFDs and entries)
+    # alive until the block returns, even if the finalizer runs meanwhile.
+    def retain(& : LibEXIF::EXIFData* -> T) : T forall T
+      ptr = @ptr
+      LibEXIF.exif_data_ref(ptr)
+      begin
+        yield ptr
+      ensure
+        LibEXIF.exif_data_unref(ptr)
+      end
+    end
+
     def to_unsafe : LibEXIF::EXIFData*
       @ptr
     end
 
     # Sets the options affecting loading and saving.
     def options=(options : Options) : Options
-      Options.values.each do |option|
-        if options.includes?(option)
-          LibEXIF.exif_data_set_option(@ptr, option)
-        else
-          LibEXIF.exif_data_unset_option(@ptr, option)
+      retain do |ptr|
+        Options.values.each do |option|
+          if options.includes?(option)
+            LibEXIF.exif_data_set_option(ptr, option)
+          else
+            LibEXIF.exif_data_unset_option(ptr, option)
+          end
         end
       end
       options
@@ -117,7 +139,7 @@ module EXIF
 
     # Sets the byte order, converting all existing entries.
     def byte_order=(byte_order : ByteOrder) : ByteOrder
-      LibEXIF.exif_data_set_byte_order(@ptr, byte_order)
+      retain { |ptr| LibEXIF.exif_data_set_byte_order(ptr, byte_order) }
       byte_order
     end
 
@@ -232,8 +254,10 @@ module EXIF
 
     # Returns the embedded thumbnail (usually a JPEG image), or `nil`.
     def thumbnail? : Bytes?
-      ptr = @ptr.value.data
-      Slice.new(ptr, @ptr.value.size.to_i).dup unless ptr.null? || @ptr.value.size.zero?
+      retain do |ptr|
+        data, size = ptr.value.data, ptr.value.size.to_i
+        Slice.new(data, size).dup unless data.null? || size.zero?
+      end
     end
 
     # Sets (or removes, if `nil`) the embedded thumbnail.
@@ -265,7 +289,7 @@ module EXIF
     # Fixes the EXIF data to bring it into specification
     # (adds mandatory entries, removes not-recorded ones, ...).
     def fix : self
-      LibEXIF.exif_data_fix(@ptr)
+      retain { |ptr| LibEXIF.exif_data_fix(ptr) }
       self
     end
 
@@ -274,7 +298,7 @@ module EXIF
     def to_slice : Bytes
       buf = Pointer(UInt8).null
       size = 0_u32
-      LibEXIF.exif_data_save_data(@ptr, pointerof(buf), pointerof(size))
+      retain { |ptr| LibEXIF.exif_data_save_data(ptr, pointerof(buf), pointerof(size)) }
       raise Error.new("Could not save EXIF data") if buf.null?
       begin
         Slice.new(buf, size.to_i).dup

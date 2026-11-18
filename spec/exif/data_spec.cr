@@ -249,6 +249,25 @@ describe EXIF::Data do
     end
   end
 
+  describe "#retain" do
+    it "keeps the libexif data alive if the wrapper is finalized meanwhile" do
+      data = canon_data
+      model = data.retain do |ptr|
+        # Simulates the wrapper being garbage collected in the middle of a libexif call
+        data.finalize
+
+        entry = LibEXIF.exif_content_get_entry(ptr.value.ifd[0], EXIF::Tag::Model)
+        value = String.new(entry.value.data)
+
+        # Restores the reference dropped above, for the actual finalizer
+        LibEXIF.exif_data_ref(ptr)
+        value
+      end
+      model.should eq "Canon PowerShot S70"
+      data.model.should eq "Canon PowerShot S70"
+    end
+  end
+
   describe "#to_h" do
     it "returns formatted values grouped by IFD" do
       hash = canon_data.to_h

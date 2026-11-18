@@ -43,19 +43,24 @@ module EXIF
 
     # Yields each entry.
     def each(& : Entry ->) : Nil
-      buffer = Bytes.new(1024)
-      size.times do |i|
-        n = i.to_u32
-        value = LibEXIF.exif_mnote_data_get_value(@ptr, n, buffer, buffer.size)
+      ptr = @ptr
+      # The maker note is owned by the data, see `Data#retain`
+      entries = data.retain do
+        buffer = Bytes.new(1024)
+        Array(Entry).new(LibEXIF.exif_mnote_data_count(ptr).to_i) do |i|
+          n = i.to_u32
+          value = LibEXIF.exif_mnote_data_get_value(ptr, n, buffer, buffer.size)
 
-        yield Entry.new(
-          id: LibEXIF.exif_mnote_data_get_id(@ptr, n).to_u32,
-          name: EXIF.string?(LibEXIF.exif_mnote_data_get_name(@ptr, n)),
-          title: EXIF.string?(LibEXIF.exif_mnote_data_get_title(@ptr, n)),
-          description: EXIF.string?(LibEXIF.exif_mnote_data_get_description(@ptr, n)),
-          value: EXIF.string?(value),
-        )
+          Entry.new(
+            id: LibEXIF.exif_mnote_data_get_id(ptr, n).to_u32,
+            name: EXIF.string?(LibEXIF.exif_mnote_data_get_name(ptr, n)),
+            title: EXIF.string?(LibEXIF.exif_mnote_data_get_title(ptr, n)),
+            description: EXIF.string?(LibEXIF.exif_mnote_data_get_description(ptr, n)),
+            value: EXIF.string?(value),
+          )
+        end
       end
+      entries.each { |entry| yield entry }
     end
 
     # Returns the first entry with the given *name*, or `nil`.

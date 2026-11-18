@@ -27,6 +27,18 @@ module EXIF
       @ptr
     end
 
+    # Yields the raw libexif entry, holding extra references to it (and to the
+    # libexif data) meanwhile, see `Data#retain`.
+    private def retain(& : LibEXIF::EXIFEntry* -> T) : T forall T
+      ptr = @ptr
+      LibEXIF.exif_entry_ref(ptr)
+      begin
+        data.retain { yield ptr }
+      ensure
+        LibEXIF.exif_entry_unref(ptr)
+      end
+    end
+
     # Returns the IFD the entry is stored in, or `nil` if it was removed.
     def ifd? : IFD?
       parent = @ptr.value.parent
@@ -86,13 +98,15 @@ module EXIF
 
     # Returns a copy of the raw entry data.
     def to_slice : Bytes
-      return Bytes.empty if @ptr.value.data.null?
-      Slice.new(@ptr.value.data, bytesize).dup
+      retain do |ptr|
+        data, size = ptr.value.data, ptr.value.size.to_i
+        data.null? ? Bytes.empty : Slice.new(data, size).dup
+      end
     end
 
     # Returns the decoded entry value, see `Value`.
     def value : Value
-      Codec.new(self, data.byte_order).decode
+      retain { Codec.new(self, data.byte_order).decode }
     end
 
     # Encodes and stores the given *value*.
@@ -103,27 +117,29 @@ module EXIF
     #
     # Raises `ValueError` if the value can't be stored in the entry format.
     def value=(value)
-      Codec.new(self, data.byte_order).encode(value)
+      retain { Codec.new(self, data.byte_order).encode(value) }
     end
 
     # Returns the human-readable (localized) value of the entry, as formatted by libexif.
     def to_s(io : IO) : Nil
       maxlen = Math.max(1024, bytesize * 6 + 64)
       buffer = Bytes.new(maxlen)
-      ptr = LibEXIF.exif_entry_get_value(@ptr, buffer, maxlen)
-      io << String.new(ptr) unless ptr.null?
+      value = retain { |ptr| LibEXIF.exif_entry_get_value(ptr, buffer, maxlen) }
+      io << String.new(value) unless value.null?
     end
 
     # Fixes the format and components of the entry to bring it into specification.
     def fix : self
-      LibEXIF.exif_entry_fix(@ptr)
+      retain { |ptr| LibEXIF.exif_entry_fix(ptr) }
       self
     end
 
     # Removes the entry from its IFD.
     def delete : self
-      parent = @ptr.value.parent
-      LibEXIF.exif_content_remove_entry(parent, @ptr) unless parent.null?
+      retain do |ptr|
+        parent = ptr.value.parent
+        LibEXIF.exif_content_remove_entry(parent, ptr) unless parent.null?
+      end
       self
     end
 
