@@ -54,8 +54,10 @@ module EXIF
     end
 
     # Returns the entry for the given *tag*, or `nil`.
+    #
+    # NOTE: `GPSTag`s are only found in the GPS IFD, and `Tag`s in all other ones.
     def []?(tag : AnyTag) : Entry?
-      ptr = LibEXIF.exif_content_get_entry(@ptr, tag.to_tag)
+      ptr = raw_entry(tag)
       Entry.new(data, ptr) unless ptr.null?
     end
 
@@ -68,7 +70,7 @@ module EXIF
 
     # Returns `true` if there's an entry for the given *tag*.
     def has_key?(tag : AnyTag) : Bool
-      !LibEXIF.exif_content_get_entry(@ptr, tag.to_tag).null?
+      !raw_entry(tag).null?
     end
 
     # Returns the existing entry for the given *tag*, or creates a new one,
@@ -113,8 +115,19 @@ module EXIF
       io << "#<" << self.class.name << ' ' << ifd << " entries=" << size << '>'
     end
 
+    # Returns `true` if the *tag* kind matches this IFD, since `GPSTag`s
+    # overlap numerically with other tags.
+    private def compatible?(tag : AnyTag) : Bool
+      tag.is_a?(GPSTag) == ifd.gps?
+    end
+
+    private def raw_entry(tag : AnyTag) : LibEXIF::EXIFEntry*
+      return Pointer(LibEXIF::EXIFEntry).null unless compatible?(tag)
+      LibEXIF.exif_content_get_entry(@ptr, tag.to_tag)
+    end
+
     private def create(tag : AnyTag) : Entry
-      if tag.is_a?(GPSTag) != ifd.gps?
+      unless compatible?(tag)
         raise ArgumentError.new("Tag #{tag} cannot be stored in the #{ifd} IFD")
       end
       ptr = LibEXIF.exif_entry_new

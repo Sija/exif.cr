@@ -15,6 +15,17 @@ describe EXIF::Content do
     expect_raises(ArgumentError) { EXIF::Data.new.ifd(:gps)[:make] = "Canon" }
   end
 
+  it "doesn't find tags of the other kind (GPS tags overlap numerically)" do
+    data = EXIF::Data.new
+    data[:gps_latitude_ref] = "N"
+    data.ifd(:gps)[:interoperability_index]?.should be_nil
+    data.ifd(:gps).has_key?(:interoperability_index).should be_false
+    data.ifd(:gps)[:gps_latitude_ref].value.should eq "N"
+
+    data.ifd(:interoperability)[:interoperability_index] = "R98"
+    data.ifd(:interoperability)[:gps_latitude_ref]?.should be_nil
+  end
+
   it "allows modifications while iterating" do
     content = canon_data.ifd(:zero)
     content.each(&.delete)
