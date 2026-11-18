@@ -86,8 +86,18 @@ module EXIF
     end
 
     # Returns the ISO speed, or `nil`.
+    #
+    # Since EXIF 2.3, `Tag::ISOSpeedRatings` (*PhotographicSensitivity*) is set
+    # to 65535 when the actual value doesn't fit, in which case it's taken from
+    # `Tag::ISOSpeed`, `Tag::RecommendedExposureIndex` or `Tag::StandardOutputSensitivity`.
     def iso : Int64?
-      int?(Tag::ISOSpeedRatings)
+      iso = int?(Tag::ISOSpeedRatings)
+      return iso if iso && iso < UInt16::MAX
+
+      int?(Tag::ISOSpeed) ||
+        int?(Tag::RecommendedExposureIndex) ||
+        int?(Tag::StandardOutputSensitivity) ||
+        iso
     end
 
     # Returns the exposure bias (in EV), or `nil`.

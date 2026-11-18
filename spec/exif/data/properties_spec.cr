@@ -40,6 +40,21 @@ describe EXIF::Data do
       data.ifd(:one).has_key?(:make).should be_true
     end
 
+    it "reads ISO speeds beyond 65535" do
+      data = EXIF::Data.new
+      data[:iso_speed_ratings] = 3200
+      data.iso.should eq 3200
+
+      data[:iso_speed_ratings] = 65535
+      data.iso.should eq 65535
+
+      data[:recommended_exposure_index] = 102_400
+      data.iso.should eq 102_400
+
+      data[:iso_speed] = 204_800
+      data.iso.should eq 204_800
+    end
+
     it "reads times" do
       data = canon_data
       data.date_time.should eq Time.utc(2009, 10, 10, 16, 42, 32)
