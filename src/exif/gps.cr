@@ -8,18 +8,22 @@ module EXIF
     latitude : Float64,
     longitude : Float64,
     altitude : Float64? = nil do
-    # Converts decimal *degrees* into a degrees/minutes/seconds triple of rationals.
+    # Converts decimal *degrees* into a degrees/minutes/seconds triple of rationals,
+    # with seconds rounded to 1/10000th.
     def self.to_dms(degrees : Float64) : Array(URational)
-      degrees = degrees.abs
-      d = degrees.floor
-      m = ((degrees - d) * 60).floor
-      s = ((degrees - d) * 60 - m) * 60
+      # Round once in the smallest unit, so that i.e. 59.99999" carries over to the minutes
+      total = (degrees.abs * 3600 * DMS_PRECISION).round.to_i64
+      minutes, seconds = total.divmod(60 * DMS_PRECISION)
+      degrees, minutes = minutes.divmod(60)
       [
-        URational.new(d.to_i),
-        URational.new(m.to_i),
-        URational.new((s * 10_000).round.to_i64, 10_000).reduce,
+        URational.new(degrees),
+        URational.new(minutes),
+        URational.new(seconds, DMS_PRECISION).reduce,
       ]
     end
+
+    # Precision (fractions of a second) used by `.to_dms`.
+    DMS_PRECISION = 10_000
 
     # Converts a degrees/minutes/seconds array into decimal degrees.
     def self.from_dms(dms : Array) : Float64

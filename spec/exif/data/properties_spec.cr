@@ -100,3 +100,26 @@ describe EXIF::Data do
     end
   end
 end
+
+describe EXIF::GPS do
+  describe ".to_dms" do
+    it "converts decimal degrees" do
+      EXIF::GPS.to_dms(52.2297).should eq [
+        EXIF::URational.new(52), EXIF::URational.new(13), EXIF::URational.new(4692, 100),
+      ]
+      EXIF::GPS.to_dms(-21.5).should eq [
+        EXIF::URational.new(21), EXIF::URational.new(30), EXIF::URational.new(0),
+      ]
+    end
+
+    it "carries rounded seconds over" do
+      EXIF::GPS.to_dms(10.99999999).should eq [
+        EXIF::URational.new(11), EXIF::URational.new(0), EXIF::URational.new(0),
+      ]
+    end
+
+    it "round-trips with .from_dms" do
+      EXIF::GPS.from_dms(EXIF::GPS.to_dms(151.2153)).should be_close(151.2153, 1e-7)
+    end
+  end
+end
