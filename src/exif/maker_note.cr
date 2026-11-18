@@ -46,18 +46,9 @@ module EXIF
       ptr = @ptr
       # The maker note is owned by the data, see `Data#retain`
       entries = data.retain do
-        buffer = Bytes.new(1024)
+        buffer = Bytes.new(VALUE_BUFFER_SIZE)
         Array(Entry).new(LibEXIF.exif_mnote_data_count(ptr).to_i) do |i|
-          n = i.to_u32
-          value = LibEXIF.exif_mnote_data_get_value(ptr, n, buffer, buffer.size)
-
-          Entry.new(
-            id: LibEXIF.exif_mnote_data_get_id(ptr, n).to_u32,
-            name: EXIF.string?(LibEXIF.exif_mnote_data_get_name(ptr, n)),
-            title: EXIF.string?(LibEXIF.exif_mnote_data_get_title(ptr, n)),
-            description: EXIF.string?(LibEXIF.exif_mnote_data_get_description(ptr, n)),
-            value: EXIF.string?(value),
-          )
+          entry_at(ptr, i.to_u32, buffer)
         end
       end
       entries.each { |entry| yield entry }
@@ -65,7 +56,34 @@ module EXIF
 
     # Returns the first entry with the given *name*, or `nil`.
     def []?(name : String) : Entry?
-      find(&.name.== name)
+      ptr = @ptr
+      data.retain do
+        # Compares the names in place, building only the matching entry
+        LibEXIF.exif_mnote_data_count(ptr).times do |index|
+          entry_name = LibEXIF.exif_mnote_data_get_name(ptr, index)
+          next if entry_name.null?
+
+          if Slice.new(entry_name, LibC.strlen(entry_name)) == name.to_slice
+            return entry_at(ptr, index, Bytes.new(VALUE_BUFFER_SIZE))
+          end
+        end
+        nil
+      end
+    end
+
+    # Size of the buffer the entry values are formatted into.
+    VALUE_BUFFER_SIZE = 1024
+
+    private def entry_at(ptr : LibEXIF::EXIFMnoteData*, n : UInt32, buffer : Bytes) : Entry
+      value = LibEXIF.exif_mnote_data_get_value(ptr, n, buffer, buffer.size)
+
+      Entry.new(
+        id: LibEXIF.exif_mnote_data_get_id(ptr, n).to_u32,
+        name: EXIF.string?(LibEXIF.exif_mnote_data_get_name(ptr, n)),
+        title: EXIF.string?(LibEXIF.exif_mnote_data_get_title(ptr, n)),
+        description: EXIF.string?(LibEXIF.exif_mnote_data_get_description(ptr, n)),
+        value: EXIF.string?(value),
+      )
     end
 
     # Returns the first entry with the given *name*.

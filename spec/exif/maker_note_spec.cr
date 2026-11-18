@@ -9,6 +9,13 @@ describe EXIF::MakerNote do
     maker_note.to_h["Self-timer"].should eq "Off"
   end
 
+  it "looks up entries by name" do
+    maker_note = canon_data.maker_note?.should_not be_nil
+    maker_note["Quality"].should eq maker_note.find(&.name.== "Quality")
+    maker_note["Bogus"]?.should be_nil
+    expect_raises(KeyError) { maker_note["Bogus"] }
+  end
+
   it "is nil when missing" do
     EXIF::Data.new.maker_note?.should be_nil
   end
