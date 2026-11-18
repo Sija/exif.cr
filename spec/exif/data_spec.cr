@@ -51,6 +51,16 @@ describe EXIF::Data do
       EXIF::Data.new(raw, options: :follow_specification).size.should be > 1
     end
 
+    it "raises NoDataError for corrupt EXIF data" do
+      expect_raises(EXIF::NoDataError, /Unknown encoding/) do
+        EXIF::Data.new("Exif\0\0garbage-garbage-garbage".to_slice)
+      end
+    end
+
+    it "loads valid empty EXIF data" do
+      EXIF::Data.new(EXIF::Data.new(options: :none).to_slice, options: :none).empty?.should be_true
+    end
+
     it "raises NoDataError for data without EXIF" do
       expect_raises(EXIF::NoDataError) { EXIF::Data.new(fixture("plain.jpg")) }
       expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[1, 2, 3]) }

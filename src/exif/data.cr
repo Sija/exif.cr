@@ -61,9 +61,7 @@ module EXIF
     def self.new(bytes : Bytes, options : Options = Options.default) : self
       # libexif's loader only handles JPEG streams
       if bytes[0, JPEG::EXIF_HEADER.size]? == JPEG::EXIF_HEADER
-        return new(options).tap do |data|
-          data.retain { |ptr| LibEXIF.exif_data_load_data(ptr, bytes, bytes.size.to_u32) }
-        end
+        return load_data(bytes.to_unsafe, bytes.size.to_u32, options)
       end
       load(options) do |loader|
         LibEXIF.exif_loader_write(loader, bytes, bytes.size.to_u32)
@@ -107,12 +105,22 @@ module EXIF
         LibEXIF.exif_loader_get_buf(loader, pointerof(buf), pointerof(size))
         raise NoDataError.new if buf.null? || size.zero?
 
-        new(options).tap do |data|
-          data.retain { |ptr| LibEXIF.exif_data_load_data(ptr, buf, size) }
-        end
+        load_data(buf, size, options)
       ensure
         LibEXIF.exif_loader_unref(loader)
       end
+    end
+
+    # Loads the EXIF data from the raw *buf* (an EXIF block or a JPEG image).
+    #
+    # Raises `NoDataError` if nothing could be loaded, due to corrupt data.
+    private def self.load_data(buf : UInt8*, size : UInt32, options : Options) : self
+      data = new(options)
+      data.retain { |ptr| LibEXIF.exif_data_load_data(ptr, buf, size) }
+      if data.empty? && (warning = data.warnings.first?)
+        raise NoDataError.new("No valid EXIF data found (#{warning})")
+      end
+      data
     end
 
     def finalize
