@@ -246,7 +246,12 @@ module EXIF
     end
 
     # Returns the parsed maker note, or `nil` if missing or unsupported.
+    #
+    # NOTE: libexif parses the maker note when loading the data, so later
+    # changes to the `Tag::MakerNote` entry aren't reflected (apart from removing it).
     def maker_note? : MakerNote?
+      return unless has_key?(Tag::MakerNote)
+
       ptr = LibEXIF.exif_data_get_mnote_data(@ptr)
       MakerNote.new(self, ptr) unless ptr.null?
     end

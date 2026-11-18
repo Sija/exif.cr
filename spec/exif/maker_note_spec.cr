@@ -12,4 +12,10 @@ describe EXIF::MakerNote do
   it "is nil when missing" do
     EXIF::Data.new.maker_note?.should be_nil
   end
+
+  it "is nil after removing the maker note entry" do
+    data = canon_data
+    data.delete(:maker_note)
+    data.maker_note?.should be_nil
+  end
 end
