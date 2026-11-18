@@ -11,6 +11,84 @@ module EXIF
   # Either kind of tag.
   alias AnyTag = Tag | GPSTag
 
+  # Formats of tags which libexif doesn't initialize with a default value,
+  # as defined by the EXIF 2.32 and TIFF 6.0 (TIFF/EP) specifications.
+  TAG_FORMATS = {
+    # IFD 0
+    Tag::NewSubfileType      => Format::Long,
+    Tag::FillOrder           => Format::Short,
+    Tag::DocumentName        => Format::Ascii,
+    Tag::StripOffsets        => Format::Long,
+    Tag::RowsPerStrip        => Format::Long,
+    Tag::StripByteCounts     => Format::Long,
+    Tag::TransferFunction    => Format::Short,
+    Tag::SubIFDs             => Format::Long,
+    Tag::TransferRange       => Format::Short,
+    Tag::JPEGProc            => Format::Short,
+    Tag::YCbCrCoefficients   => Format::Rational,
+    Tag::XMLPacket           => Format::Byte,
+    Tag::CFARepeatPatternDim => Format::Short,
+    Tag::CFAPattern          => Format::Byte,
+    Tag::BatteryLevel        => Format::Rational,
+    Tag::IPTCNAA             => Format::Undefined,
+    Tag::ImageResources      => Format::Undefined,
+    Tag::InterColorProfile   => Format::Undefined,
+    Tag::TimeZoneOffset      => Format::SShort,
+    Tag::TIFFEPStandardID    => Format::Byte,
+    Tag::XPTitle             => Format::Byte,
+    Tag::XPComment           => Format::Byte,
+    Tag::XPAuthor            => Format::Byte,
+    Tag::XPKeywords          => Format::Byte,
+    Tag::XPSubject           => Format::Byte,
+    Tag::PrintImageMatching  => Format::Undefined,
+    Tag::Padding             => Format::Undefined,
+    # EXIF IFD
+    Tag::SpectralSensitivity                 => Format::Ascii,
+    Tag::OECF                                => Format::Undefined,
+    Tag::StandardOutputSensitivity           => Format::Long,
+    Tag::RecommendedExposureIndex            => Format::Long,
+    Tag::ISOSpeed                            => Format::Long,
+    Tag::ISOSpeedLatitudeYYY                 => Format::Long,
+    Tag::ISOSpeedLatitudeZZZ                 => Format::Long,
+    Tag::OffsetTime                          => Format::Ascii,
+    Tag::OffsetTimeOriginal                  => Format::Ascii,
+    Tag::OffsetTimeDigitized                 => Format::Ascii,
+    Tag::SubjectArea                         => Format::Short,
+    Tag::MakerNote                           => Format::Undefined,
+    Tag::UserComment                         => Format::Undefined,
+    Tag::SubSecTime                          => Format::Ascii,
+    Tag::SubSecTimeOriginal                  => Format::Ascii,
+    Tag::SubSecTimeDigitized                 => Format::Ascii,
+    Tag::RelatedSoundFile                    => Format::Ascii,
+    Tag::SpatialFrequencyResponse            => Format::Undefined,
+    Tag::NewCFAPattern                       => Format::Undefined,
+    Tag::DeviceSettingDescription            => Format::Undefined,
+    Tag::ImageUniqueID                       => Format::Ascii,
+    Tag::CameraOwnerName                     => Format::Ascii,
+    Tag::BodySerialNumber                    => Format::Ascii,
+    Tag::LensSpecification                   => Format::Rational,
+    Tag::LensMake                            => Format::Ascii,
+    Tag::LensModel                           => Format::Ascii,
+    Tag::LensSerialNumber                    => Format::Ascii,
+    Tag::CompositeImage                      => Format::Short,
+    Tag::SourceImageNumberOfCompositeImage   => Format::Short,
+    Tag::SourceExposureTimesOfCompositeImage => Format::Undefined,
+    Tag::Gamma                               => Format::Rational,
+    # Interoperability IFD
+    Tag::InteroperabilityIndex   => Format::Ascii,
+    Tag::InteroperabilityVersion => Format::Undefined,
+    Tag::RelatedImageFileFormat  => Format::Ascii,
+    Tag::RelatedImageWidth       => Format::Long,
+    Tag::RelatedImageLength      => Format::Long,
+  }
+
+  # :ditto:
+  GPS_TAG_FORMATS = {
+    GPSTag::GPSProcessingMethod  => Format::Undefined,
+    GPSTag::GPSAreaInformation   => Format::Undefined,
+    GPSTag::GPSHPositioningError => Format::Rational,
+  }
+
   # IFDs in which (non-GPS) `Tag`s are looked up, in order of priority.
   TAG_LOOKUP_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability, IFD::One}
 end
@@ -68,6 +146,12 @@ enum LibEXIF::EXIFTag
     ::EXIF::TAG_LOOKUP_IFDS
   end
 
+  # Returns the format of the tag defined by the specification, for tags
+  # which libexif doesn't initialize with a default value, or `nil`.
+  def spec_format : LibEXIF::EXIFFormat?
+    ::EXIF::TAG_FORMATS[self]?
+  end
+
   # Returns `self`.
   def to_tag : self
     self
@@ -113,6 +197,12 @@ enum LibEXIF::EXIFGPSTag
   # Returns the IFDs in which entries of this tag are looked up (`IFD::GPS`).
   def lookup_ifds
     {LibEXIF::EXIFIfd::GPS}
+  end
+
+  # Returns the format of the tag defined by the specification, for tags
+  # which libexif doesn't initialize with a default value, or `nil`.
+  def spec_format : LibEXIF::EXIFFormat?
+    ::EXIF::GPS_TAG_FORMATS[self]?
   end
 
   # Returns the raw (numeric) `Tag` value, as used by libexif.

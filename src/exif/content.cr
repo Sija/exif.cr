@@ -148,10 +148,13 @@ module EXIF
 
         LibEXIF.exif_entry_initialize(ptr, tag.to_tag)
 
-        # Tags without a default value are initialized as empty `Format::Undefined`
-        # entries; reset the format, so it can be inferred from the assigned value
+        # libexif initializes tags it has no default value for as empty
+        # `Format::Undefined` entries, so use the format defined by the specification,
+        # or (for unknown tags) reset it to be inferred from the assigned value
         if ptr.value.data.null?
-          ptr.value.format = Format.new(0)
+          if ptr.value.format.undefined?
+            ptr.value.format = tag.spec_format || Format.new(0)
+          end
           ptr.value.components = 0
           ptr.value.size = 0
         end

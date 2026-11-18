@@ -107,15 +107,40 @@ describe EXIF::Entry do
       data.has_key?(:f_number).should be_false
     end
 
-    it "infers the format for tags without a default value" do
+    it "uses the specification formats for tags without a libexif default" do
       data = EXIF::Data.new
+      data[:subject_area] = [1, 2]
+      data[:subject_area].format.should eq EXIF::Format::Short
+
+      data[:lens_specification] = [24, 70, 4, 4]
+      data[:lens_specification].format.should eq EXIF::Format::Rational
+      data[:lens_specification].value.should eq [24, 70, 4, 4].map { |v| EXIF::URational.new(v) }
+
       data[:offset_time] = "+01:00"
       data[:offset_time].format.should eq EXIF::Format::Ascii
+      expect_raises(EXIF::ValueError) { data[:lens_model] = 5 }
 
-      data.delete(:offset_time)
-      data[:offset_time] = -0.5
-      data[:offset_time].format.should eq EXIF::Format::SRational
-      data[:offset_time].value.should eq EXIF::SRational.new(-1, 2)
+      data[EXIF::GPSTag::GPSHPositioningError] = 2.5
+      data[EXIF::GPSTag::GPSHPositioningError].format.should eq EXIF::Format::Rational
+    end
+
+    it "keeps the formats libexif initializes tags without a default with" do
+      data = EXIF::Data.new
+      expect_raises(EXIF::ValueError) { data[:gps_latitude_ref] = 1 }
+      data[:gps_latitude_ref] = "N"
+      data[:gps_latitude_ref].format.should eq EXIF::Format::Ascii
+    end
+
+    it "infers the format for unknown tags" do
+      tag = EXIF::Tag.new(0xc0de)
+      content = EXIF::Data.new.ifd(:exif)
+      content[tag] = -0.5
+      content[tag].format.should eq EXIF::Format::SRational
+      content[tag].value.should eq EXIF::SRational.new(-1, 2)
+
+      content[tag] = nil
+      content[tag] = "foo"
+      content[tag].format.should eq EXIF::Format::Ascii
     end
 
     it "raises on mismatched values" do
