@@ -1,3 +1,4 @@
+require "file_utils"
 require "../spec_helper"
 
 describe EXIF::Data do
@@ -191,6 +192,57 @@ describe EXIF::Data do
         data.artist = "John Doe"
         data.save(path)
         EXIF::Data.open(path).artist.should eq "John Doe"
+      ensure
+        File.delete?(path)
+      end
+    end
+
+    it "keeps the file permissions and leaves no temporary files" do
+      dir = File.tempname("exif-spec")
+      Dir.mkdir(dir)
+      begin
+        path = File.join(dir, "photo.jpg")
+        File.copy(fixture_path("canon.jpg"), path)
+        File.chmod(path, 0o600)
+
+        data = EXIF::Data.open(path)
+        data.artist = "Jane Doe"
+        data.save(path)
+
+        EXIF::Data.open(path).artist.should eq "Jane Doe"
+        File.info(path).permissions.value.should eq 0o600
+        Dir.children(dir).should eq ["photo.jpg"]
+      ensure
+        FileUtils.rm_rf(dir)
+      end
+    end
+
+    it "follows symbolic links" do
+      dir = File.tempname("exif-spec")
+      Dir.mkdir(dir)
+      begin
+        path = File.join(dir, "photo.jpg")
+        link = File.join(dir, "link.jpg")
+        File.copy(fixture_path("canon.jpg"), path)
+        File.symlink(path, link)
+
+        data = EXIF::Data.open(link)
+        data.artist = "Jane Doe"
+        data.save(link)
+
+        File.symlink?(link).should be_true
+        EXIF::Data.open(path).artist.should eq "Jane Doe"
+      ensure
+        FileUtils.rm_rf(dir)
+      end
+    end
+
+    it "leaves the file intact on errors" do
+      path = File.tempname("exif-spec", ".jpg")
+      File.write(path, "not a JPEG")
+      begin
+        expect_raises(EXIF::JPEGError) { EXIF::Data.new.save(path) }
+        File.read(path).should eq "not a JPEG"
       ensure
         File.delete?(path)
       end

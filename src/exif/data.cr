@@ -290,8 +290,22 @@ module EXIF
 
     # Writes the JPEG image read from *source* with this EXIF data
     # embedded to *path*, replacing any existing EXIF data.
+    #
+    # The image is written to a temporary file first, which then replaces
+    # *path* atomically (keeping its permissions), so that *path* is never
+    # left partially written. Symbolic links are followed.
     def save(path : Path | String, source : Path | String = path) : Nil
-      File.write(path, embed(File.read(source).to_slice))
+      jpeg = embed(File.read(source).to_slice)
+
+      path = Path[File.symlink?(path) ? File.realpath(path) : path]
+      tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
+      begin
+        File.write(tempfile, jpeg)
+        File.chmod(tempfile, File.info(path).permissions) if File.exists?(path)
+        File.rename(tempfile, path)
+      ensure
+        File.delete?(tempfile)
+      end
     end
 
     # Returns a nested hash of IFD names to entry names to their formatted values.
