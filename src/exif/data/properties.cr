@@ -121,20 +121,34 @@ module EXIF
     end
 
     # Returns the GPS position, or `nil` if not recorded.
+    #
+    # NOTE: Besides the degrees/minutes/seconds triples required by the specification,
+    # coordinates stored as a single value (decimal degrees) are accepted too.
     def gps : GPS?
-      lat = self[GPSTag::GPSLatitude]?.try(&.value).as?(Array)
-      lon = self[GPSTag::GPSLongitude]?.try(&.value).as?(Array)
-      return unless lat && lon
-
-      latitude = GPS.from_dms(lat)
-      latitude = -latitude if string?(GPSTag::GPSLatitudeRef).try(&.upcase) == "S"
-      longitude = GPS.from_dms(lon)
-      longitude = -longitude if string?(GPSTag::GPSLongitudeRef).try(&.upcase) == "W"
+      return unless latitude = coordinate?(GPSTag::GPSLatitude, GPSTag::GPSLatitudeRef, "S")
+      return unless longitude = coordinate?(GPSTag::GPSLongitude, GPSTag::GPSLongitudeRef, "W")
 
       altitude = float?(GPSTag::GPSAltitude)
       altitude = -altitude if altitude && int?(GPSTag::GPSAltitudeRef) == 1
 
-      GPS.new(latitude, longitude, altitude)
+      GPS.new(latitude, longitude, altitude.try { |value| value if value.finite? })
+    end
+
+    # Returns the coordinate (in decimal degrees) from the *tag* entry, negated
+    # if the *ref_tag* entry equals *negative_ref*, or `nil` if missing or malformed.
+    private def coordinate?(tag : GPSTag, ref_tag : GPSTag, negative_ref : String) : Float64?
+      values =
+        case value = self[tag]?.try(&.value)
+        when Array                    then value
+        when Rational, Int64, Float64 then [value]
+        else                               return
+        end
+      return if values.empty? || values.size > 3
+
+      degrees = GPS.from_dms(values)
+      return unless degrees.finite?
+
+      string?(ref_tag).try(&.upcase) == negative_ref ? -degrees : degrees
     end
 
     # Sets the GPS position (or removes it, if `nil`).

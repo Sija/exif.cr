@@ -153,6 +153,26 @@ describe EXIF::Data do
       data.ifd(:gps).empty?.should be_true
     end
 
+    it "reads GPS coordinates stored as decimal degrees" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(1.0, 2.0)
+      data[:gps_latitude] = EXIF::URational.new(3, 2)
+      data[:gps_longitude] = [EXIF::URational.new(5, 2)]
+      data[:gps_longitude_ref] = "W"
+
+      data.gps.should eq EXIF::GPS.new(1.5, -2.5)
+    end
+
+    it "ignores undefined GPS coordinates" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(1.0, 2.0, 3.0)
+      data[:gps_altitude] = EXIF::URational.new(0, 0)
+      data.gps.should eq EXIF::GPS.new(1.0, 2.0)
+
+      data[:gps_latitude] = [EXIF::URational.new(0, 0), EXIF::URational.new(0, 0), EXIF::URational.new(0, 0)]
+      data.gps.should be_nil
+    end
+
     it "replaces stale GPS entries when setting the position" do
       data = EXIF::Data.new
       data.gps = EXIF::GPS.new(1.0, 2.0, 3.0)
