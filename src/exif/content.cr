@@ -45,10 +45,7 @@ module EXIF
     # Yields each entry.
     def each(& : Entry ->) : Nil
       # Collect upfront, so that the block can safely modify the content
-      entries = Array(Entry).new(size) do |i|
-        Entry.new(data, @ptr.value.entries[i])
-      end
-      entries.each { |entry| yield entry }
+      data.entries_of(@ptr).each { |entry| yield entry }
     end
 
     # Returns all entry tags.

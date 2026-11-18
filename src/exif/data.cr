@@ -134,77 +134,57 @@ module EXIF
 
     # Returns the content of the given *ifd*.
     def ifd(ifd : IFD) : Content
-      raise ArgumentError.new("Invalid IFD: #{ifd}") unless ifd.in?(IFD.all)
-      Content.new(self, @ptr.value.ifd[ifd.value])
+      raise ArgumentError.new("Invalid IFD: #{ifd}") unless ifd.in?(IFDS)
+      Content.new(self, raw_ifd(ifd))
     end
 
     # Returns the contents of all IFDs.
     def ifds : Array(Content)
-      IFD.all.map { |ifd| ifd(ifd) }
+      IFDS.map { |ifd| ifd(ifd) }.to_a
     end
 
     # Yields each entry across all IFDs.
     def each(& : Entry ->) : Nil
-      ifds.each do |content|
-        content.each { |entry| yield entry }
+      IFDS.each do |ifd|
+        entries_of(raw_ifd(ifd)).each { |entry| yield entry }
       end
     end
 
     # Returns the total number of entries across all IFDs.
     def size : Int32
-      ifds.sum(&.size)
+      IFDS.sum { |ifd| raw_ifd(ifd).value.count.to_i }
     end
 
     # Returns `true` if there are no entries.
     def empty? : Bool
-      ifds.all?(&.empty?)
+      IFDS.all? { |ifd| raw_ifd(ifd).value.count.zero? }
     end
 
     # Returns the entry for the given *tag*, or `nil`.
     #
     # `Tag`s are looked up in the `IFD::Zero`, `IFD::EXIF`, `IFD::Interoperability`
     # and `IFD::One` (thumbnail) IFDs in turn, `GPSTag`s in the `IFD::GPS` one.
-    def []?(tag : Tag) : Entry?
-      TAG_LOOKUP_IFDS.each do |ifd|
-        if entry = ifd(ifd)[tag]?
-          return entry
-        end
-      end
-      nil
-    end
-
-    # :ditto:
-    def []?(tag : GPSTag) : Entry?
-      ifd(:gps)[tag]?
+    def []?(tag : AnyTag) : Entry?
+      find_entry(tag, tag.lookup_ifds)
     end
 
     # Returns the entry for the given *tag*.
     #
     # Raises `KeyError` if there's no such entry.
-    def [](tag : Tag) : Entry
-      self[tag]? || raise KeyError.new("Missing EXIF entry: #{tag}")
-    end
-
-    # :ditto:
-    def [](tag : GPSTag) : Entry
+    def [](tag : AnyTag) : Entry
       self[tag]? || raise KeyError.new("Missing EXIF entry: #{tag}")
     end
 
     # Returns `true` if there's an entry for the given *tag*.
-    def has_key?(tag : Tag) : Bool
-      !self[tag]?.nil?
-    end
-
-    # :ditto:
-    def has_key?(tag : GPSTag) : Bool
-      !self[tag]?.nil?
+    def has_key?(tag : AnyTag) : Bool
+      tag.lookup_ifds.any? { |ifd| !raw_entry(ifd, tag).null? }
     end
 
     # Sets the *value* of the entry for the given *tag*.
     #
     # If there's no such entry, it's created in the IFD
     # the tag belongs to (see `Tag#default_ifd`).
-    def []=(tag : Tag, value) : Nil
+    def []=(tag : AnyTag, value) : Nil
       if entry = self[tag]?
         entry.value = value
       else
@@ -213,19 +193,35 @@ module EXIF
       end
     end
 
-    # :ditto:
-    def []=(tag : GPSTag, value) : Nil
-      ifd(:gps)[tag] = value
-    end
-
     # Removes the entry for the given *tag*, returning it (or `nil` if not found).
-    def delete(tag : Tag) : Entry?
+    def delete(tag : AnyTag) : Entry?
       self[tag]?.try(&.delete)
     end
 
-    # :ditto:
-    def delete(tag : GPSTag) : Entry?
-      self[tag]?.try(&.delete)
+    # :nodoc:
+    #
+    # Returns wrappers for all entries of the given raw *content*.
+    def entries_of(content : LibEXIF::EXIFContent*) : Array(Entry)
+      Array(Entry).new(content.value.count) do |i|
+        Entry.new(self, content.value.entries[i])
+      end
+    end
+
+    # Returns the first entry for the given *tag* found in *ifds*, or `nil`.
+    private def find_entry(tag : AnyTag, ifds : Enumerable(IFD)) : Entry?
+      ifds.each do |ifd|
+        ptr = raw_entry(ifd, tag)
+        return Entry.new(self, ptr) unless ptr.null?
+      end
+      nil
+    end
+
+    private def raw_entry(ifd : IFD, tag : AnyTag) : LibEXIF::EXIFEntry*
+      LibEXIF.exif_content_get_entry(raw_ifd(ifd), tag.to_tag)
+    end
+
+    private def raw_ifd(ifd : IFD) : LibEXIF::EXIFContent*
+      @ptr.value.ifd[ifd.value]
     end
 
     # Returns the embedded thumbnail (usually a JPEG image), or `nil`.

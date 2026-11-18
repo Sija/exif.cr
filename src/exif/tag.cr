@@ -57,7 +57,12 @@ enum LibEXIF::EXIFTag
 
   # Returns the IFD in which an entry of this tag should be created.
   def default_ifd : LibEXIF::EXIFIfd?
-    ::EXIF::TAG_LOOKUP_IFDS.find { |ifd| known_in?(ifd) }
+    lookup_ifds.find { |ifd| known_in?(ifd) }
+  end
+
+  # Returns the IFDs in which entries of this tag are looked up, in order of priority.
+  def lookup_ifds
+    ::EXIF::TAG_LOOKUP_IFDS
   end
 
   # Returns `self`.
@@ -100,6 +105,11 @@ enum LibEXIF::EXIFGPSTag
   # Returns `IFD::GPS`.
   def default_ifd : LibEXIF::EXIFIfd
     LibEXIF::EXIFIfd::GPS
+  end
+
+  # Returns the IFDs in which entries of this tag are looked up (`IFD::GPS`).
+  def lookup_ifds
+    {LibEXIF::EXIFIfd::GPS}
   end
 
   # Returns the raw (numeric) `Tag` value, as used by libexif.

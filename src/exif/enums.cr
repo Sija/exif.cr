@@ -11,6 +11,9 @@ module EXIF
   # Image File Directory (IFD), i.e. a group of entries.
   alias IFD = LibEXIF::EXIFIfd
 
+  # All (real) IFDs, excluding `IFD::Count`.
+  IFDS = {IFD::Zero, IFD::One, IFD::EXIF, IFD::GPS, IFD::Interoperability}
+
   # Level of support a `Tag` enjoys in the given `IFD`.
   alias SupportLevel = LibEXIF::EXIFSupportLevel
 
@@ -70,7 +73,7 @@ enum LibEXIF::EXIFIfd
 
   # All real IFDs (excluding `Count`).
   def self.all : Array(self)
-    values.reject(&.count?)
+    ::EXIF::IFDS.to_a
   end
 end
 
