@@ -146,8 +146,20 @@ By default, libexif fixes the data to follow the specification when loading,
 which might add or remove entries. Pass `options` to change that:
 
 ```crystal
-EXIF::Data.open("photo.jpg", options: :none)
-EXIF::Data.open("photo.jpg", options: EXIF::Options::IgnoreUnknownTags)
+data = EXIF::Data.open("photo.jpg", options: :none)
+data = EXIF::Data.open("photo.jpg", options: EXIF::Options::IgnoreUnknownTags)
+
+data.options # => EXIF::Options::IgnoreUnknownTags
+```
+
+### Corrupt data
+
+Problems found while loading (i.e. truncated or corrupted entries) don't make
+loading fail, as long as anything could be loaded; check `#warnings` to find out:
+
+```crystal
+data = EXIF::Data.open("photo.jpg")
+data.warnings # => ["Tag data past end of buffer (188 > 494)", "Bogus offset of IFD1."]
 ```
 
 ### Logging
