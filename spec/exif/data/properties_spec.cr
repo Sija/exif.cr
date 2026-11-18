@@ -67,11 +67,24 @@ describe EXIF::Data do
       data.date_time_original = time
       data[:date_time_original].value.should eq "2024:01:02 03:04:05"
       data[:offset_time_original].value.should eq "-05:00"
-      data[:sub_sec_time_original].value.should eq "120"
+      data[:sub_sec_time_original].value.should eq "12"
 
       loaded = EXIF::Data.new(data.to_slice)
       loaded.date_time_original.should eq time
       loaded.date_time_original.try(&.offset).should eq -5 * 3600
+    end
+
+    it "writes fractional seconds with full precision" do
+      data = EXIF::Data.new
+      data.date_time = Time.utc(2024, 1, 2, 3, 4, 5, nanosecond: 500)
+      data[:sub_sec_time].value.should eq "0000005"
+      data.date_time.should eq Time.utc(2024, 1, 2, 3, 4, 5, nanosecond: 500)
+
+      data.date_time = Time.utc(2024, 1, 2, 3, 4, 5, nanosecond: 250_000_000)
+      data[:sub_sec_time].value.should eq "25"
+
+      data.date_time = Time.utc(2024, 1, 2, 3, 4, 5)
+      data.has_key?(:sub_sec_time).should be_false
     end
 
     it "writes the orientation" do

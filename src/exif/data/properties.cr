@@ -219,11 +219,9 @@ module EXIF
       if time
         set_property(tag, time.to_s(TIME_FORMAT))
         set_property(offset_tag, time.to_s("%:z"))
-        if time.nanosecond.zero?
-          set_property(subsec_tag, nil)
-        else
-          set_property(subsec_tag, time.to_s("%3N"))
-        end
+        # Fractional seconds, with trailing zeros removed (`nil` if none)
+        subsec = time.to_s("%N").rstrip('0').presence
+        set_property(subsec_tag, subsec)
       else
         {tag, offset_tag, subsec_tag}.each { |key| set_property(key, nil) }
       end
