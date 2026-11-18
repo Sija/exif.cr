@@ -44,6 +44,16 @@ describe EXIF::Data do
       end
     end
 
+    it "exposes options" do
+      EXIF::Data.new.options.should eq EXIF::Options.default
+      EXIF::Data.new(options: :none).options.should eq EXIF::Options::None
+      EXIF::Data.new(fixture("canon.jpg"), options: :ignore_unknown_tags).options.should eq EXIF::Options::IgnoreUnknownTags
+
+      data = EXIF::Data.new
+      data.options = :dont_change_maker_note
+      data.options.should eq EXIF::Options::DontChangeMakerNote
+    end
+
     it "respects options" do
       raw = EXIF::Data.new.tap { |data| data[:make] = "Foo" }.to_slice
 

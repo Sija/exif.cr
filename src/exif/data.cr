@@ -22,8 +22,11 @@ module EXIF
     @log : LibEXIF::EXIFLog*
     @warnings = [] of String
 
+    # Returns the options affecting loading and saving.
+    getter options : Options
+
     # Creates a new, empty EXIF data structure.
-    def initialize(options : Options = Options.default)
+    def initialize(@options : Options = Options.default)
       @ptr = LibEXIF.exif_data_new
       raise Error.new("Could not allocate EXIF data") if @ptr.null?
 
@@ -157,6 +160,7 @@ module EXIF
 
     # Sets the options affecting loading and saving.
     def options=(options : Options) : Options
+      @options = options
       retain do |ptr|
         Options.values.each do |option|
           if options.includes?(option)
