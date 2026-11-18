@@ -29,6 +29,15 @@ describe EXIF::JPEG do
     expect_raises(EXIF::NoDataError) { EXIF::Data.new(jpeg) }
   end
 
+  it "suggests removing the thumbnail when the EXIF data is too large" do
+    data = EXIF::Data.new
+    data.thumbnail = Bytes.new(70_000)
+    expect_raises(EXIF::JPEGError, /too large.*thumbnail/) { data.embed(fixture("plain.jpg")) }
+
+    data.thumbnail = nil
+    EXIF::Data.new(data.embed(fixture("plain.jpg"))).thumbnail?.should be_nil
+  end
+
   it "raises on invalid input" do
     expect_raises(EXIF::JPEGError) { EXIF::JPEG.embed(Bytes[1, 2, 3], exif) }
     expect_raises(EXIF::JPEGError) { EXIF::JPEG.embed(fixture("plain.jpg"), Bytes[1, 2, 3]) }

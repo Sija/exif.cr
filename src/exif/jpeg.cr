@@ -28,7 +28,10 @@ module EXIF
         raise JPEGError.new("Invalid EXIF payload (missing EXIF header)")
       end
       if exif.size > MAX_SEGMENT_SIZE
-        raise JPEGError.new("EXIF data too large (#{exif.size} > #{MAX_SEGMENT_SIZE} bytes)")
+        raise JPEGError.new(
+          "EXIF data too large (#{exif.size} > #{MAX_SEGMENT_SIZE} bytes), " \
+          "consider removing the thumbnail (`Data#thumbnail = nil`)"
+        )
       end
 
       rewrite(jpeg) do |io|
