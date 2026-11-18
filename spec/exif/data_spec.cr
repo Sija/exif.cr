@@ -57,6 +57,26 @@ describe EXIF::Data do
     end
   end
 
+  describe "#warnings" do
+    it "is empty for valid data" do
+      canon_data.warnings.should be_empty
+      EXIF::Data.new.warnings.should be_empty
+    end
+
+    it "reports corrupt data" do
+      data = EXIF::Data.new(canon_data.to_slice[0, 500])
+      data.size.should be > 0
+      # NOTE: also verifies formatting of `printf`-style messages (`va_list` handling)
+      data.warnings.should eq ["Tag data past end of buffer (188 > 494)", "Bogus offset of IFD1."]
+    end
+
+    it "returns a copy" do
+      data = EXIF::Data.new(canon_data.to_slice[0, 300])
+      data.warnings.clear
+      data.warnings.should_not be_empty
+    end
+  end
+
   describe "#[]" do
     it "looks up entries across IFDs" do
       data = canon_data
@@ -253,8 +273,9 @@ describe EXIF::Data do
     it "keeps the libexif data alive if the wrapper is finalized meanwhile" do
       data = canon_data
       model = data.retain do |ptr|
-        # Simulates the wrapper being garbage collected in the middle of a libexif call
-        data.finalize
+        # Simulates the wrapper being garbage collected (i.e. its finalizer dropping
+        # its reference) in the middle of a libexif call
+        LibEXIF.exif_data_unref(ptr)
 
         entry = LibEXIF.exif_content_get_entry(ptr.value.ifd[0], EXIF::Tag::Model)
         value = String.new(entry.value.data)

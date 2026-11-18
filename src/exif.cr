@@ -37,18 +37,28 @@ module EXIF
 
   # :nodoc:
   #
-  # Returns a shared `EXIFLog` instance forwarding libexif messages to `EXIF::Log`.
-  class_getter log : LibEXIF::EXIFLog* do
-    LibEXIF.exif_log_new.tap do |log|
-      LibEXIF.exif_log_set_func(log, ->(_log, code, domain, format, args, _data) {
-        # Messages are only formatted if the given severity is enabled
-        logger = EXIF.logger(domain)
-        case code
-        when .corrupt_data? then logger.warn { EXIF.format_message(format, args) }
-        when .no_memory?    then logger.error { EXIF.format_message(format, args) }
-        else                     logger.debug { EXIF.format_message(format, args) }
-        end
-      }, nil)
+  # Callback receiving libexif log messages, with the receiving `Data` as *data*
+  # (or a null pointer, once it has been finalized).
+  LOG_FUNC = ->(_log : LibEXIF::EXIFLog*, code : LibEXIF::EXIFLogCode, domain : LibC::Char*, format : LibC::Char*, args : Void*, data : Void*) {
+    EXIF.handle_log(code, domain, format, args, data.null? ? nil : data.as(Data))
+  }
+
+  # :nodoc:
+  #
+  # Forwards a libexif log message to `EXIF::Log`, recording corrupt data
+  # reports as warnings of the given *data*.
+  def self.handle_log(code : LogCode, domain : LibC::Char*, format : LibC::Char*, args : Void*, data : Data?) : Nil
+    logger = logger(domain)
+    case code
+    when .corrupt_data?
+      message = format_message(format, args)
+      data.try(&.add_warning(message))
+      logger.warn { message }
+    when .no_memory?
+      logger.error { format_message(format, args) }
+    else
+      # Messages are only formatted if the given severity is enabled
+      logger.debug { format_message(format, args) }
     end
   end
 

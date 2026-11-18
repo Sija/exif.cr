@@ -19,14 +19,39 @@ module EXIF
     BUFFER_SIZE = 8192
 
     @ptr : LibEXIF::EXIFData*
+    @log : LibEXIF::EXIFLog*
+    @warnings = [] of String
 
     # Creates a new, empty EXIF data structure.
     def initialize(options : Options = Options.default)
       @ptr = LibEXIF.exif_data_new
       raise Error.new("Could not allocate EXIF data") if @ptr.null?
 
-      LibEXIF.exif_data_log(@ptr, EXIF.log)
+      @log = LibEXIF.exif_log_new
+      if @log.null?
+        LibEXIF.exif_data_unref(@ptr)
+        raise Error.new("Could not allocate EXIF log")
+      end
+      LibEXIF.exif_log_set_func(@log, EXIF::LOG_FUNC, self.as(Void*))
+      LibEXIF.exif_data_log(@ptr, @log)
+
       self.options = options
+    end
+
+    # Returns the problems with the data (i.e. corrupted or truncated entries)
+    # reported by libexif while loading or saving it.
+    #
+    # ```
+    # data = EXIF::Data.new(truncated_bytes)
+    # data.warnings # => ["Bogus offset of IFD1."]
+    # ```
+    def warnings : Array(String)
+      @warnings.dup
+    end
+
+    # :nodoc:
+    def add_warning(message : String) : Nil
+      @warnings << message
     end
 
     # Loads EXIF data from a JPEG image or a raw EXIF block
@@ -91,7 +116,11 @@ module EXIF
     end
 
     def finalize
+      # The libexif data might outlive this wrapper (see `#retain`),
+      # so detach it from the log callback first
+      LibEXIF.exif_log_set_func(@log, EXIF::LOG_FUNC, Pointer(Void).null)
       LibEXIF.exif_data_unref(@ptr)
+      LibEXIF.exif_log_unref(@log)
     end
 
     # :nodoc:
