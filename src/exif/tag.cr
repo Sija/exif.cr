@@ -89,6 +89,15 @@ module EXIF
     GPSTag::GPSHPositioningError => Format::Rational,
   }
 
+  # :nodoc:
+  #
+  # Returns the GPS tags indexed by their EXIF names.
+  class_getter gps_tags_by_name : Hash(String, GPSTag) do
+    GPSTag.values.each_with_object({} of String => GPSTag) do |tag, tags|
+      tag.name.try { |name| tags[name] = tag }
+    end
+  end
+
   # IFDs in which (non-GPS) `Tag`s are looked up, in order of priority.
   TAG_LOOKUP_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability, IFD::One}
 end
@@ -161,7 +170,7 @@ end
 enum LibEXIF::EXIFGPSTag
   # Returns the tag with the given EXIF *name* (i.e. `"GPSLatitude"`), or `nil`.
   def self.from_name?(name : String) : self?
-    values.find(&.name.== name)
+    ::EXIF.gps_tags_by_name[name]?
   end
 
   # Returns the tag with the given EXIF *name* (i.e. `"GPSLatitude"`).
