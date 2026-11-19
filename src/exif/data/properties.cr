@@ -137,13 +137,8 @@ module EXIF
     # Returns the coordinate (in decimal degrees) from the *tag* entry, negated
     # if the *ref_tag* entry equals *negative_ref*, or `nil` if missing or malformed.
     private def coordinate?(tag : GPSTag, ref_tag : GPSTag, negative_ref : String) : Float64?
-      values =
-        case value = self[tag]?.try(&.value)
-        when Array                    then value
-        when Rational, Int64, Float64 then [value]
-        else                               return
-        end
-      return if values.empty? || values.size > 3
+      return unless values = self[tag]?.try(&.as_a?)
+      return unless values.size.in?(1..3) && values.all?(URational | SRational | Int64 | Float64)
 
       degrees = GPS.from_dms(values)
       return unless degrees.finite?
@@ -207,10 +202,10 @@ module EXIF
       end
     end
 
-    private def scalar?(tag : AnyTag) : Value?
-      return unless entry = property(tag)
-      value = entry.value
-      value.is_a?(Array) ? value.first? : value
+    # Returns the first component of the primary image entry for the given *tag*,
+    # or `nil` (i.e. the first value of a multi-valued `Tag::ISOSpeedRatings`).
+    private def scalar?(tag : AnyTag) : Scalar?
+      property(tag).try(&.as_a?).try(&.first?)
     end
 
     private def string?(tag : AnyTag) : String?
