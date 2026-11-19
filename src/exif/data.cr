@@ -197,11 +197,27 @@ module EXIF
     # NOTE: libexif can't copy its data structures, so the copy is created by
     # re-loading the serialized data (see `#to_slice`).
     def dup : self
-      copy = self.class.new(to_slice, options: Options::None)
+      # libexif loads at most 64 KB, which a large thumbnail alone could exceed
+      thumbnail = thumbnail?
+      bytes = without_thumbnail { to_slice }
+
+      copy = self.class.new(bytes, options: Options::None)
+      copy.thumbnail = thumbnail
       copy.options = options
       copy.data_type = data_type
       @warnings.each { |warning| copy.add_warning(warning) }
       copy
+    end
+
+    # Yields with the thumbnail temporarily detached from the libexif data.
+    private def without_thumbnail(&)
+      data, size = @ptr.value.data, @ptr.value.size
+      @ptr.value.data, @ptr.value.size = Pointer(UInt8).null, 0_u32
+      begin
+        yield
+      ensure
+        @ptr.value.data, @ptr.value.size = data, size
+      end
     end
 
     # Sets the options affecting loading and saving.

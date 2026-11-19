@@ -15,6 +15,20 @@ describe EXIF::Data do
       data.model.should eq "Canon PowerShot S70"
     end
 
+    it "copies the thumbnail" do
+      data = canon_data
+      copy = data.dup
+      copy.thumbnail?.should eq data.thumbnail?
+      copy.to_slice.should eq data.to_slice
+
+      # Beyond the 64 KB libexif loads
+      data.thumbnail = Bytes.new(70_000, &.to_u8!)
+      copy = data.dup
+      copy.thumbnail?.should eq data.thumbnail?
+      copy.warnings.should be_empty
+      data.thumbnail?.try(&.size).should eq 70_000
+    end
+
     it "copies warnings" do
       data = EXIF::Data.new(canon_data.to_slice[0, 500])
       data.dup.warnings.should eq data.warnings
