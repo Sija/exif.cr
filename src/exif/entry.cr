@@ -132,6 +132,114 @@ module EXIF
       retain { Codec.new(self, data.byte_order).encode(value) }
     end
 
+    # Returns the value as a `String`.
+    #
+    # Raises `TypeCastError` if the value isn't a `String`.
+    #
+    # ```
+    # data[:model].as_s # => "Canon PowerShot S70"
+    # ```
+    def as_s : String
+      as_s? || type_mismatch!(String)
+    end
+
+    # Returns the value as a `String`, or `nil` if it isn't one.
+    def as_s? : String?
+      value.as?(String)
+    end
+
+    # Returns the value as an `Int64`.
+    #
+    # Raises `TypeCastError` if the value isn't a single integer.
+    #
+    # ```
+    # data[:orientation].as_i # => 6
+    # ```
+    def as_i : Int64
+      as_i? || type_mismatch!(Int64)
+    end
+
+    # Returns the value as an `Int64`, or `nil` if it isn't a single integer.
+    def as_i? : Int64?
+      value.as?(Int64)
+    end
+
+    # Returns the value as a `Float64`, converting integers and rationals
+    # (undefined rationals are converted to `Float64::NAN`).
+    #
+    # Raises `TypeCastError` if the value isn't a single number.
+    #
+    # ```
+    # data[:f_number].as_f # => 2.8
+    # ```
+    def as_f : Float64
+      as_f? || type_mismatch!(Float64)
+    end
+
+    # Returns the value as a `Float64` (see `#as_f`), or `nil` if it isn't a single number.
+    def as_f? : Float64?
+      case value = self.value
+      when Float64, Int64, Rational then value.to_f
+      end
+    end
+
+    # Returns the value as a rational.
+    #
+    # Raises `TypeCastError` if the value isn't a single rational.
+    #
+    # ```
+    # data[:exposure_time].as_rational # => EXIF::URational(1/250)
+    # ```
+    def as_rational : URational | SRational
+      as_rational? || type_mismatch!(Rational)
+    end
+
+    # Returns the value as a rational, or `nil` if it isn't a single rational.
+    def as_rational? : (URational | SRational)?
+      value.as?(URational | SRational)
+    end
+
+    # Returns the value as `Bytes`.
+    #
+    # Raises `TypeCastError` if the value isn't `Bytes` (i.e. of `Format::Undefined`).
+    #
+    # ```
+    # data[:exif_version].as_bytes # => Bytes[48, 50, 50, 48]
+    # ```
+    def as_bytes : Bytes
+      as_bytes? || type_mismatch!(Bytes)
+    end
+
+    # Returns the value as `Bytes`, or `nil` if it isn't `Bytes`.
+    def as_bytes? : Bytes?
+      value.as?(Bytes)
+    end
+
+    # Returns all the components of the value, wrapping single ones in an `Array`.
+    #
+    # Raises `TypeCastError` if the value is `Bytes`, which has no components.
+    #
+    # ```
+    # data[:gps_latitude].as_a # => [EXIF::URational(52/1), EXIF::URational(13/1), ...]
+    # data[:make].as_a         # => ["Canon"]
+    # ```
+    def as_a : Array(Scalar)
+      as_a? || type_mismatch!(Array)
+    end
+
+    # Returns all the components of the value (see `#as_a`), or `nil` if the value is `Bytes`.
+    def as_a? : Array(Scalar)?
+      case value = self.value
+      when Bytes then nil
+      when Array then value.map(&.as(Scalar))
+      else            [value.as(Scalar)]
+      end
+    end
+
+    private def type_mismatch!(type) : NoReturn
+      raise TypeCastError.new("Expected #{type} value of the #{name} entry, not #{value.class}")
+    end
+
     # Returns the human-readable (localized) value of the entry, as formatted by libexif.
     #
     # NOTE: libexif can't format entries removed from their IFD (it needs their

@@ -6,7 +6,7 @@ It also includes a facade to read, modify and write EXIF metadata in a more idio
 ## Features
 
 - Reading EXIF data from JPEG files, `IO`s, byte slices and raw EXIF blocks
-- Typed entry values (`String`, `Int64`, `Float64`, rationals, arrays, ...)
+- Typed entry values (`String`, `Int64`, `Float64`, rationals, arrays, ...), with `#as_s`-style helpers
 - Human-readable (localized) entry values, as formatted by libexif
 - Semantic accessors for common tags (camera, exposure, time, orientation, GPS, ...)
 - Creating, modifying and removing entries
@@ -78,6 +78,15 @@ entry.ifd    # => EXIF::IFD::EXIF
 entry.format # => EXIF::Format::Rational
 entry.value  # => EXIF::URational(28/10)
 entry.to_s   # => "f/2.8"
+
+# typed helpers, raising `TypeCastError` on mismatch (`nil` for the `?` variants)
+data[:model].as_s            # => "Canon PowerShot S70"
+data[:orientation].as_i      # => 6
+data[:f_number].as_f         # => 2.8 (converting integers and rationals)
+data[:f_number].as_rational  # => EXIF::URational(28/10)
+data[:exif_version].as_bytes # => Bytes[48, 50, 50, 48]
+data[:gps_latitude].as_a     # => [EXIF::URational(52/1), EXIF::URational(13/1), ...]
+data[:model].as_i?           # => nil
 
 # GPS tags have their own enum, since they overlap with other tags
 data[:gps_latitude].value # => [EXIF::URational(52/1), EXIF::URational(13/1), ...]
