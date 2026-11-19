@@ -80,6 +80,19 @@ describe EXIF::Entry do
       EXIF::Data.new(data.to_slice).user_comment.should eq "Zażółć"
     end
 
+    it "decodes Unicode user comments with byte order marks" do
+      {EXIF::ByteOrder::Intel, EXIF::ByteOrder::Motorola}.each do |byte_order|
+        data = EXIF::Data.new
+        data.byte_order = byte_order
+
+        data[:user_comment] = "UNICODE\0".to_slice + Bytes[0xFF, 0xFE, 0x48, 0x00, 0x69, 0x00]
+        data.user_comment.should eq "Hi"
+
+        data[:user_comment] = "UNICODE\0".to_slice + Bytes[0xFE, 0xFF, 0x00, 0x48, 0x00, 0x69]
+        data.user_comment.should eq "Hi"
+      end
+    end
+
     it "encodes Windows XP tags as UTF-16" do
       data = EXIF::Data.new
       data[:xp_title] = "Tytuł"

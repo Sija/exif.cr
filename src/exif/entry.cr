@@ -290,9 +290,19 @@ module EXIF
 
         charset, text = bytes[0, 8], bytes[8..]
         if charset == USER_COMMENT_UNICODE
-          decode_utf16(text, @byte_order.byte_format)
+          decode_unicode_user_comment(text)
         else
           decode_string(text).rstrip("\0 ")
+        end
+      end
+
+      # Decodes UTF-16 text in the byte order of the data, unless it starts with
+      # a byte order mark (some writers use UTF-16LE regardless of the data byte order).
+      private def decode_unicode_user_comment(bytes : Bytes) : String
+        case bytes[0, 2]?
+        when Bytes[0xFF, 0xFE] then decode_utf16(bytes[2..], IO::ByteFormat::LittleEndian)
+        when Bytes[0xFE, 0xFF] then decode_utf16(bytes[2..], IO::ByteFormat::BigEndian)
+        else                        decode_utf16(bytes, @byte_order.byte_format)
         end
       end
 
