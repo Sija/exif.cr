@@ -108,6 +108,19 @@ module EXIF
     Tag::InteroperabilityIfdPointer,
   }
 
+  # Tags which can be stored either as `Format::Short` or `Format::Long`.
+  SHORT_OR_LONG_TAGS = {
+    Tag::ImageWidth,
+    Tag::ImageLength,
+    Tag::StripOffsets,
+    Tag::RowsPerStrip,
+    Tag::StripByteCounts,
+    Tag::PixelXDimension,
+    Tag::PixelYDimension,
+    Tag::RelatedImageWidth,
+    Tag::RelatedImageLength,
+  }
+
   # IFDs in which (non-GPS) `Tag`s are looked up, in order of priority.
   TAG_LOOKUP_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability, IFD::One}
 end
@@ -175,6 +188,12 @@ enum LibEXIF::EXIFTag
   # and so can't be set (see `MANAGED_TAGS`).
   def managed? : Bool
     in?(::EXIF::MANAGED_TAGS)
+  end
+
+  # Returns `true` if the tag can be stored either as `Format::Short`
+  # or `Format::Long` (see `SHORT_OR_LONG_TAGS`).
+  def short_or_long? : Bool
+    in?(::EXIF::SHORT_OR_LONG_TAGS)
   end
 
   # Returns `self`.

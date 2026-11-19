@@ -168,6 +168,35 @@ describe EXIF::Entry do
       data.has_key?(:exif_ifd_pointer).should be_false
     end
 
+    it "stores values beyond SHORT range as LONG for tags allowing both" do
+      data = canon_data
+      data[:pixel_x_dimension].format.should eq EXIF::Format::Short
+      data[:pixel_x_dimension] = 70_000
+      data[:pixel_x_dimension].format.should eq EXIF::Format::Long
+      data.width.should eq 70_000
+
+      data[:image_width] = 100_000
+      data[:image_width].format.should eq EXIF::Format::Long
+      data[:image_width].value.should eq 100_000
+
+      loaded = EXIF::Data.new(data.to_slice)
+      loaded.width.should eq 70_000
+      loaded[:image_width].value.should eq 100_000
+    end
+
+    it "keeps SHORT format for values in range" do
+      data = EXIF::Data.new
+      data[:image_width] = 640
+      data[:image_width].format.should eq EXIF::Format::Short
+    end
+
+    it "doesn't promote tags allowing only SHORT" do
+      data = EXIF::Data.new
+      data[:orientation] = 1
+      expect_raises(EXIF::ValueError) { data[:orientation] = 70_000 }
+      data[:orientation].format.should eq EXIF::Format::Short
+    end
+
     it "raises on mismatched values" do
       data = EXIF::Data.new
       data[:orientation] = 1

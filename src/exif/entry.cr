@@ -491,6 +491,8 @@ module EXIF
         raise ValueError.new("Cannot store an empty array") if values.empty?
 
         format = target_format(values.first)
+        format = Format::Long if format.short? && promote_to_long?(values)
+
         size = format.bytesize
         bytes = Bytes.new(values.size * size)
         values.each_with_index do |value, i|
@@ -501,6 +503,19 @@ module EXIF
 
       private def serialize(value) : NoReturn
         mismatch!(value, raw.format)
+      end
+
+      # Returns `true` if any of the *values* doesn't fit into a `Format::Short`
+      # entry of a tag which can be stored as `Format::Long` as well.
+      private def promote_to_long?(values : Indexable) : Bool
+        return false unless raw.tag.short_or_long? && @entry.ifd? != IFD::GPS
+
+        values.any? do |value|
+          case value
+          when Int, Float, Rational then value.to_f > UInt16::MAX
+          else                           false
+          end
+        end
       end
 
       private def write(p : UInt8*, format : Format, value) : NoReturn
