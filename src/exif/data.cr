@@ -294,8 +294,11 @@ module EXIF
     # If there's no such entry, it's created in the IFD
     # the tag belongs to (see `Tag#default_ifd`).
     # Setting `nil` removes the entry.
+    #
+    # NOTE: Unlike `#[]?`, it leaves `IFD::One` (thumbnail) entries alone,
+    # use `ifd(:one)[tag] = value` to change these.
     def []=(tag : AnyTag, value) : Nil
-      if entry = self[tag]?
+      if entry = primary_entry(tag)
         entry.value = value
       else
         ifd = tag.default_ifd || raise ArgumentError.new("Cannot determine IFD for tag: #{tag}")
@@ -309,8 +312,24 @@ module EXIF
     end
 
     # Removes the entry for the given *tag*, returning it (or `nil` if not found).
+    #
+    # NOTE: Unlike `#[]?`, it leaves `IFD::One` (thumbnail) entries alone,
+    # use `ifd(:one).delete(tag)` to remove these.
     def delete(tag : AnyTag) : Entry?
-      self[tag]?.try(&.delete)
+      primary_entry(tag).try(&.delete)
+    end
+
+    # IFDs describing the primary image (i.e. excluding `IFD::One`, which describes the thumbnail).
+    PRIMARY_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability}
+
+    # Returns the entry for the given *tag* describing the primary image, or `nil`.
+    private def primary_entry(tag : Tag) : Entry?
+      find_entry(tag, PRIMARY_IFDS)
+    end
+
+    # :ditto:
+    private def primary_entry(tag : GPSTag) : Entry?
+      self[tag]?
     end
 
     # :nodoc:

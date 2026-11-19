@@ -205,6 +205,20 @@ describe EXIF::Data do
       data.has_key?(:artist).should be_false
     end
 
+    it "leaves thumbnail (IFD1) entries alone" do
+      data = canon_data
+      data.ifd(:zero).delete(:x_resolution)
+      thumbnail_resolution = data.ifd(:one)[:x_resolution].value
+
+      data[:x_resolution] = 300
+      data.ifd(:zero)[:x_resolution].value.should eq 300
+      data.ifd(:one)[:x_resolution].value.should eq thumbnail_resolution
+
+      data.delete(:x_resolution).try(&.value).should eq 300
+      data.delete(:x_resolution).should be_nil
+      data.ifd(:one)[:x_resolution].value.should eq thumbnail_resolution
+    end
+
     it "doesn't leave half-created entries on errors" do
       data = EXIF::Data.new
       expect_raises(EXIF::ValueError) { data[:orientation] = "nope" }

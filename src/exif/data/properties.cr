@@ -24,7 +24,7 @@ module EXIF
 
       # Sets (or removes, if `nil`) the value of the `Tag::{{ tag.id }}` entry.
       def {{ name.id }}=(value : String?) : String?
-        set_property(Tag::{{ tag.id }}, value)
+        self[Tag::{{ tag.id }}] = value
         value
       end
     {% end %}
@@ -61,7 +61,7 @@ module EXIF
 
     # Sets the image orientation (or removes it, if `nil`).
     def orientation=(orientation : Orientation?) : Orientation?
-      set_property(Tag::Orientation, orientation.try(&.value))
+      self[Tag::Orientation] = orientation.try(&.value)
       orientation
     end
 
@@ -177,35 +177,10 @@ module EXIF
       gps
     end
 
-    # IFDs describing the primary image, searched by the properties
-    # (i.e. excluding `IFD::One`, which describes the thumbnail).
-    PRIMARY_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability}
-
-    # Returns the entry for the given *tag* describing the primary image, or `nil`.
-    private def property(tag : Tag) : Entry?
-      find_entry(tag, PRIMARY_IFDS)
-    end
-
-    # :ditto:
-    private def property(tag : GPSTag) : Entry?
-      self[tag]?
-    end
-
-    # Sets (or removes, if `nil`) the *value* of the primary image entry for the given *tag*.
-    private def set_property(tag : Tag, value) : Nil
-      entry = property(tag)
-      case
-      when value.nil? then entry.try(&.delete)
-      when entry      then entry.value = value
-      else
-        ifd(PRIMARY_IFDS.find { |ifd| tag.known_in?(ifd) } || IFD::Zero)[tag] = value
-      end
-    end
-
     # Returns the first component of the primary image entry for the given *tag*,
     # or `nil` (i.e. the first value of a multi-valued `Tag::ISOSpeedRatings`).
     private def scalar?(tag : AnyTag) : Scalar?
-      property(tag).try(&.as_a?).try(&.first?)
+      primary_entry(tag).try(&.as_a?).try(&.first?)
     end
 
     private def string?(tag : AnyTag) : String?
@@ -257,13 +232,13 @@ module EXIF
 
     private def write_time(time : Time?, tag : Tag, offset_tag : Tag, subsec_tag : Tag) : Time?
       if time
-        set_property(tag, time.to_s(TIME_FORMAT))
-        set_property(offset_tag, time.to_s("%:z"))
+        self[tag] = time.to_s(TIME_FORMAT)
+        self[offset_tag] = time.to_s("%:z")
         # Fractional seconds, with trailing zeros removed (`nil` if none)
         subsec = time.to_s("%N").rstrip('0').presence
-        set_property(subsec_tag, subsec)
+        self[subsec_tag] = subsec
       else
-        {tag, offset_tag, subsec_tag}.each { |key| set_property(key, nil) }
+        {tag, offset_tag, subsec_tag}.each { |key| delete(key) }
       end
       time
     end
