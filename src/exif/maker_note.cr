@@ -36,6 +36,11 @@ module EXIF
       @ptr
     end
 
+    # Returns another wrapper of the same libexif maker note.
+    def dup : self
+      self.class.new(data, @ptr)
+    end
+
     # Returns the number of entries.
     def size : Int32
       LibEXIF.exif_mnote_data_count(@ptr).to_i

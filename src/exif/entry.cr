@@ -27,6 +27,11 @@ module EXIF
       @ptr
     end
 
+    # Returns another wrapper of the same libexif entry.
+    def dup : self
+      self.class.new(data, @ptr)
+    end
+
     # Yields the raw libexif entry, holding extra references to it (and to the
     # libexif data) meanwhile, see `Data#retain`.
     private def retain(& : LibEXIF::EXIFEntry* -> T) : T forall T

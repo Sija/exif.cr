@@ -27,6 +27,11 @@ module EXIF
       @ptr
     end
 
+    # Returns another wrapper of the same libexif IFD.
+    def dup : self
+      self.class.new(data, @ptr)
+    end
+
     # Returns the IFD this content represents.
     def ifd : IFD
       LibEXIF.exif_content_get_ifd(@ptr)

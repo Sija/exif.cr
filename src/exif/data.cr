@@ -158,6 +158,18 @@ module EXIF
       @ptr
     end
 
+    # Returns an independent copy of the data, with the same options and warnings.
+    #
+    # NOTE: libexif can't copy its data structures, so the copy is created by
+    # re-loading the serialized data (see `#to_slice`).
+    def dup : self
+      copy = self.class.new(to_slice, options: Options::None)
+      copy.options = options
+      copy.data_type = data_type
+      @warnings.each { |warning| copy.add_warning(warning) }
+      copy
+    end
+
     # Sets the options affecting loading and saving.
     def options=(options : Options) : Options
       @options = options
