@@ -382,8 +382,15 @@ module EXIF
       path = Path[File.symlink?(path) ? File.realpath(path) : path]
       tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
       begin
-        File.write(tempfile, jpeg)
-        File.chmod(tempfile, File.info(path).permissions) if File.exists?(path)
+        if File.exists?(path)
+          # Readable only by the owner until it gets the permissions of the replaced
+          # file, which might not be readable by others (i.e. a private photo)
+          permissions = File.info(path).permissions
+          File.write(tempfile, jpeg, perm: File::Permissions.new(0o600))
+          File.chmod(tempfile, permissions)
+        else
+          File.write(tempfile, jpeg)
+        end
         File.rename(tempfile, path)
       ensure
         File.delete?(tempfile)
