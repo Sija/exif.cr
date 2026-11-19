@@ -33,6 +33,8 @@ module EXIF
       @log = LibEXIF.exif_log_new
       if @log.null?
         LibEXIF.exif_data_unref(@ptr)
+        # The finalizer runs even if `initialize` raises
+        @ptr = Pointer(LibEXIF::EXIFData).null
         raise Error.new("Could not allocate EXIF log")
       end
       LibEXIF.exif_log_set_func(@log, EXIF::LOG_FUNC, self.as(Void*))
@@ -127,11 +129,14 @@ module EXIF
     end
 
     def finalize
-      # The libexif data might outlive this wrapper (see `#retain`),
-      # so detach it from the log callback first
-      LibEXIF.exif_log_set_func(@log, EXIF::LOG_FUNC, Pointer(Void).null)
-      LibEXIF.exif_data_unref(@ptr)
-      LibEXIF.exif_log_unref(@log)
+      # NOTE: Pointers might be null if `initialize` raised
+      unless @log.null?
+        # The libexif data might outlive this wrapper (see `#retain`),
+        # so detach it from the log callback first
+        LibEXIF.exif_log_set_func(@log, EXIF::LOG_FUNC, Pointer(Void).null)
+      end
+      LibEXIF.exif_data_unref(@ptr) unless @ptr.null?
+      LibEXIF.exif_log_unref(@log) unless @log.null?
     end
 
     # :nodoc:
