@@ -43,8 +43,11 @@ module EXIF
       self.options = options
     end
 
-    # Returns the problems with the data (i.e. corrupted or truncated entries)
-    # reported by libexif while loading or saving it.
+    # Returns the problems with the data reported by libexif, i.e. corrupted
+    # or truncated entries found while loading it, or entries with an invalid
+    # number of components found while formatting their values (see `Entry#to_s`).
+    #
+    # Each distinct problem is reported once.
     #
     # ```
     # data = EXIF::Data.new(truncated_bytes)
@@ -56,7 +59,8 @@ module EXIF
 
     # :nodoc:
     def add_warning(message : String) : Nil
-      @warnings << message
+      # NOTE: The same problems get reported on every formatting of an entry
+      @warnings << message unless @warnings.includes?(message)
     end
 
     # Loads EXIF data from a JPEG image or a raw EXIF block

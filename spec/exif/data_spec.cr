@@ -90,6 +90,13 @@ describe EXIF::Data do
       data.warnings.should eq ["Tag data past end of buffer (188 > 494)", "Bogus offset of IFD1."]
     end
 
+    it "reports each problem once" do
+      data = EXIF::Data.new
+      data[:resolution_unit] = [1, 2, 3]
+      10.times { data[:resolution_unit].to_s }
+      data.warnings.should eq ["The tag 'ResolutionUnit' contains an invalid number of components (3, expected 1)."]
+    end
+
     it "returns a copy" do
       data = EXIF::Data.new(canon_data.to_slice[0, 300])
       data.warnings.clear
