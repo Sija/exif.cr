@@ -132,10 +132,22 @@ module EXIF
     def to_s(io : IO) : Nil
       return format_value(io, value) unless ifd?
 
-      maxlen = Math.max(1024, bytesize * 6 + 64)
-      buffer = Bytes.new(maxlen)
-      value = retain { |ptr| LibEXIF.exif_entry_get_value(ptr, buffer, maxlen) }
-      io << String.new(value) unless value.null?
+      # Formatted values are (at most) a few characters per byte of data
+      maxlen = bytesize * 6 + 64
+      if maxlen <= FORMAT_BUFFER_SIZE
+        buffer = uninitialized UInt8[FORMAT_BUFFER_SIZE]
+        format_into(io, buffer.to_slice)
+      else
+        format_into(io, Bytes.new(maxlen))
+      end
+    end
+
+    # Size of the (stack allocated) buffer most values are formatted into.
+    FORMAT_BUFFER_SIZE = 1024
+
+    private def format_into(io : IO, buffer : Bytes) : Nil
+      value = retain { |ptr| LibEXIF.exif_entry_get_value(ptr, buffer, buffer.size) }
+      io.write_string(Slice.new(value, LibC.strlen(value))) unless value.null?
     end
 
     private def format_value(io : IO, value : Value) : Nil
