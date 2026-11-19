@@ -15,8 +15,16 @@ module EXIF
 
     @ptr : LibEXIF::EXIFEntry*
 
-    protected def initialize(@data : Data, @ptr : LibEXIF::EXIFEntry*)
+    # Whether the entry belongs to the GPS IFD (*gps*) is remembered, so that
+    # the tag kind is still known once the entry gets removed from it.
+    protected def initialize(@data : Data, @ptr : LibEXIF::EXIFEntry*, @gps : Bool = Entry.gps_parent?(ptr))
       LibEXIF.exif_entry_ref(@ptr)
+    end
+
+    # Returns `true` if the given entry is stored in the GPS IFD.
+    protected def self.gps_parent?(ptr : LibEXIF::EXIFEntry*) : Bool
+      parent = ptr.value.parent
+      !parent.null? && LibEXIF.exif_content_get_ifd(parent).gps?
     end
 
     def finalize
@@ -29,7 +37,7 @@ module EXIF
 
     # Returns another wrapper of the same libexif entry.
     def dup : self
-      self.class.new(data, @ptr)
+      self.class.new(data, @ptr, @gps)
     end
 
     # Yields the raw libexif entry, holding extra references to it (and to the
@@ -42,6 +50,11 @@ module EXIF
       ensure
         LibEXIF.exif_entry_unref(ptr)
       end
+    end
+
+    # Returns `true` for entries of the GPS IFD (holding `GPSTag`s), even once removed from it.
+    protected def gps? : Bool
+      @gps
     end
 
     # Returns the IFD the entry is stored in, or `nil` if it was removed.
@@ -58,7 +71,7 @@ module EXIF
     # Returns the entry tag (a `GPSTag` for entries stored in the GPS IFD).
     def tag : AnyTag
       tag = @ptr.value.tag
-      ifd?.try(&.gps?) ? GPSTag.new(tag.value) : tag
+      gps? ? GPSTag.new(tag.value) : tag
     end
 
     # Returns the raw (numeric) tag, as used by libexif.
@@ -68,17 +81,22 @@ module EXIF
 
     # Returns the EXIF name of the entry tag (i.e. `"FNumber"`).
     def name : String
-      raw_tag.name(ifd?) || raw_tag.name || "0x%04x" % raw_tag.value
+      raw_tag.name(name_ifd) || raw_tag.name || "0x%04x" % raw_tag.value
     end
 
     # Returns the localized title of the entry tag (i.e. `"F-Number"`).
     def title : String?
-      raw_tag.title(ifd?) || raw_tag.title
+      raw_tag.title(name_ifd) || raw_tag.title
     end
 
     # Returns the localized description of the entry tag.
     def description : String?
-      raw_tag.description(ifd?) || raw_tag.description
+      raw_tag.description(name_ifd) || raw_tag.description
+    end
+
+    # Returns the IFD the tag names are looked up in.
+    private def name_ifd : IFD?
+      ifd? || (IFD::GPS if gps?)
     end
 
     # Returns the support level of this entry within its IFD.
@@ -328,11 +346,11 @@ module EXIF
       end
 
       private def user_comment_tag? : Bool
-        raw.tag.user_comment? && @entry.ifd? != IFD::GPS
+        raw.tag.user_comment? && !@entry.gps?
       end
 
       private def xp_tag? : Bool
-        raw.tag.in?(XP_TAGS) && @entry.ifd? != IFD::GPS
+        raw.tag.in?(XP_TAGS) && !@entry.gps?
       end
 
       # --- Decoding ---
@@ -508,7 +526,7 @@ module EXIF
       # Returns `true` if any of the *values* doesn't fit into a `Format::Short`
       # entry of a tag which can be stored as `Format::Long` as well.
       private def promote_to_long?(values : Indexable) : Bool
-        return false unless raw.tag.short_or_long? && @entry.ifd? != IFD::GPS
+        return false if @entry.gps? || !raw.tag.short_or_long?
 
         values.any? do |value|
           case value

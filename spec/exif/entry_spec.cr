@@ -232,5 +232,21 @@ describe EXIF::Entry do
       entry.value.should eq "Canon"
       data.has_key?(:make).should be_false
     end
+
+    it "keeps the identity of detached GPS entries" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(52.0, 21.0)
+
+      entry = data[:gps_latitude]
+      copy = entry.dup
+      entry.delete
+
+      {entry, copy}.each do |detached|
+        detached.ifd?.should be_nil
+        detached.tag.should eq EXIF::GPSTag::GPSLatitude
+        detached.name.should eq "GPSLatitude"
+        detached.title.should eq EXIF::GPSTag::GPSLatitude.title
+      end
+    end
   end
 end
