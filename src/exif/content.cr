@@ -78,12 +78,6 @@ module EXIF
       !raw_entry(tag).null?
     end
 
-    # Returns the existing entry for the given *tag*, or creates a new one,
-    # initialized with default values.
-    def fetch_or_create(tag : AnyTag) : Entry
-      self[tag]? || create(tag)
-    end
-
     # Sets the *value* of the entry for the given *tag*, creating it if needed.
     # Setting `nil` removes the entry.
     def []=(tag : AnyTag, value) : Nil
