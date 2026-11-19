@@ -81,8 +81,10 @@ module EXIF
   # Formats a libexif log message (a `printf` *format* with its `va_list` *args*).
   def self.format_message(format : LibC::Char*, args : Void*) : String
     buffer = uninitialized UInt8[1024]
-    LibEXIF.vsnprintf(buffer.to_unsafe, buffer.size, format, args)
-    String.new(buffer.to_unsafe)
+    # The written length (excluding the NUL) is returned, or the full length
+    # when truncated, or a negative value on errors (leaving the buffer undefined)
+    length = LibEXIF.vsnprintf(buffer.to_unsafe, buffer.size, format, args)
+    String.new(buffer.to_unsafe, length.clamp(0, buffer.size - 1))
   end
 
   # :nodoc:
