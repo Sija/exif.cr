@@ -44,7 +44,7 @@ end
 enum LibEXIF::EXIFByteOrder
   # Returns the localized name of the byte order.
   def label : String
-    String.new(LibEXIF.exif_byte_order_get_name(self))
+    ::EXIF.string?(LibEXIF.exif_byte_order_get_name(self)) || to_s
   end
 
   # Returns the matching `IO::ByteFormat`.
@@ -56,7 +56,7 @@ end
 enum LibEXIF::EXIFFormat
   # Returns the textual name of the format.
   def label : String
-    String.new(LibEXIF.exif_format_get_name(self))
+    ::EXIF.string?(LibEXIF.exif_format_get_name(self)) || to_s
   end
 
   # Returns the size (in bytes) of a single component of this format.
