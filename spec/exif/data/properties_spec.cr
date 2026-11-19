@@ -194,6 +194,9 @@ describe EXIF::Data do
       expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, -180.5) }
       expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(Float64::NAN, 0.0) }
       expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, 0.0, Float64::INFINITY) }
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, 0.0, Float64::NAN) }
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, 0.0, 1e10) }
+      expect_raises(EXIF::ValueError) { data.gps = EXIF::GPS.new(0.0, 0.0, -1e10) }
       data.gps.should eq EXIF::GPS.new(1.0, 2.0)
     end
   end

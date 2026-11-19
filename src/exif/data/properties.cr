@@ -151,13 +151,15 @@ module EXIF
     # NOTE: Any existing GPS entries (i.e. `GPSTag::GPSTimeStamp` or
     # `GPSTag::GPSDestLatitude`) are removed, since they might no longer apply.
     #
-    # Raises `ValueError` if the latitude or longitude is out of range.
+    # Raises `ValueError` if the latitude, longitude or altitude is out of range,
+    # leaving the existing entries intact.
     def gps=(gps : GPS?) : GPS?
       if gps
         unless gps.latitude.abs <= 90 && gps.longitude.abs <= 180
           raise ValueError.new("Invalid GPS position: #{gps}")
         end
-        if (altitude = gps.altitude) && !altitude.finite?
+        # The altitude is stored as an unsigned rational
+        if (altitude = gps.altitude) && !(altitude.abs <= UInt32::MAX)
           raise ValueError.new("Invalid GPS altitude: #{altitude}")
         end
       end
