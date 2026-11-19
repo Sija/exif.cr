@@ -15,6 +15,9 @@ module EXIF
   class Data
     include Enumerable(Entry)
 
+    # Size of the TIFF header (byte order, magic number and IFD 0 offset).
+    TIFF_HEADER_SIZE = 8
+
     # Size of the chunks read by `.new(io)`.
     BUFFER_SIZE = 8192
 
@@ -70,6 +73,10 @@ module EXIF
     def self.new(bytes : Bytes, options : Options = Options.default) : self
       # libexif's loader only handles JPEG streams
       if bytes[0, JPEG::EXIF_HEADER.size]? == JPEG::EXIF_HEADER
+        # The EXIF header has to be followed by (at least) a TIFF header
+        if bytes.size < JPEG::EXIF_HEADER.size + TIFF_HEADER_SIZE
+          raise NoDataError.new("No valid EXIF data found (too short)")
+        end
         return load_data(bytes.to_unsafe, bytes.size.to_u32, options)
       end
       load(options) do |loader|

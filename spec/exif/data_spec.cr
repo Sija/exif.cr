@@ -67,6 +67,11 @@ describe EXIF::Data do
       end
     end
 
+    it "raises NoDataError for a bare EXIF header" do
+      expect_raises(EXIF::NoDataError, /too short/) { EXIF::Data.new("Exif\0\0".to_slice) }
+      expect_raises(EXIF::NoDataError, /too short/) { EXIF::Data.new("Exif\0\0MM\0*".to_slice) }
+    end
+
     it "loads valid empty EXIF data" do
       EXIF::Data.new(EXIF::Data.new(options: :none).to_slice, options: :none).empty?.should be_true
     end
