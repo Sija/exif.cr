@@ -7,7 +7,12 @@ module EXIF
   record GPS,
     latitude : Float64,
     longitude : Float64,
-    altitude : Float64? = nil do
+    altitude : Float64? = nil
+
+  struct GPS
+    # Precision (fractions of a second) used by `.to_dms`.
+    DMS_PRECISION = 10_000
+
     # Converts decimal *degrees* into a degrees/minutes/seconds triple of rationals,
     # with seconds rounded to 1/10000th.
     def self.to_dms(degrees : Float64) : Array(URational)
@@ -21,9 +26,6 @@ module EXIF
         URational.new(seconds, DMS_PRECISION).reduce,
       ]
     end
-
-    # Precision (fractions of a second) used by `.to_dms`.
-    DMS_PRECISION = 10_000
 
     # Converts a degrees/minutes/seconds array into decimal degrees.
     def self.from_dms(dms : Array) : Float64

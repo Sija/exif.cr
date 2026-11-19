@@ -231,7 +231,7 @@ module EXIF
 
     # Returns the contents of all IFDs.
     def ifds : Array(Content)
-      IFDS.map { |ifd| ifd(ifd) }.to_a
+      IFDS.to_a { |ifd| ifd(ifd) }
     end
 
     # Yields each entry across all IFDs.

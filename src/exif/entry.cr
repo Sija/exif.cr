@@ -512,8 +512,10 @@ module EXIF
 
         values.any? do |value|
           case value
-          when Int, Float, Rational then value.to_f > UInt16::MAX
-          else                           false
+          when Int, Float, Rational
+            value.to_f > UInt16::MAX
+          else
+            false
           end
         end
       end

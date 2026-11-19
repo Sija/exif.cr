@@ -9,6 +9,9 @@ module EXIF
   # end
   # ```
   class MakerNote
+    # Size of the buffer the entry values are formatted into.
+    VALUE_BUFFER_SIZE = 1024
+
     # A single maker note entry.
     record Entry,
       id : UInt32,
@@ -76,8 +79,10 @@ module EXIF
       end
     end
 
-    # Size of the buffer the entry values are formatted into.
-    VALUE_BUFFER_SIZE = 1024
+    # Returns the first entry with the given *name*.
+    def [](name : String) : Entry
+      self[name]? || raise KeyError.new("Missing maker note entry: #{name}")
+    end
 
     private def entry_at(ptr : LibEXIF::EXIFMnoteData*, n : UInt32, buffer : Bytes) : Entry
       value = LibEXIF.exif_mnote_data_get_value(ptr, n, buffer, buffer.size)
@@ -89,11 +94,6 @@ module EXIF
         description: EXIF.string?(LibEXIF.exif_mnote_data_get_description(ptr, n)),
         value: EXIF.string?(value),
       )
-    end
-
-    # Returns the first entry with the given *name*.
-    def [](name : String) : Entry
-      self[name]? || raise KeyError.new("Missing maker note entry: #{name}")
     end
 
     # Returns a hash of entry names to their formatted values.

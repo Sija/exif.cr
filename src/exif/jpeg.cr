@@ -56,6 +56,7 @@ module EXIF
 
       inserted = false
       pos = 2
+
       while pos < jpeg.size
         raise JPEGError.new("Invalid JPEG marker at offset #{pos}") unless jpeg[pos] == 0xFF
 
@@ -100,6 +101,7 @@ module EXIF
         end
         pos += segment.size
       end
+
       yield io unless inserted
 
       io.to_slice

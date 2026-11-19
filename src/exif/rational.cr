@@ -35,6 +35,7 @@ module EXIF
       # Convergents h/k of the continued fraction expansion
       h0, h1 = 0_i64, 1_i64
       k0, k1 = 1_i64, 0_i64
+
       x = target
       loop do
         a = x.floor
