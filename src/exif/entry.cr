@@ -508,7 +508,7 @@ module EXIF
       private def serialize(values : Indexable) : {Format, Bytes, Int32}
         raise ValueError.new("Cannot store an empty array") if values.empty?
 
-        format = target_format(values.first)
+        format = numeric_format(values)
         format = Format::Long if format.short? && promote_to_long?(values)
 
         size = format.bytesize
@@ -600,18 +600,35 @@ module EXIF
 
       # Returns the entry format, or one inferred from the *value*
       # when the entry has none yet (i.e. for tags unknown to libexif).
-      private def target_format(value) : Format
+      private def target_format(value : String | Bytes) : Format
         format = raw.format
         return format if Format.valid?(format)
 
-        case value
-        when String    then Format::Ascii
-        when Bytes     then Format::Undefined
-        when SRational then Format::SRational
-        when URational then Format::Rational
-        when Float     then value.negative? ? Format::SRational : Format::Rational
-        when Int       then value.negative? ? Format::SLong : Format::Long
-        else                mismatch!(value, format)
+        value.is_a?(String) ? Format::Ascii : Format::Undefined
+      end
+
+      # Returns the entry format, or one inferred from all the *values*
+      # when the entry has none yet (i.e. for tags unknown to libexif):
+      # integers are stored as `Format::Long`, other numbers as `Format::Rational`,
+      # using the signed variants if any of the values is negative.
+      private def numeric_format(values : Indexable) : Format
+        format = raw.format
+        return format if Format.valid?(format)
+
+        signed, integers = false, true
+        values.each do |value|
+          case value
+          when Int       then signed ||= value.negative?
+          when Float     then signed ||= value.negative?; integers = false
+          when SRational then signed, integers = true, false
+          when URational then integers = false
+          else                mismatch!(values, format)
+          end
+        end
+        if integers
+          signed ? Format::SLong : Format::Long
+        else
+          signed ? Format::SRational : Format::Rational
         end
       end
 
