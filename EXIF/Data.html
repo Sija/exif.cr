@@ -287,14 +287,14 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L15" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L15" target="_blank">
         exif/data.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L2" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L2" target="_blank">
         exif/data/properties.cr
       </a>
     
@@ -321,6 +321,25 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       
       <dd class="entry-const-doc">
         <p>Size of the chunks read by <code><a href="../EXIF/Data.html#new%28options%3AOptions%3DOptions.default%29-class-method">.new(io)</a></code>.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PRIMARY_IFDS">
+        <strong>PRIMARY_IFDS</strong> = <code>{<span class="t">IFD</span><span class="t">::</span><span class="t">Zero</span>, <span class="t">IFD</span><span class="t">::</span><span class="t">EXIF</span>, <span class="t">IFD</span><span class="t">::</span><span class="t">Interoperability</span>}</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>IFDs describing the primary image, searched by the properties
+(i.e. excluding <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code>, which describes the thumbnail).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="TIFF_HEADER_SIZE">
+        <strong>TIFF_HEADER_SIZE</strong> = <code><span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Size of the TIFF header (byte order, magic number and IFD 0 offset).</p>
       </dd>
       
     
@@ -414,42 +433,28 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#%5B%5D%28tag%3ATag%29%3AEntry-instance-method" class="signature"><strong>#[]</strong>(tag : Tag) : Entry</a>
+        <a href="#%5B%5D%28tag%3AAnyTag%29%3AEntry-instance-method" class="signature"><strong>#[]</strong>(tag : AnyTag) : Entry</a>
         
           <div class="summary"><p>Returns the entry for the given <em>tag</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#%5B%5D%28tag%3AGPSTag%29%3AEntry-instance-method" class="signature"><strong>#[]</strong>(tag : GPSTag) : Entry</a>
-        
-          <div class="summary"><p>Returns the entry for the given <em>tag</em>.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#%5B%5D%3D%28tag%3ATag%2Cvalue%29%3ANil-instance-method" class="signature"><strong>#[]=</strong>(tag : Tag, value) : Nil</a>
+        <a href="#%5B%5D%3D%28tag%3AAnyTag%2Cvalue%3ANil%29%3ANil-instance-method" class="signature"><strong>#[]=</strong>(tag : AnyTag, value : Nil) : Nil</a>
         
           <div class="summary"><p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#%5B%5D%3D%28tag%3AGPSTag%2Cvalue%29%3ANil-instance-method" class="signature"><strong>#[]=</strong>(tag : GPSTag, value) : Nil</a>
+        <a href="#%5B%5D%3D%28tag%3AAnyTag%2Cvalue%29%3ANil-instance-method" class="signature"><strong>#[]=</strong>(tag : AnyTag, value) : Nil</a>
         
           <div class="summary"><p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#%5B%5D%3F%28tag%3ATag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#[]?</strong>(tag : Tag) : Entry | Nil</a>
-        
-          <div class="summary"><p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#%5B%5D%3F%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#[]?</strong>(tag : GPSTag) : Entry | Nil</a>
+        <a href="#%5B%5D%3F%28tag%3AAnyTag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#[]?</strong>(tag : AnyTag) : Entry | Nil</a>
         
           <div class="summary"><p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p></div>
         
@@ -582,16 +587,16 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       </li>
     
       <li class="entry-summary">
-        <a href="#delete%28tag%3ATag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#delete</strong>(tag : Tag) : Entry | Nil</a>
+        <a href="#delete%28tag%3AAnyTag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#delete</strong>(tag : AnyTag) : Entry | Nil</a>
         
           <div class="summary"><p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#delete%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method" class="signature"><strong>#delete</strong>(tag : GPSTag) : Entry | Nil</a>
+        <a href="#dup%3Aself-instance-method" class="signature"><strong>#dup</strong> : <span class="k">self</span></a>
         
-          <div class="summary"><p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p></div>
+          <div class="summary"><p>Returns an independent copy of the data, with the same options and warnings.</p></div>
         
       </li>
     
@@ -685,14 +690,7 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       </li>
     
       <li class="entry-summary">
-        <a href="#has_key%3F%28tag%3ATag%29%3ABool-instance-method" class="signature"><strong>#has_key?</strong>(tag : Tag) : Bool</a>
-        
-          <div class="summary"><p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#has_key%3F%28tag%3AGPSTag%29%3ABool-instance-method" class="signature"><strong>#has_key?</strong>(tag : GPSTag) : Bool</a>
+        <a href="#has_key%3F%28tag%3AAnyTag%29%3ABool-instance-method" class="signature"><strong>#has_key?</strong>(tag : AnyTag) : Bool</a>
         
           <div class="summary"><p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p></div>
         
@@ -825,6 +823,13 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       </li>
     
       <li class="entry-summary">
+        <a href="#options%3AOptions-instance-method" class="signature"><strong>#options</strong> : Options</a>
+        
+          <div class="summary"><p>Returns the options affecting loading and saving.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#options%3D%28options%3AOptions%29%3AOptions-instance-method" class="signature"><strong>#options=</strong>(options : Options) : Options</a>
         
           <div class="summary"><p>Sets the options affecting loading and saving.</p></div>
@@ -928,6 +933,13 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       </li>
     
       <li class="entry-summary">
+        <a href="#warnings%3AArray%28String%29-instance-method" class="signature"><strong>#warnings</strong> : Array(String)</a>
+        
+          <div class="summary"><p>Returns the problems with the data reported by libexif, i.e.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#width%3AInt64%7CNil-instance-method" class="signature"><strong>#width</strong> : Int64 | Nil</a>
         
           <div class="summary"><p>Returns the image width (in pixels), or <code>nil</code>.</p></div>
@@ -1007,7 +1019,7 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1030,7 +1042,7 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L73" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1052,7 +1064,7 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L90" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1074,7 +1086,7 @@ data.save(<span class="s">&quot;photo.jpg&quot;</span>)</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1108,7 +1120,7 @@ if it contains none.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1127,12 +1139,12 @@ if it contains none.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="[](tag:Tag):Entry-instance-method">
+    <div class="entry-detail" id="[](tag:AnyTag):Entry-instance-method">
       <div class="signature">
         
-        def <strong>[]</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : <a href="../EXIF/Entry.html">Entry</a>
+        def <strong>[]</strong>(tag : <a href="../EXIF/AnyTag.html">AnyTag</a>) : <a href="../EXIF/Entry.html">Entry</a>
 
-        <a class="method-permalink" href="#%5B%5D%28tag%3ATag%29%3AEntry-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%28tag%3AAnyTag%29%3AEntry-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1144,85 +1156,65 @@ if it contains none.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L184" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L265" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="[](tag:GPSTag):Entry-instance-method">
+    <div class="entry-detail" id="[]=(tag:AnyTag,value:Nil):Nil-instance-method">
       <div class="signature">
         
-        def <strong>[]</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : <a href="../EXIF/Entry.html">Entry</a>
+        def <strong>[]=</strong>(tag : <a href="../EXIF/AnyTag.html">AnyTag</a>, value : Nil) : Nil
 
-        <a class="method-permalink" href="#%5B%5D%28tag%3AGPSTag%29%3AEntry-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Returns the entry for the given <em>tag</em>.</p>
-<p>Raises <code>KeyError</code> if there's no such entry.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L189" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="[]=(tag:Tag,value):Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>[]=</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>, value) : Nil
-
-        <a class="method-permalink" href="#%5B%5D%3D%28tag%3ATag%2Cvalue%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%3D%28tag%3AAnyTag%2Cvalue%3ANil%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p>
 <p>If there's no such entry, it's created in the IFD
-the tag belongs to (see <code>Tag#default_ifd</code>).</p>
+the tag belongs to (see <code>Tag#default_ifd</code>).
+Setting <code>nil</code> removes the entry.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L207" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L289" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="[]=(tag:GPSTag,value):Nil-instance-method">
+    <div class="entry-detail" id="[]=(tag:AnyTag,value):Nil-instance-method">
       <div class="signature">
         
-        def <strong>[]=</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>, value) : Nil
+        def <strong>[]=</strong>(tag : <a href="../EXIF/AnyTag.html">AnyTag</a>, value) : Nil
 
-        <a class="method-permalink" href="#%5B%5D%3D%28tag%3AGPSTag%2Cvalue%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%3D%28tag%3AAnyTag%2Cvalue%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Sets the <em>value</em> of the entry for the given <em>tag</em>.</p>
 <p>If there's no such entry, it's created in the IFD
-the tag belongs to (see <code>Tag#default_ifd</code>).</p>
+the tag belongs to (see <code>Tag#default_ifd</code>).
+Setting <code>nil</code> removes the entry.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L217" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L279" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="[]?(tag:Tag):Entry|Nil-instance-method">
+    <div class="entry-detail" id="[]?(tag:AnyTag):Entry|Nil-instance-method">
       <div class="signature">
         
-        def <strong>[]?</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+        def <strong>[]?</strong>(tag : <a href="../EXIF/AnyTag.html">AnyTag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
 
-        <a class="method-permalink" href="#%5B%5D%3F%28tag%3ATag%29%3AEntry%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%3F%28tag%3AAnyTag%29%3AEntry%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1235,30 +1227,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L167" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="[]?(tag:GPSTag):Entry|Nil-instance-method">
-      <div class="signature">
-        
-        def <strong>[]?</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
-
-        <a class="method-permalink" href="#%5B%5D%3F%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Returns the entry for the given <em>tag</em>, or <code>nil</code>.</p>
-<p><code><a href="../EXIF/Tag.html">Tag</a></code>s are looked up in the <code><a href="../LibEXIF/EXIFIfd.html#Zero">IFD::Zero</a></code>, <code><a href="../LibEXIF/EXIFIfd.html#EXIF">IFD::EXIF</a></code>, <code><a href="../LibEXIF/EXIFIfd.html#Interoperability">IFD::Interoperability</a></code>
-and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) IFDs in turn, <code><a href="../EXIF/GPSTag.html">GPSTag</a></code>s in the <code><a href="../LibEXIF/EXIFIfd.html#GPS">IFD::GPS</a></code> one.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L177" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1279,7 +1248,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1300,7 +1269,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1321,7 +1290,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1342,7 +1311,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1363,7 +1332,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L114" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L205" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1384,7 +1353,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L119" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L210" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1405,7 +1374,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1426,7 +1395,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1447,7 +1416,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1468,7 +1437,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1489,7 +1458,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L125" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L216" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1510,7 +1479,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L221" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1533,7 +1502,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1554,7 +1523,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1577,7 +1546,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1598,7 +1567,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1621,7 +1590,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1642,17 +1611,17 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L32" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="delete(tag:Tag):Entry|Nil-instance-method">
+    <div class="entry-detail" id="delete(tag:AnyTag):Entry|Nil-instance-method">
       <div class="signature">
         
-        def <strong>delete</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+        def <strong>delete</strong>(tag : <a href="../EXIF/AnyTag.html">AnyTag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
 
-        <a class="method-permalink" href="#delete%28tag%3ATag%29%3AEntry%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#delete%28tag%3AAnyTag%29%3AEntry%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1663,28 +1632,30 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L222" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L294" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="delete(tag:GPSTag):Entry|Nil-instance-method">
+    <div class="entry-detail" id="dup:self-instance-method">
       <div class="signature">
         
-        def <strong>delete</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : <a href="../EXIF/Entry.html">Entry</a> | Nil
+        def <strong>dup</strong> : <span class="k">self</span>
 
-        <a class="method-permalink" href="#delete%28tag%3AGPSTag%29%3AEntry%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#dup%3Aself-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Removes the entry for the given <em>tag</em>, returning it (or <code>nil</code> if not found).</p>
+          <p>Returns an independent copy of the data, with the same options and warnings.</p>
+<p><span class="flag purple">NOTE</span>  libexif can't copy its data structures, so the copy is created by
+re-loading the serialized data (see <code><a href="../EXIF/Data.html#to_slice%3ABytes-instance-method">#to_slice</a></code>).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L227" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L181" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1705,7 +1676,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L238" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1726,7 +1697,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L280" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L380" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1747,7 +1718,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L159" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L250" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1768,7 +1739,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L104" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1789,7 +1760,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L79" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L79" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1810,7 +1781,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L84" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1826,7 +1797,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L93" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L142" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1848,7 +1819,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L260" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L360" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1869,7 +1840,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L119" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1890,7 +1861,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L109" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1911,7 +1882,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1927,12 +1898,14 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
         <div class="doc">
           
           <p>Returns the GPS position, or <code>nil</code> if not recorded.</p>
+<p><span class="flag purple">NOTE</span>  Besides the degrees/minutes/seconds triples required by the specification,
+coordinates stored as a single value (decimal degrees) are accepted too.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L114" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L127" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1948,22 +1921,25 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
         <div class="doc">
           
           <p>Sets the GPS position (or removes it, if <code>nil</code>).</p>
+<p><span class="flag purple">NOTE</span>  Any existing GPS entries (i.e. <code><a href="../LibEXIF/EXIFGPSTag.html#GPSTimeStamp">GPSTag::GPSTimeStamp</a></code> or
+<code><a href="../LibEXIF/EXIFGPSTag.html#GPSDestLatitude">GPSTag::GPSDestLatitude</a></code>) are removed, since they might no longer apply.</p>
+<p>Raises <code><a href="../EXIF/ValueError.html">ValueError</a></code> if the latitude or longitude is out of range.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L160" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="has_key?(tag:Tag):Bool-instance-method">
+    <div class="entry-detail" id="has_key?(tag:AnyTag):Bool-instance-method">
       <div class="signature">
         
-        def <strong>has_key?</strong>(tag : <a href="../EXIF/Tag.html">Tag</a>) : Bool
+        def <strong>has_key?</strong>(tag : <a href="../EXIF/AnyTag.html">AnyTag</a>) : Bool
 
-        <a class="method-permalink" href="#has_key%3F%28tag%3ATag%29%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#has_key%3F%28tag%3AAnyTag%29%3ABool-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1974,28 +1950,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L194" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="has_key?(tag:GPSTag):Bool-instance-method">
-      <div class="signature">
-        
-        def <strong>has_key?</strong>(tag : <a href="../EXIF/GPSTag.html">GPSTag</a>) : Bool
-
-        <a class="method-permalink" href="#has_key%3F%28tag%3AGPSTag%29%3ABool-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Returns <code>true</code> if there's an entry for the given <em>tag</em>.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L199" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L270" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2016,7 +1971,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L74" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2037,7 +1992,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L136" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2058,7 +2013,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L142" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L233" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2079,7 +2034,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2100,7 +2055,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2121,7 +2076,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2142,7 +2097,7 @@ and <code><a href="../LibEXIF/EXIFIfd.html#One">IFD::One</a></code> (thumbnail) 
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2175,7 +2130,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L418" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2191,12 +2146,15 @@ and the values of all instance variables.</p>
         <div class="doc">
           
           <p>Returns the ISO speed, or <code>nil</code>.</p>
+<p>Since EXIF 2.3, <code><a href="../LibEXIF/EXIFTag.html#ISOSpeedRatings">Tag::ISOSpeedRatings</a></code> (<em>PhotographicSensitivity</em>) is set
+to 65535 when the actual value doesn't fit, in which case it's taken from
+<code><a href="../LibEXIF/EXIFTag.html#ISOSpeed">Tag::ISOSpeed</a></code>, <code><a href="../LibEXIF/EXIFTag.html#RecommendedExposureIndex">Tag::RecommendedExposureIndex</a></code> or <code><a href="../LibEXIF/EXIFTag.html#StandardOutputSensitivity">Tag::StandardOutputSensitivity</a></code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L93" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2217,7 +2175,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2238,7 +2196,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2259,7 +2217,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2280,7 +2238,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2301,7 +2259,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2322,7 +2280,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2338,12 +2296,14 @@ and the values of all instance variables.</p>
         <div class="doc">
           
           <p>Returns the parsed maker note, or <code>nil</code> if missing or unsupported.</p>
+<p><span class="flag purple">NOTE</span>  libexif parses the maker note when loading the data, so later
+changes to the <code><a href="../LibEXIF/EXIFTag.html#MakerNote">Tag::MakerNote</a></code> entry aren't reflected (apart from removing it).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L253" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L351" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2364,7 +2324,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2385,7 +2345,28 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="options:Options-instance-method">
+      <div class="signature">
+        
+        def <strong>options</strong> : <a href="../EXIF/Options.html">Options</a>
+
+        <a class="method-permalink" href="#options%3AOptions-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the options affecting loading and saving.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L29" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2406,7 +2387,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L102" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L190" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2427,7 +2408,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L58" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L58" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2448,7 +2429,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L63" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2465,12 +2446,15 @@ and the values of all instance variables.</p>
           
           <p>Writes the JPEG image read from <em>source</em> with this EXIF data
 embedded to <em>path</em>, replacing any existing EXIF data.</p>
+<p>The image is written to a temporary file first, which then replaces
+<em>path</em> atomically (keeping its permissions), so that <em>path</em> is never
+left partially written. Symbolic links are followed.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L286" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L390" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2491,7 +2475,7 @@ embedded to <em>path</em>, replacing any existing EXIF data.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L154" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L245" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2512,7 +2496,7 @@ embedded to <em>path</em>, replacing any existing EXIF data.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2533,7 +2517,7 @@ embedded to <em>path</em>, replacing any existing EXIF data.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2555,7 +2539,7 @@ falling back to <code><a href="../EXIF/Data.html#date_time%28location%3ATime%3A%
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2576,7 +2560,7 @@ falling back to <code><a href="../EXIF/Data.html#date_time%28location%3ATime%3A%
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L238" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L333" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2597,7 +2581,7 @@ falling back to <code><a href="../EXIF/Data.html#date_time%28location%3ATime%3A%
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L232" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L325" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2618,7 +2602,7 @@ falling back to <code><a href="../EXIF/Data.html#date_time%28location%3ATime%3A%
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L291" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L412" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2640,7 +2624,7 @@ suitable for embedding as a JPEG APP1 segment.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L267" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L367" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2656,7 +2640,7 @@ suitable for embedding as a JPEG APP1 segment.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L97" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L173" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2677,7 +2661,7 @@ suitable for embedding as a JPEG APP1 segment.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2698,7 +2682,33 @@ suitable for embedding as a JPEG APP1 segment.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="warnings:Array(String)-instance-method">
+      <div class="signature">
+        
+        def <strong>warnings</strong> : Array(String)
+
+        <a class="method-permalink" href="#warnings%3AArray%28String%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the problems with the data reported by libexif, i.e. corrupted
+or truncated entries found while loading it, or entries with an invalid
+number of components found while formatting their values (see <code><a href="../EXIF/Entry.html#to_s%28io%3AIO%29%3ANil-instance-method">Entry#to_s</a></code>).</p>
+<p>Each distinct problem is reported once.</p>
+<pre><code class="language-crystal">data <span class="o">=</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.new(truncated_bytes)
+data.warnings <span class="c"># =&gt; [&quot;Bogus offset of IFD1.&quot;]</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2719,7 +2729,7 @@ suitable for embedding as a JPEG APP1 segment.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L69" target="_blank">View source</a>]
         
       </div>
     </div>

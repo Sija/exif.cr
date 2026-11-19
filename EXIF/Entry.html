@@ -270,7 +270,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L12" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L12" target="_blank">
         exif/entry.cr
       </a>
     
@@ -278,6 +278,29 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
   
 
 
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="FORMAT_BUFFER_SIZE">
+        <strong>FORMAT_BUFFER_SIZE</strong> = <code><span class="n">1024</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Size of the (stack allocated) buffer most values are formatted into.</p>
+      </dd>
+      
+    
+  </dl>
 
 
 
@@ -300,6 +323,8 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
     
       <li class="entry-summary">
         <a href="#%3D%3D%28other%3AEntry%29%3ABool-instance-method" class="signature"><strong>#==</strong>(other : Entry) : Bool</a>
+        
+          <div class="summary"><p>Returns <code>true</code> if both wrap the same libexif entry.</p></div>
         
       </li>
     
@@ -339,6 +364,13 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       </li>
     
       <li class="entry-summary">
+        <a href="#dup%3Aself-instance-method" class="signature"><strong>#dup</strong> : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Returns another wrapper of the same libexif entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
         
       </li>
@@ -354,6 +386,13 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
         <a href="#format%3AFormat-instance-method" class="signature"><strong>#format</strong> : Format</a>
         
           <div class="summary"><p>Returns the data format of the entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hash%28hasher%29-instance-method" class="signature"><strong>#hash</strong>(hasher)</a>
+        
+          <div class="summary"><p>See <code>Object#hash(hasher)</code></p></div>
         
       </li>
     
@@ -497,10 +536,15 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
         <a class="method-permalink" href="#%3D%3D%28other%3AEntry%29%3ABool-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if both wrap the same libexif entry.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L184" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -521,7 +565,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L83" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L100" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -542,7 +586,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L78" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -563,7 +607,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -584,7 +628,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L124" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L175" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -605,7 +649,28 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L80" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="dup:self-instance-method">
+      <div class="signature">
+        
+        def <strong>dup</strong> : <span class="k">self</span>
+
+        <a class="method-permalink" href="#dup%3Aself-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns another wrapper of the same libexif entry.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -621,7 +686,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -642,7 +707,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L118" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L169" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -663,7 +728,32 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L90" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hash(hasher)-instance-method">
+      <div class="signature">
+        
+        def <strong>hash</strong>(hasher)
+
+        <a class="method-permalink" href="#hash%28hasher%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+            <div class="doc-inherited">
+              Description copied from class Reference
+            </div>
+          
+          <p>See <code>Object#hash(hasher)</code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L188" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -684,7 +774,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L37" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -705,7 +795,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L48" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -738,7 +828,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L134" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L192" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -759,7 +849,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -780,7 +870,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L68" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -801,7 +891,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L42" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -822,7 +912,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L58" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L75" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -838,12 +928,14 @@ and the values of all instance variables.</p>
         <div class="doc">
           
           <p>Returns the human-readable (localized) value of the entry, as formatted by libexif.</p>
+<p><span class="flag purple">NOTE</span>  libexif can't format entries removed from their IFD (it needs their
+byte order), so these are formatted from their decoded <code><a href="../EXIF/Entry.html#value%3AValue-instance-method">#value</a></code> instead.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L110" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L139" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -864,7 +956,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L105" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -880,7 +972,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L26" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -901,7 +993,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -920,13 +1012,14 @@ and the values of all instance variables.</p>
 <p>Integers, floats and rationals may be given either as a scalar or an <code>Array</code>,
 <code>String</code> is accepted by <code><a href="../LibEXIF/EXIFFormat.html#Ascii">Format::Ascii</a></code> and <code><a href="../LibEXIF/EXIFFormat.html#Undefined">Format::Undefined</a></code> entries,
 <code>Bytes</code> by <code><a href="../LibEXIF/EXIFFormat.html#Undefined">Format::Undefined</a></code>, <code><a href="../LibEXIF/EXIFFormat.html#Byte">Format::Byte</a></code> and <code><a href="../LibEXIF/EXIFFormat.html#SByte">Format::SByte</a></code> ones.</p>
-<p>Raises <code><a href="../EXIF/ValueError.html">ValueError</a></code> if the value can't be stored in the entry format.</p>
+<p>Raises <code><a href="../EXIF/ValueError.html">ValueError</a></code> if the value can't be stored in the entry format,
+and <code>ArgumentError</code> for tags generated by libexif (see <code>Tag#managed?</code>).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L125" target="_blank">View source</a>]
         
       </div>
     </div>

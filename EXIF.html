@@ -269,98 +269,98 @@ data[<span class="n">:f_number</span>].value     <span class="c"># =&gt; EXIF::U
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif.cr#L29" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif.cr#L29" target="_blank">
         exif.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/content.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/content.cr#L1" target="_blank">
         exif/content.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data.cr#L1" target="_blank">
         exif/data.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/data/properties.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/data/properties.cr#L1" target="_blank">
         exif/data/properties.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/entry.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L1" target="_blank">
         exif/entry.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/enums.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/enums.cr#L1" target="_blank">
         exif/enums.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/error.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/error.cr#L1" target="_blank">
         exif/error.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/gps.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/gps.cr#L1" target="_blank">
         exif/gps.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/jpeg.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/jpeg.cr#L1" target="_blank">
         exif/jpeg.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/maker_note.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/maker_note.cr#L1" target="_blank">
         exif/maker_note.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/rational.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/rational.cr#L1" target="_blank">
         exif/rational.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/tag.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/tag.cr#L1" target="_blank">
         exif/tag.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/value.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/value.cr#L1" target="_blank">
         exif/value.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/e9a056c/src/exif/version.cr#L1" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/version.cr#L1" target="_blank">
         exif/version.cr
       </a>
     
@@ -381,9 +381,48 @@ data[<span class="n">:f_number</span>].value     <span class="c"># =&gt; EXIF::U
   
   <dl>
     
+      <dt class="entry-const" id="GPS_TAG_FORMATS">
+        <strong>GPS_TAG_FORMATS</strong> = <code>{<span class="t">GPSTag</span><span class="t">::</span><span class="t">GPSProcessingMethod</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">GPSTag</span><span class="t">::</span><span class="t">GPSAreaInformation</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">GPSTag</span><span class="t">::</span><span class="t">GPSHPositioningError</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Rational</span>}</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Formats of tags which libexif doesn't initialize with a default value,
+as defined by the EXIF 2.32 and TIFF 6.0 (TIFF/EP) specifications.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IFDS">
+        <strong>IFDS</strong> = <code>{<span class="t">IFD</span><span class="t">::</span><span class="t">Zero</span>, <span class="t">IFD</span><span class="t">::</span><span class="t">One</span>, <span class="t">IFD</span><span class="t">::</span><span class="t">EXIF</span>, <span class="t">IFD</span><span class="t">::</span><span class="t">GPS</span>, <span class="t">IFD</span><span class="t">::</span><span class="t">Interoperability</span>}</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>All (real) IFDs, excluding <code><a href="LibEXIF/EXIFIfd.html#Count">IFD::Count</a></code>.</p>
+      </dd>
+      
+    
       <dt class="entry-const" id="Log">
         <strong>Log</strong> = <code><span class="t">::</span><span class="t">Log</span>.<span class="k">for</span>(<span class="k">self</span>)</code>
       </dt>
+      
+    
+      <dt class="entry-const" id="MANAGED_TAGS">
+        <strong>MANAGED_TAGS</strong> = <code>{<span class="t">Tag</span><span class="t">::</span><span class="t">JPEGInterchangeFormat</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">JPEGInterchangeFormatLength</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">EXIFIfdPointer</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">GPSInfoIfdPointer</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">InteroperabilityIfdPointer</span>}</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Tags pointing to other parts of the EXIF data, which are generated by
+libexif when saving it (the thumbnail is set via <code><a href="EXIF/Data.html#thumbnail%3D%28bytes%3ABytes%7CNil%29%3ABytes%7CNil-instance-method">Data#thumbnail=</a></code>).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="TAG_FORMATS">
+        <strong>TAG_FORMATS</strong> = <code>{<span class="t">Tag</span><span class="t">::</span><span class="t">NewSubfileType</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">FillOrder</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">DocumentName</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">StripOffsets</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">RowsPerStrip</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">StripByteCounts</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">TransferFunction</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SubIFDs</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">TransferRange</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">JPEGProc</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">YCbCrCoefficients</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Rational</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">XMLPacket</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">CFARepeatPatternDim</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">CFAPattern</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">BatteryLevel</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Rational</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">IPTCNAA</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">ImageResources</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">InterColorProfile</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">TimeZoneOffset</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">SShort</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">TIFFEPStandardID</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">XPTitle</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">XPComment</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">XPAuthor</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">XPKeywords</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">XPSubject</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Byte</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">PrintImageMatching</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">Padding</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SpectralSensitivity</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">OECF</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">StandardOutputSensitivity</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">RecommendedExposureIndex</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">ISOSpeed</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">ISOSpeedLatitudeYYY</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">ISOSpeedLatitudeZZZ</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">OffsetTime</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">OffsetTimeOriginal</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">OffsetTimeDigitized</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SubjectArea</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">MakerNote</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">UserComment</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SubSecTime</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SubSecTimeOriginal</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SubSecTimeDigitized</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">RelatedSoundFile</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SpatialFrequencyResponse</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">NewCFAPattern</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">DeviceSettingDescription</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">ImageUniqueID</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">CameraOwnerName</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">BodySerialNumber</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">LensSpecification</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Rational</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">LensMake</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">LensModel</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">LensSerialNumber</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">CompositeImage</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SourceImageNumberOfCompositeImage</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Short</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">SourceExposureTimesOfCompositeImage</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">Gamma</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Rational</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">InteroperabilityIndex</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">InteroperabilityVersion</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Undefined</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">RelatedImageFileFormat</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Ascii</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">RelatedImageWidth</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>, <span class="t">Tag</span><span class="t">::</span><span class="t">RelatedImageLength</span> <span class="o">=&gt;</span> <span class="t">Format</span><span class="t">::</span><span class="t">Long</span>}</code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Formats of tags which libexif doesn't initialize with a default value,
+as defined by the EXIF 2.32 and TIFF 6.0 (TIFF/EP) specifications.</p>
+      </dd>
       
     
       <dt class="entry-const" id="TAG_LOOKUP_IFDS">

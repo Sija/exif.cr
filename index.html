@@ -372,8 +372,19 @@ data.to_slice <span class="c"># =&gt; Bytes[69, 120, 105, 102, 0, 0, ...]</span>
 </a>Options</h3>
 <p>By default, libexif fixes the data to follow the specification when loading,
 which might add or remove entries. Pass <code>options</code> to change that:</p>
-<pre><code class="language-crystal"><span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.open(<span class="s">&quot;photo.jpg&quot;</span>, options: <span class="n">:none</span>)
-<span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.open(<span class="s">&quot;photo.jpg&quot;</span>, options: <span class="t">EXIF</span><span class="t">::</span><span class="t">Options</span><span class="t">::</span><span class="t">IgnoreUnknownTags</span>)</code></pre>
+<pre><code class="language-crystal">data <span class="o">=</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.open(<span class="s">&quot;photo.jpg&quot;</span>, options: <span class="n">:none</span>)
+data <span class="o">=</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.open(<span class="s">&quot;photo.jpg&quot;</span>, options: <span class="t">EXIF</span><span class="t">::</span><span class="t">Options</span><span class="t">::</span><span class="t">IgnoreUnknownTags</span>)
+
+data.options <span class="c"># =&gt; EXIF::Options::IgnoreUnknownTags</span></code></pre>
+<h3><a id="corrupt-data" class="anchor" href="#corrupt-data">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Corrupt data</h3>
+<p>Problems found while loading (i.e. truncated or corrupted entries) don't make
+loading fail, as long as anything could be loaded; check <code>#warnings</code> to find out:</p>
+<pre><code class="language-crystal">data <span class="o">=</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">Data</span>.open(<span class="s">&quot;photo.jpg&quot;</span>)
+data.warnings <span class="c"># =&gt; [&quot;Tag data past end of buffer (188 &gt; 494)&quot;, &quot;Bogus offset of IFD1.&quot;]</span></code></pre>
 <h3><a id="logging" class="anchor" href="#logging">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -381,6 +392,19 @@ which might add or remove entries. Pass <code>options</code> to change that:</p>
 </a>Logging</h3>
 <p>libexif messages are forwarded to the <code>exif</code> <a href="https://crystal-lang.org/api/Log.html"><code>Log</code></a> source:</p>
 <pre><code class="language-crystal"><span class="t">Log</span>.setup(<span class="s">&quot;exif.*&quot;</span>, <span class="n">:debug</span>)</code></pre>
+<h3><a id="limitations" class="anchor" href="#limitations">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Limitations</h3>
+<ul>
+<li>Only JPEG images (and raw EXIF blocks) are supported. TIFF-based formats
+(TIFF, DNG and most camera RAW formats) can't be read reliably, since libexif
+only loads the first 64 KiB of data, while their metadata can be anywhere in the file.</li>
+<li><code>Data#save</code> replaces the file atomically, keeping its permissions,
+but not its ownership (relevant only when writing other users' files).</li>
+<li>Maker notes are read-only, and reflect the data as loaded.</li>
+</ul>
 <h2><a id="examples" class="anchor" href="#examples">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
