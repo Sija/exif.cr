@@ -83,9 +83,14 @@ module EXIF
           next
         end
 
+        # The segment length includes the length field itself (but not the marker)
+        length = jpeg[pos + 2, 2]?.try { |bytes| IO::ByteFormat::BigEndian.decode(UInt16, bytes).to_i }
+        if length && length < 2
+          raise JPEGError.new("Invalid JPEG segment length (#{length}) at offset #{pos}")
+        end
+
         # Copy truncated segments verbatim
-        unless (length_bytes = jpeg[pos + 2, 2]?) &&
-               (segment = jpeg[pos, IO::ByteFormat::BigEndian.decode(UInt16, length_bytes) + 2]?)
+        unless length && (segment = jpeg[pos, length + 2]?)
           io.write jpeg[pos..]
           break
         end

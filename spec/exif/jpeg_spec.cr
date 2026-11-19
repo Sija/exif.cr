@@ -38,6 +38,25 @@ describe EXIF::JPEG do
     EXIF::Data.new(data.embed(fixture("plain.jpg"))).thumbnail?.should be_nil
   end
 
+  it "handles segments of the maximum length" do
+    # SOI, APP2 claiming 65535 bytes, truncated
+    jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE2, 0xFF, 0xFF, 1, 2, 3]
+    EXIF::JPEG.strip(jpeg).should eq jpeg
+    EXIF::JPEG.embed(jpeg, exif)[0, 4].should eq Bytes[0xFF, 0xD8, 0xFF, 0xE1]
+
+    # complete
+    segment = Bytes[0xFF, 0xE2, 0xFF, 0xFF] + Bytes.new(65_533)
+    jpeg = Bytes[0xFF, 0xD8] + segment + Bytes[0xFF, 0xD9]
+    EXIF::JPEG.strip(jpeg).should eq jpeg
+  end
+
+  it "raises on invalid segment lengths" do
+    {0, 1}.each do |length|
+      jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE2, 0, length, 0xFF, 0xD9]
+      expect_raises(EXIF::JPEGError, /Invalid JPEG segment length/) { EXIF::JPEG.strip(jpeg) }
+    end
+  end
+
   it "raises on invalid input" do
     expect_raises(EXIF::JPEGError) { EXIF::JPEG.embed(Bytes[1, 2, 3], exif) }
     expect_raises(EXIF::JPEGError) { EXIF::JPEG.embed(fixture("plain.jpg"), Bytes[1, 2, 3]) }
