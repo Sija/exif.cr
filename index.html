@@ -227,7 +227,7 @@ It also includes a facade to read, modify and write EXIF metadata in a more idio
 </a>Features</h2>
 <ul>
 <li>Reading EXIF data from JPEG files, <code>IO</code>s, byte slices and raw EXIF blocks</li>
-<li>Typed entry values (<code>String</code>, <code>Int64</code>, <code>Float64</code>, rationals, arrays, ...)</li>
+<li>Typed entry values (<code>String</code>, <code>Int64</code>, <code>Float64</code>, rationals, arrays, ...), with <code>#as_s</code>-style helpers</li>
 <li>Human-readable (localized) entry values, as formatted by libexif</li>
 <li>Semantic accessors for common tags (camera, exposure, time, orientation, GPS, ...)</li>
 <li>Creating, modifying and removing entries</li>
@@ -305,6 +305,15 @@ entry.ifd    <span class="c"># =&gt; EXIF::IFD::EXIF</span>
 entry.format <span class="c"># =&gt; EXIF::Format::Rational</span>
 entry.value  <span class="c"># =&gt; EXIF::URational(28/10)</span>
 entry.to_s   <span class="c"># =&gt; &quot;f/2.8&quot;</span>
+
+<span class="c"># typed helpers, raising `TypeCastError` on mismatch (`nil` for the `?` variants)</span>
+data[<span class="n">:model</span>].as_s            <span class="c"># =&gt; &quot;Canon PowerShot S70&quot;</span>
+data[<span class="n">:orientation</span>].as_i      <span class="c"># =&gt; 6</span>
+data[<span class="n">:f_number</span>].as_f         <span class="c"># =&gt; 2.8 (converting integers and rationals)</span>
+data[<span class="n">:f_number</span>].as_rational  <span class="c"># =&gt; EXIF::URational(28/10)</span>
+data[<span class="n">:exif_version</span>].as_bytes <span class="c"># =&gt; Bytes[48, 50, 50, 48]</span>
+data[<span class="n">:gps_latitude</span>].as_a     <span class="c"># =&gt; [EXIF::URational(52/1), EXIF::URational(13/1), ...]</span>
+data[<span class="n">:model</span>].as_i?           <span class="c"># =&gt; nil</span>
 
 <span class="c"># GPS tags have their own enum, since they overlap with other tags</span>
 data[<span class="n">:gps_latitude</span>].value <span class="c"># =&gt; [EXIF::URational(52/1), EXIF::URational(13/1), ...]</span>

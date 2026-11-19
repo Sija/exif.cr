@@ -270,7 +270,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L12" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L12" target="_blank">
         exif/entry.cr
       </a>
     
@@ -325,6 +325,90 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
         <a href="#%3D%3D%28other%3AEntry%29%3ABool-instance-method" class="signature"><strong>#==</strong>(other : Entry) : Bool</a>
         
           <div class="summary"><p>Returns <code>true</code> if both wrap the same libexif entry.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_a%3AArray%28Scalar%29-instance-method" class="signature"><strong>#as_a</strong> : Array(Scalar)</a>
+        
+          <div class="summary"><p>Returns all the components of the value, wrapping single ones in an <code>Array</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_a%3F%3AArray%28Scalar%29%7CNil-instance-method" class="signature"><strong>#as_a?</strong> : Array(Scalar) | Nil</a>
+        
+          <div class="summary"><p>Returns all the components of the value (see <code><a href="../EXIF/Entry.html#as_a%3AArray%28Scalar%29-instance-method">#as_a</a></code>), or <code>nil</code> if the value is <code>Bytes</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_bytes%3ABytes-instance-method" class="signature"><strong>#as_bytes</strong> : Bytes</a>
+        
+          <div class="summary"><p>Returns the value as <code>Bytes</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_bytes%3F%3ABytes%7CNil-instance-method" class="signature"><strong>#as_bytes?</strong> : Bytes | Nil</a>
+        
+          <div class="summary"><p>Returns the value as <code>Bytes</code>, or <code>nil</code> if it isn't <code>Bytes</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_f%3AFloat64-instance-method" class="signature"><strong>#as_f</strong> : Float64</a>
+        
+          <div class="summary"><p>Returns the value as a <code>Float64</code>, converting integers and rationals (undefined rationals are converted to <code>Float64::NAN</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_f%3F%3AFloat64%7CNil-instance-method" class="signature"><strong>#as_f?</strong> : Float64 | Nil</a>
+        
+          <div class="summary"><p>Returns the value as a <code>Float64</code> (see <code><a href="../EXIF/Entry.html#as_f%3AFloat64-instance-method">#as_f</a></code>), or <code>nil</code> if it isn't a single number.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_i%3AInt64-instance-method" class="signature"><strong>#as_i</strong> : Int64</a>
+        
+          <div class="summary"><p>Returns the value as an <code>Int64</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_i%3F%3AInt64%7CNil-instance-method" class="signature"><strong>#as_i?</strong> : Int64 | Nil</a>
+        
+          <div class="summary"><p>Returns the value as an <code>Int64</code>, or <code>nil</code> if it isn't a single integer.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_rational%3AURational%7CSRational-instance-method" class="signature"><strong>#as_rational</strong> : URational | SRational</a>
+        
+          <div class="summary"><p>Returns the value as a rational.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_rational%3F%3AURational%7CSRational%7CNil-instance-method" class="signature"><strong>#as_rational?</strong> : URational | SRational | Nil</a>
+        
+          <div class="summary"><p>Returns the value as a rational, or <code>nil</code> if it isn't a single rational.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_s%3AString-instance-method" class="signature"><strong>#as_s</strong> : String</a>
+        
+          <div class="summary"><p>Returns the value as a <code>String</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#as_s%3F%3AString%7CNil-instance-method" class="signature"><strong>#as_s?</strong> : String | Nil</a>
+        
+          <div class="summary"><p>Returns the value as a <code>String</code>, or <code>nil</code> if it isn't one.</p></div>
         
       </li>
     
@@ -544,7 +628,273 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L184" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L292" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_a:Array(Scalar)-instance-method">
+      <div class="signature">
+        
+        def <strong>as_a</strong> : Array(<a href="../EXIF/Scalar.html">Scalar</a>)
+
+        <a class="method-permalink" href="#as_a%3AArray%28Scalar%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns all the components of the value, wrapping single ones in an <code>Array</code>.</p>
+<p>Raises <code>TypeCastError</code> if the value is <code>Bytes</code>, which has no components.</p>
+<pre><code class="language-crystal">data[<span class="n">:gps_latitude</span>].as_a <span class="c"># =&gt; [EXIF::URational(52/1), EXIF::URational(13/1), ...]</span>
+data[<span class="n">:make</span>].as_a         <span class="c"># =&gt; [&quot;Canon&quot;]</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L226" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_a?:Array(Scalar)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>as_a?</strong> : Array(<a href="../EXIF/Scalar.html">Scalar</a>) | Nil
+
+        <a class="method-permalink" href="#as_a%3F%3AArray%28Scalar%29%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns all the components of the value (see <code><a href="../EXIF/Entry.html#as_a%3AArray%28Scalar%29-instance-method">#as_a</a></code>), or <code>nil</code> if the value is <code>Bytes</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L231" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_bytes:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>as_bytes</strong> : Bytes
+
+        <a class="method-permalink" href="#as_bytes%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as <code>Bytes</code>.</p>
+<p>Raises <code>TypeCastError</code> if the value isn't <code>Bytes</code> (i.e. of <code><a href="../LibEXIF/EXIFFormat.html#Undefined">Format::Undefined</a></code>).</p>
+<pre><code class="language-crystal">data[<span class="n">:exif_version</span>].as_bytes <span class="c"># =&gt; Bytes[48, 50, 50, 48]</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L209" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_bytes?:Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>as_bytes?</strong> : Bytes | Nil
+
+        <a class="method-permalink" href="#as_bytes%3F%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as <code>Bytes</code>, or <code>nil</code> if it isn't <code>Bytes</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L214" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_f:Float64-instance-method">
+      <div class="signature">
+        
+        def <strong>as_f</strong> : Float64
+
+        <a class="method-permalink" href="#as_f%3AFloat64-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as a <code>Float64</code>, converting integers and rationals
+(undefined rationals are converted to <code>Float64::NAN</code>).</p>
+<p>Raises <code>TypeCastError</code> if the value isn't a single number.</p>
+<pre><code class="language-crystal">data[<span class="n">:f_number</span>].as_f <span class="c"># =&gt; 2.8</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L175" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_f?:Float64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>as_f?</strong> : Float64 | Nil
+
+        <a class="method-permalink" href="#as_f%3F%3AFloat64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as a <code>Float64</code> (see <code><a href="../EXIF/Entry.html#as_f%3AFloat64-instance-method">#as_f</a></code>), or <code>nil</code> if it isn't a single number.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L180" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_i:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>as_i</strong> : Int64
+
+        <a class="method-permalink" href="#as_i%3AInt64-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as an <code>Int64</code>.</p>
+<p>Raises <code>TypeCastError</code> if the value isn't a single integer.</p>
+<pre><code class="language-crystal">data[<span class="n">:orientation</span>].as_i <span class="c"># =&gt; 6</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L158" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_i?:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>as_i?</strong> : Int64 | Nil
+
+        <a class="method-permalink" href="#as_i%3F%3AInt64%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as an <code>Int64</code>, or <code>nil</code> if it isn't a single integer.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L163" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_rational:URational|SRational-instance-method">
+      <div class="signature">
+        
+        def <strong>as_rational</strong> : <a href="../EXIF/URational.html">URational</a> | <a href="../EXIF/SRational.html">SRational</a>
+
+        <a class="method-permalink" href="#as_rational%3AURational%7CSRational-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as a rational.</p>
+<p>Raises <code>TypeCastError</code> if the value isn't a single rational.</p>
+<pre><code class="language-crystal">data[<span class="n">:exposure_time</span>].as_rational <span class="c"># =&gt; EXIF::URational(1/250)</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L193" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_rational?:URational|SRational|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>as_rational?</strong> : <a href="../EXIF/URational.html">URational</a> | <a href="../EXIF/SRational.html">SRational</a> | Nil
+
+        <a class="method-permalink" href="#as_rational%3F%3AURational%7CSRational%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as a rational, or <code>nil</code> if it isn't a single rational.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L198" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_s:String-instance-method">
+      <div class="signature">
+        
+        def <strong>as_s</strong> : String
+
+        <a class="method-permalink" href="#as_s%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as a <code>String</code>.</p>
+<p>Raises <code>TypeCastError</code> if the value isn't a <code>String</code>.</p>
+<pre><code class="language-crystal">data[<span class="n">:model</span>].as_s <span class="c"># =&gt; &quot;Canon PowerShot S70&quot;</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L142" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="as_s?:String|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>as_s?</strong> : String | Nil
+
+        <a class="method-permalink" href="#as_s%3F%3AString%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the value as a <code>String</code>, or <code>nil</code> if it isn't one.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -565,7 +915,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L100" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L100" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -586,7 +936,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L95" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -607,7 +957,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -628,7 +978,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L175" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L283" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -649,7 +999,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L80" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L80" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -670,7 +1020,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L31" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -686,7 +1036,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -707,7 +1057,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L169" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L277" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -728,7 +1078,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L90" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -753,7 +1103,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L188" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L296" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -774,7 +1124,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -795,7 +1145,7 @@ entry.to_s   <span class="c"># =&gt; &quot;1/250 sec.&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L48" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -828,7 +1178,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L192" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L300" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -849,7 +1199,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -870,7 +1220,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L85" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -891,7 +1241,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -912,7 +1262,7 @@ and the values of all instance variables.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L75" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L75" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -935,7 +1285,7 @@ byte order), so these are formatted from their decoded <code><a href="../EXIF/En
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L139" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L247" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -956,7 +1306,7 @@ byte order), so these are formatted from their decoded <code><a href="../EXIF/En
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L105" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -972,7 +1322,7 @@ byte order), so these are formatted from their decoded <code><a href="../EXIF/En
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L26" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -993,7 +1343,7 @@ byte order), so these are formatted from their decoded <code><a href="../EXIF/En
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1019,7 +1369,7 @@ and <code>ArgumentError</code> for tags generated by libexif (see <code>Tag#mana
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/891a83f/src/exif/entry.cr#L125" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/01757b8/src/exif/entry.cr#L125" target="_blank">View source</a>]
         
       </div>
     </div>
