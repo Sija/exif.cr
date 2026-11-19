@@ -170,6 +170,15 @@ libexif messages are forwarded to the `exif` [`Log`](https://crystal-lang.org/ap
 Log.setup("exif.*", :debug)
 ```
 
+### Limitations
+
+- Only JPEG images (and raw EXIF blocks) are supported. TIFF-based formats
+  (TIFF, DNG and most camera RAW formats) can't be read reliably, since libexif
+  only loads the first 64 KiB of data, while their metadata can be anywhere in the file.
+- `Data#save` replaces the file atomically, keeping its permissions,
+  but not its ownership (relevant only when writing other users' files).
+- Maker notes are read-only, and reflect the data as loaded.
+
 ## Examples
 
 See the [`examples`](examples) directory, e.g.:
