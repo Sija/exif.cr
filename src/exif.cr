@@ -103,6 +103,17 @@ module EXIF
 
   # :nodoc:
   #
+  # Reads into *buffer* until it's full or *io* ends, returning the number of bytes read.
+  def self.read_up_to(io : IO, buffer : Bytes) : Int32
+    count = 0
+    while count < buffer.size && (read = io.read(buffer + count)) > 0
+      count += read
+    end
+    count
+  end
+
+  # :nodoc:
+  #
   # Returns a `String` or `nil` in case of a null pointer.
   def self.string?(ptr : LibC::Char*) : String?
     String.new(ptr) unless ptr.null?

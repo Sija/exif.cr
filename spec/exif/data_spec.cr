@@ -38,6 +38,31 @@ describe EXIF::Data do
       EXIF::Data.new(canon_data.to_slice).model.should eq "Canon PowerShot S70"
     end
 
+    it "loads raw EXIF blocks from IO" do
+      EXIF::Data.new(IO::Memory.new(canon_data.to_slice)).model.should eq "Canon PowerShot S70"
+    end
+
+    it "loads raw TIFF structures (EXIF blocks without the header)" do
+      {EXIF::ByteOrder::Intel, EXIF::ByteOrder::Motorola}.each do |byte_order|
+        data = canon_data
+        data.byte_order = byte_order
+        tiff = data.to_slice[EXIF::JPEG::EXIF_HEADER.size..]
+
+        {EXIF::Data.new(tiff), EXIF::Data.new(IO::Memory.new(tiff))}.each do |loaded|
+          loaded.byte_order.should eq byte_order
+          loaded.model.should eq "Canon PowerShot S70"
+          loaded.to_h.should eq data.to_h
+        end
+      end
+    end
+
+    it "raises NoDataError for short or unknown input" do
+      [Bytes.empty, Bytes[0xFF], "II*".to_slice, "Exif".to_slice, "nothing here".to_slice].each do |bytes|
+        expect_raises(EXIF::NoDataError) { EXIF::Data.new(bytes) }
+        expect_raises(EXIF::NoDataError) { EXIF::Data.new(IO::Memory.new(bytes)) }
+      end
+    end
+
     it "loads from IO" do
       File.open(fixture_path("canon.jpg")) do |file|
         EXIF::Data.new(file).make.should eq "Canon"

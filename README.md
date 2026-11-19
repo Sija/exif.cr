@@ -5,7 +5,7 @@ It also includes a facade to read, modify and write EXIF metadata in a more idio
 
 ## Features
 
-- Reading EXIF data from JPEG files, `IO`s, byte slices and raw EXIF blocks
+- Reading EXIF data from JPEG files, `IO`s, byte slices and raw EXIF blocks (with or without the `Exif\0\0` header, i.e. from PNG `eXIf` chunks)
 - Typed entry values (`String`, `Int64`, `Float64`, rationals, arrays, ...), with `#as_s`-style helpers
 - Human-readable (localized) entry values, as formatted by libexif
 - Semantic accessors for common tags (camera, exposure, time, orientation, GPS, ...)

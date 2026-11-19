@@ -66,43 +66,63 @@ module EXIF
       @warnings << message unless @warnings.includes?(message)
     end
 
-    # Loads EXIF data from a JPEG image or a raw EXIF block
-    # (starting with an `Exif\0\0` header) held in *bytes*.
+    # Loads EXIF data from the given *bytes*, see `.new(io)`.
     #
     # Raises `NoDataError` if no EXIF data is found.
     def self.new(bytes : Bytes, options : Options = Options.default) : self
-      if JPEG.jpeg?(bytes)
-        return new(IO::Memory.new(bytes, false), options)
-      end
-      if bytes[0, JPEG::EXIF_HEADER.size]? == JPEG::EXIF_HEADER
-        return load_block(bytes, options)
-      end
-      load(options) do |loader|
-        LibEXIF.exif_loader_write(loader, bytes, bytes.size.to_u32)
-      end
+      new(IO::Memory.new(bytes, false), options)
     end
 
     # Loads EXIF data from the given *io*, reading only as much of it as needed.
     #
+    # Accepts a JPEG image, a raw EXIF block (starting with an `Exif\0\0` header),
+    # or a raw TIFF structure, i.e. the EXIF block without its header (as stored
+    # in PNG `eXIf` chunks). Other formats are left to libexif's loader.
+    #
     # Raises `NoDataError` if no EXIF data is found.
     def self.new(io : IO, options : Options = Options.default) : self
-      head = Bytes.new(2)
-      head = head[0, io.read_fully?(head) || 0]
+      # Sniffed in steps, so that JPEG streams are left right after the SOI marker
+      head = Bytes.new(JPEG::EXIF_HEADER.size)
+      size = EXIF.read_up_to(io, head[0, 2])
 
       # NOTE: libexif's loader stops at JPEG segments it doesn't know (i.e. APP12),
       # missing the EXIF segments following them, so JPEG streams are read here
-      if JPEG.jpeg?(head)
+      if JPEG.jpeg?(head[0, size])
         exif = JPEG.read_exif?(io) || raise NoDataError.new
         return load_block(exif, options)
       end
+
+      size += EXIF.read_up_to(io, head[size, 2]) if size == 2
+      if head[0, size].in?(TIFF_HEADERS)
+        return load_block(JPEG::EXIF_HEADER + head[0, size] + read_block(io, size), options)
+      end
+
+      size += EXIF.read_up_to(io, head[size, 2]) if size == 4
+      if head[0, size] == JPEG::EXIF_HEADER
+        return load_block(head + read_block(io, 0), options)
+      end
+
       load(options) do |loader|
-        next if LibEXIF.exif_loader_write(loader, head, head.size.to_u32).zero?
+        next if LibEXIF.exif_loader_write(loader, head, size.to_u32).zero?
 
         buffer = Bytes.new(BUFFER_SIZE)
         while (read = io.read(buffer)) > 0
           break if LibEXIF.exif_loader_write(loader, buffer, read.to_u32).zero?
         end
       end
+    end
+
+    # Byte order marks and magic numbers starting a TIFF structure.
+    TIFF_HEADERS = {"II*\0".to_slice, "MM\0*".to_slice}
+
+    # Maximum size of the EXIF block (including the `Exif\0\0` header) libexif loads.
+    MAX_BLOCK_SIZE = 0xFFFE
+
+    # Reads the rest of an EXIF block from *io*, *read* bytes of which (not counting
+    # the `Exif\0\0` header) were already read, up to `MAX_BLOCK_SIZE`.
+    private def self.read_block(io : IO, read : Int32) : Bytes
+      rest = Bytes.new(MAX_BLOCK_SIZE - JPEG::EXIF_HEADER.size - read)
+      rest[0, EXIF.read_up_to(io, rest)]
     end
 
     # Loads EXIF data from the file at the given *path*.

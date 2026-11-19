@@ -74,19 +74,10 @@ module EXIF
           next
         end
         payload = Bytes.new(length)
-        payload = payload[0, read_up_to(io, payload)]
+        payload = payload[0, EXIF.read_up_to(io, payload)]
         return payload if payload[0, EXIF_HEADER.size]? == EXIF_HEADER
       end
     rescue IO::EOFError
-    end
-
-    # Reads into *buffer* until it's full or *io* ends, returning the number of bytes read.
-    private def read_up_to(io : IO, buffer : Bytes) : Int32
-      count = 0
-      while count < buffer.size && (read = io.read(buffer + count)) > 0
-        count += read
-      end
-      count
     end
 
     # Returns `true` for markers which carry no length (TEM, RSTn).
