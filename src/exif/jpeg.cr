@@ -47,6 +47,53 @@ module EXIF
       rewrite(jpeg) { }
     end
 
+    # Reads the payload of the first EXIF segment (starting with the `Exif\0\0` header)
+    # from the JPEG stream *io*, positioned right after the SOI marker.
+    #
+    # Reads only up to the EXIF segment, skipping over any other ones, and returns
+    # `nil` once the image data is reached, or for malformed and truncated streams.
+    # A truncated EXIF segment is returned as is.
+    def read_exif?(io : IO) : Bytes?
+      loop do
+        return unless io.read_byte == 0xFF
+
+        # Skip fill bytes
+        marker = io.read_byte
+        while marker == 0xFF
+          marker = io.read_byte
+        end
+        return if marker.nil? || marker == SOS || marker == EOI
+        next if standalone?(marker)
+
+        # The segment length includes the length field itself
+        length = io.read_bytes(UInt16, IO::ByteFormat::BigEndian).to_i - 2
+        return if length.negative?
+
+        unless marker == APP1 && length >= EXIF_HEADER.size
+          io.skip(length)
+          next
+        end
+        payload = Bytes.new(length)
+        payload = payload[0, read_up_to(io, payload)]
+        return payload if payload[0, EXIF_HEADER.size]? == EXIF_HEADER
+      end
+    rescue IO::EOFError
+    end
+
+    # Reads into *buffer* until it's full or *io* ends, returning the number of bytes read.
+    private def read_up_to(io : IO, buffer : Bytes) : Int32
+      count = 0
+      while count < buffer.size && (read = io.read(buffer + count)) > 0
+        count += read
+      end
+      count
+    end
+
+    # Returns `true` for markers which carry no length (TEM, RSTn).
+    private def standalone?(marker : UInt8) : Bool
+      marker == 0x01 || 0xD0 <= marker <= 0xD7
+    end
+
     # ameba:disable Metrics/CyclomaticComplexity
     private def rewrite(jpeg : Bytes, & : IO ->) : Bytes
       raise JPEGError.new("Not a JPEG image (missing SOI marker)") unless jpeg?(jpeg)
@@ -77,8 +124,7 @@ module EXIF
           break
         end
 
-        # Standalone markers (TEM, RSTn) carry no length
-        if marker == 0x01 || 0xD0 <= marker <= 0xD7
+        if standalone?(marker)
           io.write jpeg[pos, 2]
           pos += 2
           next

@@ -71,13 +71,11 @@ module EXIF
     #
     # Raises `NoDataError` if no EXIF data is found.
     def self.new(bytes : Bytes, options : Options = Options.default) : self
-      # libexif's loader only handles JPEG streams
+      if JPEG.jpeg?(bytes)
+        return new(IO::Memory.new(bytes, false), options)
+      end
       if bytes[0, JPEG::EXIF_HEADER.size]? == JPEG::EXIF_HEADER
-        # The EXIF header has to be followed by (at least) a TIFF header
-        if bytes.size < JPEG::EXIF_HEADER.size + TIFF_HEADER_SIZE
-          raise NoDataError.new("No valid EXIF data found (too short)")
-        end
-        return load_data(bytes.to_unsafe, bytes.size.to_u32, options)
+        return load_block(bytes, options)
       end
       load(options) do |loader|
         LibEXIF.exif_loader_write(loader, bytes, bytes.size.to_u32)
@@ -88,7 +86,18 @@ module EXIF
     #
     # Raises `NoDataError` if no EXIF data is found.
     def self.new(io : IO, options : Options = Options.default) : self
+      head = Bytes.new(2)
+      head = head[0, io.read_fully?(head) || 0]
+
+      # NOTE: libexif's loader stops at JPEG segments it doesn't know (i.e. APP12),
+      # missing the EXIF segments following them, so JPEG streams are read here
+      if JPEG.jpeg?(head)
+        exif = JPEG.read_exif?(io) || raise NoDataError.new
+        return load_block(exif, options)
+      end
       load(options) do |loader|
+        next if LibEXIF.exif_loader_write(loader, head, head.size.to_u32).zero?
+
         buffer = Bytes.new(BUFFER_SIZE)
         while (read = io.read(buffer)) > 0
           break if LibEXIF.exif_loader_write(loader, buffer, read.to_u32).zero?
@@ -125,6 +134,15 @@ module EXIF
       ensure
         LibEXIF.exif_loader_unref(loader)
       end
+    end
+
+    # Loads the EXIF data from the EXIF block held in *bytes* (starting with an `Exif\0\0` header).
+    private def self.load_block(bytes : Bytes, options : Options) : self
+      # The EXIF header has to be followed by (at least) a TIFF header
+      if bytes.size < JPEG::EXIF_HEADER.size + TIFF_HEADER_SIZE
+        raise NoDataError.new("No valid EXIF data found (too short)")
+      end
+      load_data(bytes.to_unsafe, bytes.size.to_u32, options)
     end
 
     # Loads the EXIF data from the raw *buf* (an EXIF block or a JPEG image).

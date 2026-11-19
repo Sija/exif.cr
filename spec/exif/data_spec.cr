@@ -44,6 +44,42 @@ describe EXIF::Data do
       end
     end
 
+    it "finds EXIF data following any other JPEG segments" do
+      segment = ->(marker : Int32, payload : Bytes) do
+        IO::Memory.new.tap do |io|
+          io.write_byte 0xFF_u8
+          io.write_byte marker.to_u8
+          io.write_bytes (payload.size + 2).to_u16, IO::ByteFormat::BigEndian
+          io.write payload
+        end.to_slice
+      end
+      exif = segment.call(0xE1, canon_data.to_slice)
+      image = EXIF::JPEG.strip(fixture("canon.jpg"))[2..]
+
+      # APPn, XMP (APP1), COM, DQT, DHT and DRI segments
+      ((0xE0..0xEF).to_a + [0xFE, 0xDB, 0xC4, 0xDD]).each do |marker|
+        payload = marker == 0xE1 ? "http://ns.adobe.com/xap/1.0/\0".to_slice : Bytes.new(4)
+        jpeg = Bytes[0xFF, 0xD8] + segment.call(marker, payload) + exif + image
+
+        EXIF::Data.new(jpeg).model.should eq "Canon PowerShot S70"
+        EXIF::Data.new(IO::Memory.new(jpeg)).model.should eq "Canon PowerShot S70"
+      end
+    end
+
+    it "loads truncated EXIF segments" do
+      jpeg = fixture("canon.jpg")
+      data = EXIF::Data.new(jpeg[0, 600])
+      data.warnings.should_not be_empty
+      data.make.should eq "Canon"
+    end
+
+    it "raises NoDataError for malformed JPEG data" do
+      expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8]) }
+      expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0x00]) }
+      expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0x00]) }
+      expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0x00, 0x01]) }
+    end
+
     it "exposes options" do
       EXIF::Data.new.options.should eq EXIF::Options.default
       EXIF::Data.new(options: :none).options.should eq EXIF::Options::None
