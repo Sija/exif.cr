@@ -55,7 +55,14 @@ module EXIF
 
     # Returns all entry tags.
     def tags : Array(AnyTag)
-      map(&.tag)
+      # Read directly, without wrapping the entries
+      ptr, gps = @ptr, ifd.gps?
+      data.retain do
+        Array(AnyTag).new(ptr.value.count) do |i|
+          tag = ptr.value.entries[i].value.tag
+          gps ? GPSTag.new(tag.value) : tag
+        end
+      end
     end
 
     # Returns the entry for the given *tag*, or `nil`.

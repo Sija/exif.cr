@@ -20,6 +20,28 @@ describe EXIF::Entry do
     data[:exif_version].to_s.should eq "Exif Version 2.2"
   end
 
+  it "formats large values in full" do
+    data = EXIF::Data.new
+    data[:image_description] = "x" * 5000
+    data[:image_description].to_s.should eq "x" * 5000
+
+    data[:xp_comment] = "é" * 2000
+    data[:xp_comment].to_s.should eq "é" * 2000
+
+    data[:bits_per_sample] = Array.new(500, 65535)
+    data[:bits_per_sample].to_s.should eq Array.new(500, 65535).join(", ")
+
+    data[:white_point] = Array.new(100) { EXIF::URational.new(UInt32::MAX) }
+    data[:white_point].to_s.should eq Array.new(100, UInt32::MAX).join(", ")
+  end
+
+  it "returns the tags of the GPS IFD as GPS tags" do
+    data = EXIF::Data.new
+    data.gps = EXIF::GPS.new(1.0, 2.0)
+    data.ifd(:gps).tags.should eq data.ifd(:gps).map(&.tag)
+    data.ifd(:gps).tags.should contain EXIF::GPSTag::GPSLatitude
+  end
+
   describe "#value" do
     it "decodes values" do
       data = canon_data
