@@ -101,6 +101,9 @@ describe EXIF::Data do
       [
         "Exif\0\0".to_slice,
         "Exif\0\0".to_slice + Bytes.new(20),
+        # Invalid magic number, IFD 0 offset beyond the data (silently ignored by libexif)
+        "Exif\0\0MM\0+\0\0\0\x08".to_slice + Bytes.new(20),
+        "Exif\0\0II*\0\xFF\0\0\0".to_slice + Bytes.new(20),
       ].each do |bogus|
         jpeg = Bytes[0xFF, 0xD8] + segment.call(bogus) + valid + image
         EXIF::Data.new(jpeg).model.should eq "Canon PowerShot S70"
@@ -155,6 +158,20 @@ describe EXIF::Data do
 
     it "loads valid empty EXIF data" do
       EXIF::Data.new(EXIF::Data.new(options: :none).to_slice, options: :none).empty?.should be_true
+    end
+
+    it "raises NoDataError for invalid TIFF headers" do
+      empty = EXIF::Data.new(options: :none).to_slice
+      # IFD 0 entry count at the very end
+      EXIF::Data.new(empty[0, 16], options: :none).empty?.should be_true
+
+      {
+        "Exif\0\0MM\0+\0\0\0\x08\0\0".to_slice,   # magic number
+        "Exif\0\0MM\0*\0\0\0\x09\0\0".to_slice,   # IFD 0 entry count beyond the data
+        "Exif\0\0II*\0\xFF\xFF\xFF\xFF".to_slice, # IFD 0 offset beyond the data
+      }.each do |bytes|
+        expect_raises(EXIF::NoDataError, /invalid TIFF header/) { EXIF::Data.new(bytes) }
+      end
     end
 
     it "raises NoDataError for data without EXIF" do

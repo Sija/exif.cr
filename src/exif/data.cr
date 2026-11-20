@@ -183,7 +183,28 @@ module EXIF
       if bytes.size < JPEG::EXIF_HEADER.size + TIFF_HEADER_SIZE
         raise NoDataError.new("No valid EXIF data found (too short)")
       end
+      unless valid_tiff_header?(bytes)
+        raise NoDataError.new("No valid EXIF data found (invalid TIFF header)")
+      end
       load_data(bytes.to_unsafe, bytes.size.to_u32, options)
+    end
+
+    # Returns `false` if the TIFF header of the EXIF block held in *bytes* has an invalid
+    # magic number or IFD 0 offset, which libexif silently loads as empty data.
+    #
+    # NOTE: Blocks with an unknown byte order are left to libexif, which reports these.
+    private def self.valid_tiff_header?(bytes : Bytes) : Bool
+      tiff = bytes + JPEG::EXIF_HEADER.size
+      format =
+        case tiff[0, 2]
+        when "II".to_slice then IO::ByteFormat::LittleEndian
+        when "MM".to_slice then IO::ByteFormat::BigEndian
+        else                    return true
+        end
+      magic = format.decode(UInt16, tiff[2, 2])
+      offset = format.decode(UInt32, tiff[4, 4])
+      # Same bounds as libexif's (the IFD 0 entry count has to fit)
+      magic == 42 && offset.to_i64 + 2 <= Math.min(bytes.size, MAX_BLOCK_SIZE) - JPEG::EXIF_HEADER.size
     end
 
     # Loads the EXIF data from the raw *buf* (an EXIF block or a JPEG image).
