@@ -457,7 +457,12 @@ module EXIF
       # see `Entry#to_s`), or returns `nil` for JIS text, which isn't supported
       # (so that it's decoded as `Bytes` rather than misdecoded).
       private def decode_user_comment(bytes : Bytes) : String?
-        return "" if bytes.size < 8
+        # Without a character code (against the specification), all of the data is taken
+        # as text, as libexif does; except for a NUL byte followed by rubbish (written i.e.
+        # by Canon ZoomBrowser), which libexif takes as the undefined character code
+        unless user_comment_charset?(bytes) || (bytes.size >= 8 && bytes[0].zero?)
+          return decode_string(bytes).rstrip('\0')
+        end
 
         charset, text = bytes[0, 8], bytes[8..]
         case charset

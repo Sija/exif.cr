@@ -189,6 +189,23 @@ describe EXIF::Entry do
       data[:user_comment].value.should eq "é "
     end
 
+    it "decodes user comments without a character code" do
+      data = EXIF::Data.new
+      data[:user_comment] = "Hello world".to_slice
+      data[:user_comment].value.should eq "Hello world"
+      data[:user_comment].to_s.should eq "Hello world"
+
+      data[:user_comment] = "Hi".to_slice
+      data.user_comment.should eq "Hi"
+
+      # As fixed by libexif when loading
+      EXIF::Data.new(data.to_slice).user_comment.should eq "Hi"
+
+      # Undefined character code, written as a NUL byte followed by rubbish
+      data[:user_comment] = Bytes[0, 1, 2, 3, 4, 5, 6, 7] + "Hi".to_slice
+      data.user_comment.should eq "Hi"
+    end
+
     it "doesn't decode JIS user comments" do
       data = EXIF::Data.new
       bytes = "JIS\0\0\0\0\0".to_slice + Bytes[0x24, 0x22]
