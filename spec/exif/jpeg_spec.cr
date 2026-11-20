@@ -97,6 +97,13 @@ describe EXIF::JPEG do
     embedded.should eq Bytes[0xFF, 0xD8] + exif_segment + head[2..] + first_scan + second_scan + eoi
   end
 
+  it "handles fill bytes preceding restart markers" do
+    scan = Bytes[0xFF, 0xDA, 0, 8] + Bytes.new(6) + Bytes[0x12, 0xFF, 0xFF, 0xD0, 0x56]
+    jpeg = Bytes[0xFF, 0xD8] + scan + Bytes[0xFF, 0xD9]
+    EXIF::JPEG.strip(jpeg).should eq jpeg
+    EXIF::JPEG.embed(jpeg, exif)[-scan.size - 2..].should eq scan + Bytes[0xFF, 0xD9]
+  end
+
   it "raises on invalid segment lengths" do
     {0, 1}.each do |length|
       jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE2, 0, length, 0xFF, 0xD9]

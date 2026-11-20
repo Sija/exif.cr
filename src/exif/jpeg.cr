@@ -103,13 +103,18 @@ module EXIF
     rescue IO::EOFError
     end
 
-    # Returns the offset of the first marker following the entropy-coded data
-    # starting at *pos*, in which `0xFF` bytes are either stuffed (followed by `0x00`)
-    # or start RSTn markers.
+    # Returns the offset of the first marker (or of the fill bytes preceding it) following
+    # the entropy-coded data starting at *pos*, in which `0xFF` bytes are either stuffed
+    # (followed by `0x00`) or start RSTn markers (possibly preceded by fill bytes).
     private def scan_end(jpeg : Bytes, pos : Int32) : Int32
       while pos = jpeg.index(0xFF_u8, pos)
+        start = pos
+        # Skip fill bytes
+        while jpeg[pos + 1]? == 0xFF
+          pos += 1
+        end
         following = jpeg[pos + 1]? || break
-        return pos unless following.zero? || 0xD0 <= following <= 0xD7
+        return start unless following.zero? || 0xD0 <= following <= 0xD7
         pos += 2
       end
       jpeg.size
