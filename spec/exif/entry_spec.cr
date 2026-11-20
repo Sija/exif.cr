@@ -291,6 +291,9 @@ describe EXIF::Entry do
         [1, -0.5]                       => {EXIF::Format::SRational, [EXIF::SRational.new(1), EXIF::SRational.new(-1, 2)]},
         [EXIF::URational.new(1, 3), -2] => {EXIF::Format::SRational, [EXIF::SRational.new(1, 3), EXIF::SRational.new(-2)]},
         [1, EXIF::SRational.new(1, 3)]  => {EXIF::Format::SRational, [EXIF::SRational.new(1), EXIF::SRational.new(1, 3)]},
+        # Not fitting `Format::SRational`
+        [2_147_483_648_i64, EXIF::SRational.new(1, 2)]                   => {EXIF::Format::Rational, [EXIF::URational.new(2_147_483_648), EXIF::URational.new(1, 2)]},
+        [EXIF::URational.new(UInt32::MAX, 2), EXIF::SRational.new(1, 2)] => {EXIF::Format::Rational, [EXIF::URational.new(UInt32::MAX, 2), EXIF::URational.new(1, 2)]},
       }.each do |values, (format, decoded)|
         content[tag] = nil
         content[tag] = values
@@ -299,6 +302,7 @@ describe EXIF::Entry do
       end
 
       content[tag] = nil
+      expect_raises(EXIF::ValueError) { content[tag] = [2_147_483_648_i64, EXIF::SRational.new(-1, 2)] }
       expect_raises(EXIF::ValueError) { content[tag] = [1, "foo"] }
       content.has_key?(tag).should be_false
     end

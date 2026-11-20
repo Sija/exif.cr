@@ -683,25 +683,35 @@ module EXIF
       # Returns the entry format, or one inferred from all the *values*
       # when the entry has none yet (i.e. for tags unknown to libexif):
       # integers are stored as `Format::Long`, other numbers as `Format::Rational`,
-      # using the signed variants if any of the values is negative.
+      # using the signed variants if any of the values is negative (or is a `SRational`,
+      # unless the other values don't fit `Format::SRational`).
       private def numeric_format(values : Indexable) : Format
         format = raw.format
         return format if Format.valid?(format)
 
-        signed, integers = false, true
+        signed, signed_rationals, integers = false, false, true
         values.each do |value|
           case value
           when Int       then signed ||= value.negative?
           when Float     then signed ||= value.negative?; integers = false
-          when SRational then signed, integers = true, false
+          when SRational then signed ||= value.numerator.negative? || value.denominator.negative?; signed_rationals, integers = true, false
           when URational then integers = false
           else                mismatch!(values, format)
           end
         end
-        if integers
-          signed ? Format::SLong : Format::Long
-        else
-          signed ? Format::SRational : Format::Rational
+        return signed ? Format::SLong : Format::Long if integers
+
+        # Signed rationals are kept as such, unless other (non-negative) values don't fit their range
+        signed ||= signed_rationals && values.all? { |value| fits_s_rational?(value) }
+        signed ? Format::SRational : Format::Rational
+      end
+
+      private def fits_s_rational?(value) : Bool
+        case value
+        when SRational  then true
+        when URational  then value.numerator <= Int32::MAX && value.denominator <= Int32::MAX
+        when Int, Float then value <= Int32::MAX
+        else                 false
         end
       end
 
