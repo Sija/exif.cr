@@ -64,6 +64,8 @@ module EXIF
     # *path* atomically, so that *path* is never left partially written.
     # The permissions, owner and group of the replaced file are kept, raising
     # `Error` (and leaving it intact) if they can't be. Symbolic links are followed.
+    #
+    # NOTE: Extended attributes aren't kept, and other hard links to the file keep the previous image.
     def write(path : Path | String, jpeg : Bytes) : Nil
       AtomicFile.write(path, jpeg)
     end

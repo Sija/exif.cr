@@ -189,7 +189,8 @@ Log.setup("exif.*", :debug)
   only loads the first 64 KiB of data, while their metadata can be anywhere in the file.
 - `Data#save` replaces the file atomically, keeping its permissions, owner and group;
   it refuses to replace files whose owner it can't keep (i.e. other users' files),
-  or whose group it can't keep while the group has any permissions.
+  or whose group it can't keep while the group has any permissions. Being a new file,
+  it doesn't keep extended attributes (i.e. macOS Finder tags) nor other hard links to the file.
 - Maker notes are read-only, and reflect the data as loaded. A new `MakerNote` value
   is saved as is, so one copied over from another image might not be readable
   (some vendors store offsets relative to the start of the EXIF data within it).
