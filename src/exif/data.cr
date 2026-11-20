@@ -419,16 +419,15 @@ module EXIF
 
     # Sets (or removes, if `nil`) the embedded thumbnail.
     def thumbnail=(bytes : Bytes?) : Bytes?
-      EXIF.free(@ptr.value.data)
-      @ptr.value.data = Pointer(UInt8).null
-      @ptr.value.size = 0
-
+      # Allocated upfront, so that the current thumbnail is kept if that fails
+      ptr, size = Pointer(UInt8).null, 0_u32
       if bytes && !bytes.empty?
         ptr = EXIF.alloc(bytes.size)
         ptr.copy_from(bytes.to_unsafe, bytes.size)
-        @ptr.value.data = ptr
-        @ptr.value.size = bytes.size.to_u32
+        size = bytes.size.to_u32
       end
+      EXIF.free(@ptr.value.data)
+      @ptr.value.data, @ptr.value.size = ptr, size
       bytes
     end
 
