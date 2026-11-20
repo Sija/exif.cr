@@ -54,9 +54,7 @@ module EXIF
     # EXIF::JPEG.update("photo.jpg") { |jpeg| EXIF::JPEG.strip(jpeg) }
     # ```
     def update(path : Path | String, & : Bytes -> Bytes) : Nil
-      # Resolved once, so that the same file is read and replaced
-      path = resolve(path)
-      replace(path, yield File.read(path).to_slice)
+      AtomicFile.update(path) { |jpeg| yield jpeg }
     end
 
     # Writes the *jpeg* image to *path*.
@@ -66,40 +64,7 @@ module EXIF
     # The permissions, owner and group of the replaced file are kept, raising
     # `Error` (and leaving it intact) if they can't be. Symbolic links are followed.
     def write(path : Path | String, jpeg : Bytes) : Nil
-      replace(resolve(path), jpeg)
-    end
-
-    private def resolve(path : Path | String) : Path
-      Path[File.symlink?(path) ? File.realpath(path) : path]
-    end
-
-    private def replace(path : Path, jpeg : Bytes) : Nil
-      tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
-      begin
-        if info = File.info?(path)
-          # Readable only by the owner until it gets the owner, group and permissions
-          # of the replaced file, which might not be readable by others (i.e. a private photo)
-          File.write(tempfile, jpeg, perm: File::Permissions.new(0o600))
-          keep_ownership(tempfile, path, info)
-          File.chmod(tempfile, info.permissions)
-        else
-          File.write(tempfile, jpeg)
-        end
-        File.rename(tempfile, path)
-      ensure
-        File.delete?(tempfile)
-      end
-    end
-
-    # Gives the *tempfile* the owner and group of the file at *path*, described by *info*.
-    private def keep_ownership(tempfile : String, path : Path, info : File::Info) : Nil
-      temp_info = File.info(tempfile)
-      return if temp_info.owner_id == info.owner_id && temp_info.group_id == info.group_id
-
-      File.chown(tempfile, info.owner_id.to_i, info.group_id.to_i)
-    rescue ex : File::Error
-      # Otherwise its permissions would apply to another owner or group
-      raise Error.new("Cannot keep the owner and group of #{path}, leaving it intact", cause: ex)
+      AtomicFile.write(path, jpeg)
     end
 
     # Reads the payload of the first EXIF segment (starting with the `Exif\0\0` header)
