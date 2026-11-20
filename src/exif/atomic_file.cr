@@ -23,8 +23,20 @@ module EXIF
       replace(resolve(path), bytes)
     end
 
+    # Maximum number of symbolic links followed by `#resolve`.
+    MAX_SYMLINKS = 40
+
+    # Follows symbolic links at *path*, including dangling ones (pointing to a file
+    # yet to be created), unlike `File.realpath`.
     private def resolve(path : Path | String) : Path
-      Path[File.symlink?(path) ? File.realpath(path) : path]
+      path = Path[path]
+      MAX_SYMLINKS.times do
+        return path unless File.symlink?(path)
+
+        target = Path[File.readlink(path)]
+        path = target.absolute? ? target : path.parent / target
+      end
+      raise File::Error.new("Too many levels of symbolic links", file: path.to_s)
     end
 
     private def replace(path : Path, bytes : Bytes) : Nil

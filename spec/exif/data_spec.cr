@@ -390,6 +390,27 @@ describe EXIF::Data do
       end
     end
 
+    it "follows dangling and chained symbolic links" do
+      dir = File.tempname("exif-spec")
+      Dir.mkdir(dir)
+      begin
+        target, link, chain = {"target.jpg", "link.jpg", "chain.jpg"}.map { |name| File.join(dir, name) }
+        File.symlink("target.jpg", link) # relative, dangling
+        File.symlink(link, chain)
+
+        canon_data.save(chain, source: fixture_path("canon.jpg"))
+        File.symlink?(link).should be_true
+        File.symlink?(chain).should be_true
+        EXIF::Data.open(target).model.should eq "Canon PowerShot S70"
+
+        File.delete(link)
+        File.symlink("chain.jpg", link) # loop
+        expect_raises(File::Error, /symbolic links/) { canon_data.save(chain, source: fixture_path("canon.jpg")) }
+      ensure
+        FileUtils.rm_rf(dir)
+      end
+    end
+
     it "reads and replaces the same file when following symbolic links" do
       dir = File.tempname("exif-spec")
       Dir.mkdir(dir)
