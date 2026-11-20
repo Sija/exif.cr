@@ -163,6 +163,37 @@ describe EXIF::Data do
       data.gps.should eq EXIF::GPS.new(1.5, -2.5)
     end
 
+    it "reads signed GPS values, preferring the references" do
+      data = EXIF::Data.new
+      # Stored as `Format::SRational` by some writers, against the specification
+      {
+        EXIF::GPSTag::GPSLatitude  => [EXIF::SRational.new(-52), EXIF::SRational.new(30), EXIF::SRational.new(0)],
+        EXIF::GPSTag::GPSLongitude => EXIF::SRational.new(-21),
+        EXIF::GPSTag::GPSAltitude  => EXIF::SRational.new(-10),
+      }.each do |tag, value|
+        data[tag] = 0
+        data[tag].to_unsafe.value.format = EXIF::Format::SRational
+        data[tag] = value
+      end
+      data.gps.should eq EXIF::GPS.new(-52.5, -21.0, -10.0)
+
+      data[:gps_latitude_ref] = "S"
+      data[:gps_longitude_ref] = "E"
+      data[:gps_altitude_ref] = Bytes[0]
+      data.gps.should eq EXIF::GPS.new(-52.5, 21.0, 10.0)
+
+      data[:gps_altitude_ref] = Bytes[1]
+      data.gps.try(&.altitude).should eq -10.0
+    end
+
+    it "reads GPS altitude references stored as undefined data" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(1.0, 2.0, -3.0)
+      data[:gps_altitude_ref].to_unsafe.value.format = EXIF::Format::Undefined
+      data[:gps_altitude_ref].value.should eq Bytes[1]
+      data.gps.try(&.altitude).should eq -3.0
+    end
+
     it "ignores undefined GPS coordinates" do
       data = EXIF::Data.new
       data.gps = EXIF::GPS.new(1.0, 2.0, 3.0)

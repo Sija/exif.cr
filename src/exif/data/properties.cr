@@ -128,22 +128,42 @@ module EXIF
       return unless latitude = coordinate?(GPSTag::GPSLatitude, GPSTag::GPSLatitudeRef, "S")
       return unless longitude = coordinate?(GPSTag::GPSLongitude, GPSTag::GPSLongitudeRef, "W")
 
-      altitude = float?(GPSTag::GPSAltitude)
-      altitude = -altitude if altitude && int?(GPSTag::GPSAltitudeRef) == 1
+      altitude = float?(GPSTag::GPSAltitude).try do |value|
+        next unless value.finite?
+        # Below sea level for `1`, the sign of the value is used without any reference
+        altitude_ref.try { |ref| ref == 1 ? -value.abs : value.abs } || value
+      end
 
-      GPS.new(latitude, longitude, altitude.try { |value| value if value.finite? })
+      GPS.new(latitude, longitude, altitude)
     end
 
     # Returns the coordinate (in decimal degrees) from the *tag* entry, negated
     # if the *ref_tag* entry equals *negative_ref*, or `nil` if missing or malformed.
+    #
+    # NOTE: Some writers store signed values; their sign is used when there's
+    # no reference, which otherwise takes precedence.
     private def coordinate?(tag : GPSTag, ref_tag : GPSTag, negative_ref : String) : Float64?
       return unless values = self[tag]?.try(&.as_a?)
       return unless values.size.in?(1..3) && values.all?(URational | SRational | Int64 | Float64)
 
-      degrees = GPS.from_dms(values)
+      # The sign applies to the whole coordinate (i.e. -52 degrees 30 minutes is -52.5 degrees)
+      degrees = GPS.from_dms(values.map(&.to_f.abs))
       return unless degrees.finite?
 
-      string?(ref_tag).try(&.upcase) == negative_ref ? -degrees : degrees
+      case string?(ref_tag).try(&.upcase)
+      when negative_ref then -degrees
+      when nil          then values.any?(&.to_f.negative?) ? -degrees : degrees
+      else                   degrees
+      end
+    end
+
+    # Returns the `GPSTag::GPSAltitudeRef` value (`1` for below sea level), also when
+    # stored as `Format::Undefined` (as some writers do), or `nil`.
+    private def altitude_ref : Int64?
+      case value = self[GPSTag::GPSAltitudeRef]?.try(&.value)
+      when Int64 then value
+      when Bytes then value.first?.try(&.to_i64)
+      end
     end
 
     # Sets the GPS position (or removes it, if `nil`).
