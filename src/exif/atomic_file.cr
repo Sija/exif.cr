@@ -96,8 +96,9 @@ module EXIF
 
     # Gives the *tempfile* the owner and group of the file at *path*, described by *info*.
     #
-    # Raises `Error` if the owner can't be kept, or the group can't be kept
-    # while it has any permissions (which would apply to another group otherwise).
+    # Raises `Error` if the owner can't be kept, or the group can't be kept while its
+    # permissions differ from those of others: members of the original group would get
+    # the permissions of others then, and members of the new group the group permissions.
     private def keep_ownership(tempfile : String, path : Path, info : File::Info) : Nil
       temp_info = File.info(tempfile)
       owner = info.owner_id unless temp_info.owner_id == info.owner_id
@@ -107,9 +108,8 @@ module EXIF
       begin
         File.chown(tempfile, (owner || -1).to_i, (group || -1).to_i)
       rescue ex : File::Error
-        # Without any permissions for its group, the file is no more
-        # accessible to the other group than it was to the original one
-        unless owner.nil? && (info.permissions.value & 0o070).zero?
+        mode = info.permissions.value
+        unless owner.nil? && ((mode >> 3) & 0o7) == (mode & 0o7)
           raise Error.new("Cannot keep the owner and group of #{path}, leaving it intact", cause: ex)
         end
       end
