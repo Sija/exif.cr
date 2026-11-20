@@ -125,6 +125,37 @@ describe EXIF::Entry do
       EXIF::Data.new(data.to_slice).user_comment.should eq "Zażółć"
     end
 
+    it "formats Unicode user comments" do
+      data = EXIF::Data.new
+      data.user_comment = "Zażółć"
+      data[:user_comment].to_s.should eq "Zażółć"
+      data.ifd(:exif).to_h["UserComment"].should eq "Zażółć"
+
+      data.user_comment = "Hello"
+      data[:user_comment].to_s.should eq "Hello"
+    end
+
+    it "decodes user comments stored as ASCII with a character code" do
+      data = EXIF::Data.new
+      store = ->(bytes : Bytes) do
+        data.delete(:user_comment)
+        data[:user_comment] = bytes
+        data[:user_comment].to_unsafe.value.format = EXIF::Format::Ascii
+      end
+
+      store.call("ASCII\0\0\0Hello\0".to_slice)
+      data.user_comment.should eq "Hello"
+      data[:user_comment].to_s.should eq "Hello"
+
+      store.call("UNICODE\0".to_slice + Bytes[0xFF, 0xFE, 0x48, 0x00, 0x69, 0x00])
+      data.user_comment.should eq "Hi"
+      data[:user_comment].to_s.should eq "Hi"
+
+      # Without a character code
+      store.call("Hello".to_slice)
+      data.user_comment.should eq "Hello"
+    end
+
     it "decodes Unicode user comments with byte order marks" do
       {EXIF::ByteOrder::Intel, EXIF::ByteOrder::Motorola}.each do |byte_order|
         data = EXIF::Data.new

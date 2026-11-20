@@ -270,9 +270,10 @@ module EXIF
     # Returns the human-readable (localized) value of the entry, as formatted by libexif.
     #
     # NOTE: libexif can't format entries removed from their IFD (it needs their
-    # byte order), so these are formatted from their decoded `#value` instead.
+    # byte order), nor Unicode user comments, so these are formatted from their
+    # decoded `#value` instead.
     def to_s(io : IO) : Nil
-      return format_value(io, value) unless ifd?
+      return format_value(io, value) if !ifd? || unicode_user_comment?
 
       maxlen = bytesize * format_ratio + 64
       if maxlen <= FORMAT_BUFFER_SIZE
@@ -314,6 +315,10 @@ module EXIF
     # Converts a Unicode `Tag::UserComment` to the other byte order (see `Data#byte_order=`).
     protected def swap_unicode_user_comment : Nil
       retain { Codec.new(self, data.byte_order).swap_unicode_user_comment }
+    end
+
+    private def unicode_user_comment? : Bool
+      retain { Codec.new(self, data.byte_order).unicode_user_comment? }
     end
 
     # Fixes the format and components of the entry to bring it into specification.
@@ -360,6 +365,11 @@ module EXIF
       USER_COMMENT_ASCII   = "ASCII\0\0\0".to_slice
       USER_COMMENT_UNICODE = "UNICODE\0".to_slice
 
+      # All character code prefixes defined by the specification (the last one being undefined).
+      USER_COMMENT_CHARSETS = {
+        USER_COMMENT_ASCII, USER_COMMENT_UNICODE, "JIS\0\0\0\0\0".to_slice, "\0\0\0\0\0\0\0\0".to_slice,
+      }
+
       # Tags holding UTF-16LE strings, stored in `Format::Byte`.
       XP_TAGS = {Tag::XPTitle, Tag::XPComment, Tag::XPAuthor, Tag::XPKeywords, Tag::XPSubject}
 
@@ -390,10 +400,11 @@ module EXIF
       # Decodes textual formats and tags, returning `nil` for other ones.
       private def decode_text(bytes : Bytes) : String?
         case
+        when user_comment_tag? && (raw.format.undefined? || (raw.format.ascii? && user_comment_charset?(bytes)))
+          # Stored as `Format::Ascii` by some writers, against the specification
+          decode_user_comment(bytes)
         when raw.format.ascii?
           decode_string(bytes[0, bytes.index(0_u8) || bytes.size])
-        when user_comment_tag? && raw.format.undefined?
-          decode_user_comment(bytes)
         when xp_tag? && raw.format.byte?
           decode_utf16(bytes, IO::ByteFormat::LittleEndian)
         end
@@ -452,16 +463,27 @@ module EXIF
       # Converts a Unicode `Tag::UserComment` without a byte order mark to the other
       # byte order, since it's stored in the byte order of the data.
       def swap_unicode_user_comment : Nil
-        return unless user_comment_tag? && raw.format.undefined?
+        return unless unicode_user_comment?
 
         bytes = @entry.to_slice
-        return unless bytes[0, USER_COMMENT_UNICODE.size]? == USER_COMMENT_UNICODE
-
         text = bytes + USER_COMMENT_UNICODE.size
         return if text[0, 2]?.in?(Bytes[0xFF, 0xFE], Bytes[0xFE, 0xFF])
 
         (text.size // 2).times { |i| text.swap(i * 2, i * 2 + 1) }
         commit(raw.format, bytes, bytes.size)
+      end
+
+      # Returns `true` for a `Tag::UserComment` holding UTF-16 text.
+      def unicode_user_comment? : Bool
+        return false unless user_comment_tag? && raw.format.in?(Format::Undefined, Format::Ascii)
+
+        data = raw.data
+        !data.null? && raw.size >= USER_COMMENT_UNICODE.size &&
+          Slice.new(data, USER_COMMENT_UNICODE.size) == USER_COMMENT_UNICODE
+      end
+
+      private def user_comment_charset?(bytes : Bytes) : Bool
+        bytes[0, USER_COMMENT_ASCII.size]?.in?(USER_COMMENT_CHARSETS)
       end
 
       private def decode_unicode_user_comment(bytes : Bytes) : String
