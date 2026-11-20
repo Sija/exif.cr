@@ -290,7 +290,7 @@ module EXIF
     # libexif formats values of the entry format into.
     private def format_ratio : Int32
       case format
-      when .ascii?, .undefined? then 2 # text (also UTF-16), or a summary
+      when .ascii?, .undefined? then 1 # copied text, or a summary
       when .byte?, .s_byte?     then 6 # i.e. "0x00, "
       else                           4 # i.e. "65535, " for 2 bytes
       end
