@@ -34,7 +34,9 @@ module EXIF
   #
   # Returns libexif's default memory allocator, used for every
   # buffer this library hands over to libexif.
-  class_getter mem : LibEXIF::EXIFMem* { LibEXIF.exif_mem_new_default }
+  #
+  # NOTE: Initialized upfront rather than lazily, which isn't thread-safe.
+  class_getter mem : LibEXIF::EXIFMem* = LibEXIF.exif_mem_new_default
 
   # :nodoc:
   #
