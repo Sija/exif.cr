@@ -50,6 +50,44 @@ describe EXIF::JPEG do
     EXIF::JPEG.strip(jpeg).should eq jpeg
   end
 
+  it "refuses to keep truncated EXIF segments" do
+    # SOI, APP1 claiming 65535 bytes, truncated within the EXIF header or after it
+    [
+      Bytes[0xFF, 0xD8, 0xFF, 0xE1],
+      Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0xFF, 0xFF, 0x45, 0x78],
+      Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0xFF, 0xFF] + exif,
+    ].each do |jpeg|
+      expect_raises(EXIF::JPEGError, /Truncated EXIF segment/) { EXIF::JPEG.strip(jpeg) }
+      expect_raises(EXIF::JPEGError, /Truncated EXIF segment/) { EXIF::JPEG.embed(jpeg, exif) }
+    end
+
+    # Other truncated APP1 segments (i.e. XMP) are kept as is
+    jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0xFF, 0xFF] + "http://ns.adobe.com/xap/1.0/\0".to_slice
+    EXIF::JPEG.strip(jpeg).should eq jpeg
+  end
+
+  it "handles segments between scans" do
+    segment = ->(marker : Int32, payload : Bytes) do
+      Bytes[0xFF, marker] + Bytes[(payload.size + 2) >> 8, (payload.size + 2) & 0xFF] + payload
+    end
+    # Entropy-coded data with stuffed bytes, a RSTn marker and fill bytes (which get dropped)
+    scan = Bytes[0x12, 0xFF, 0x00, 0x34, 0xFF, 0xD0, 0x56, 0xFF, 0xFF]
+    kept_scan = scan[0, scan.size - 2]
+    exif_segment = segment.call(0xE1, exif)
+    head = Bytes[0xFF, 0xD8] + segment.call(0xC2, Bytes.new(6))
+    scan_head = segment.call(0xDA, Bytes.new(6))
+    tables = segment.call(0xC4, Bytes.new(4))
+    eoi = Bytes[0xFF, 0xD9, 0xAB]
+
+    jpeg = head + exif_segment + scan_head + scan + exif_segment + tables + scan_head + scan + eoi
+    first_scan = scan_head + kept_scan
+    second_scan = tables + scan_head + kept_scan
+    EXIF::JPEG.strip(jpeg).should eq head + first_scan + second_scan + eoi
+
+    embedded = EXIF::JPEG.embed(jpeg, exif)
+    embedded.should eq Bytes[0xFF, 0xD8] + exif_segment + head[2..] + first_scan + second_scan + eoi
+  end
+
   it "raises on invalid segment lengths" do
     {0, 1}.each do |length|
       jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE2, 0, length, 0xFF, 0xD9]

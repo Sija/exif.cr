@@ -80,6 +80,24 @@ module EXIF
     rescue IO::EOFError
     end
 
+    # Returns the offset of the first marker following the entropy-coded data
+    # starting at *pos*, in which `0xFF` bytes are either stuffed (followed by `0x00`)
+    # or start RSTn markers.
+    private def scan_end(jpeg : Bytes, pos : Int32) : Int32
+      while pos = jpeg.index(0xFF_u8, pos)
+        following = jpeg[pos + 1]? || break
+        return pos unless following.zero? || 0xD0 <= following <= 0xD7
+        pos += 2
+      end
+      jpeg.size
+    end
+
+    # Returns `true` if *bytes* start with the EXIF header, or (if truncated) a part of it.
+    private def exif_prefix?(bytes : Bytes) : Bool
+      size = Math.min(bytes.size, EXIF_HEADER.size)
+      bytes[0, size] == EXIF_HEADER[0, size]
+    end
+
     # Returns `true` for markers which carry no length (TEM, RSTn).
     private def standalone?(marker : UInt8) : Bool
       marker == 0x01 || 0xD0 <= marker <= 0xD7
@@ -110,7 +128,7 @@ module EXIF
           inserted = true
         end
 
-        if marker == SOS || marker == EOI
+        if marker == EOI
           io.write jpeg[pos..]
           break
         end
@@ -127,8 +145,11 @@ module EXIF
           raise JPEGError.new("Invalid JPEG segment length (#{length}) at offset #{pos}")
         end
 
-        # Copy truncated segments verbatim
+        # Copy truncated segments verbatim, unless they could hold EXIF data
         unless length && (segment = jpeg[pos, length + 2]?)
+          if marker == APP1 && exif_prefix?(jpeg[Math.min(pos + 4, jpeg.size)..])
+            raise JPEGError.new("Truncated EXIF segment at offset #{pos}")
+          end
           io.write jpeg[pos..]
           break
         end
@@ -137,6 +158,14 @@ module EXIF
           io.write segment
         end
         pos += segment.size
+
+        # Copy the entropy-coded data of a scan, which might be followed by
+        # further segments (i.e. in progressive JPEG images)
+        if marker == SOS
+          scan_end = scan_end(jpeg, pos)
+          io.write jpeg[pos...scan_end]
+          pos = scan_end
+        end
       end
 
       yield io unless inserted
