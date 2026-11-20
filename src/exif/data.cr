@@ -271,8 +271,15 @@ module EXIF
       copy.thumbnail = thumbnail
       copy.options = options
       copy.data_type = data_type
-      @warnings.each { |warning| copy.add_warning(warning) }
+      # Otherwise the copy would regenerate a new `Tag::MakerNote` value
+      # from its parsed version (see `#to_slice`)
+      copy.maker_note_replaced if @maker_note_replaced
+      # Replaced, since parsing a new `Tag::MakerNote` value might report problems
+      copy.warnings = @warnings.dup
       copy
+    end
+
+    protected def warnings=(@warnings : Set(String))
     end
 
     # Yields with the thumbnail temporarily detached from the libexif data.

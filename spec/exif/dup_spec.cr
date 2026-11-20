@@ -43,6 +43,17 @@ describe EXIF::Data do
       data = EXIF::Data.new(canon_data.to_slice[0, 500])
       data.dup.warnings.should eq data.warnings
     end
+
+    it "keeps a new maker note value" do
+      raw = Bytes[1, 2, 3, 4]
+      data = canon_data
+      data[:maker_note] = raw
+
+      copy = data.dup
+      copy.maker_note?.should be_nil
+      copy.warnings.should be_empty
+      EXIF::Data.new(copy.to_slice)[:maker_note].as_bytes.should eq raw
+    end
   end
 end
 
