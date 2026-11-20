@@ -129,11 +129,16 @@ end
 enum LibEXIF::EXIFTag
   # Returns the tag with the given EXIF *name* (i.e. `"FNumber"`), or `nil`.
   #
+  # Both the names used by libexif and the ones of the specification are
+  # accepted, where these differ (i.e. `"SubsecTime"` and `"SubSecTime"`).
+  #
   # NOTE: Names of GPS tags return `nil`, use `GPSTag.from_name?` instead.
   def self.from_name?(name : String) : self?
-    tag = LibEXIF.exif_tag_from_name(name)
     # libexif resolves GPS tag names too, which overlap numerically with other tags
-    tag unless tag.value.zero? || LibEXIF::EXIFGPSTag.from_name?(name)
+    return if LibEXIF::EXIFGPSTag.from_name?(name)
+
+    tag = LibEXIF.exif_tag_from_name(name)
+    tag.value.zero? ? parse?(name) : tag
   end
 
   # Returns the tag with the given EXIF *name* (i.e. `"FNumber"`).
@@ -218,9 +223,10 @@ enum LibEXIF::EXIFTag
 end
 
 enum LibEXIF::EXIFGPSTag
-  # Returns the tag with the given EXIF *name* (i.e. `"GPSLatitude"`), or `nil`.
+  # Returns the tag with the given EXIF *name* (i.e. `"GPSLatitude"`), or `nil`,
+  # accepting the names used by both libexif and the specification (see `Tag.from_name?`).
   def self.from_name?(name : String) : self?
-    ::EXIF.gps_tags_by_name[name]?
+    ::EXIF.gps_tags_by_name[name]? || parse?(name)
   end
 
   # Returns the tag with the given EXIF *name* (i.e. `"GPSLatitude"`).

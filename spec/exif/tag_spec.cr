@@ -17,6 +17,13 @@ describe EXIF::Tag do
       EXIF::Tag.from_name("ExposureTime").should eq EXIF::Tag::ExposureTime
     end
 
+    it "accepts the names of the specification differing from libexif ones" do
+      EXIF::Tag::SubSecTime.name.should eq "SubsecTime"
+      EXIF::Tag.from_name?("SubsecTime").should eq EXIF::Tag::SubSecTime
+      EXIF::Tag.from_name?("SubSecTime").should eq EXIF::Tag::SubSecTime
+      EXIF::GPSTag.from_name?("GPSLatitude").should eq EXIF::GPSTag::GPSLatitude
+    end
+
     it "returns nil for GPS tag names" do
       EXIF::Tag.from_name?("GPSLatitude").should be_nil
       EXIF::Tag.from_name?("GPSVersionID").should be_nil
