@@ -439,30 +439,16 @@ module EXIF
       JPEG.embed(jpeg, to_slice)
     end
 
-    # Writes the JPEG image read from *source* with this EXIF data
-    # embedded to *path*, replacing any existing EXIF data.
+    # Writes the JPEG image read from *source* (by default *path* itself)
+    # with this EXIF data embedded to *path*, replacing any existing EXIF data.
     #
-    # The image is written to a temporary file first, which then replaces
-    # *path* atomically (keeping its permissions), so that *path* is never
-    # left partially written. Symbolic links are followed.
-    def save(path : Path | String, source : Path | String = path) : Nil
-      jpeg = embed(File.read(source).to_slice)
-
-      path = Path[File.symlink?(path) ? File.realpath(path) : path]
-      tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
-      begin
-        if File.exists?(path)
-          # Readable only by the owner until it gets the permissions of the replaced
-          # file, which might not be readable by others (i.e. a private photo)
-          permissions = File.info(path).permissions
-          File.write(tempfile, jpeg, perm: File::Permissions.new(0o600))
-          File.chmod(tempfile, permissions)
-        else
-          File.write(tempfile, jpeg)
-        end
-        File.rename(tempfile, path)
-      ensure
-        File.delete?(tempfile)
+    # The image is written atomically, keeping the permissions, owner and group
+    # of the replaced file, see `JPEG.write`. Symbolic links are followed.
+    def save(path : Path | String, source : Path | String? = nil) : Nil
+      if source
+        JPEG.write(path, embed(File.read(source).to_slice))
+      else
+        JPEG.update(path) { |jpeg| embed(jpeg) }
       end
     end
 

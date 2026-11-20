@@ -370,6 +370,50 @@ describe EXIF::Data do
       end
     end
 
+    it "reads and replaces the same file when following symbolic links" do
+      dir = File.tempname("exif-spec")
+      Dir.mkdir(dir)
+      begin
+        a, b, link = {"a.jpg", "b.jpg", "link.jpg"}.map { |name| File.join(dir, name) }
+        File.copy(fixture_path("canon.jpg"), a)
+        File.copy(fixture_path("plain.jpg"), b)
+        File.symlink(a, link)
+
+        EXIF::JPEG.update(link) do |jpeg|
+          # Retargeted between reading and replacing the file
+          File.delete(link)
+          File.symlink(b, link)
+          EXIF::JPEG.strip(jpeg)
+        end
+        EXIF::Data.open?(a).should be_nil
+        File.read(b).should eq File.read(fixture_path("plain.jpg"))
+      ensure
+        FileUtils.rm_rf(dir)
+      end
+    end
+
+    it "keeps the file group" do
+      path = File.tempname("exif-spec", ".jpg")
+      File.copy(fixture_path("canon.jpg"), path)
+      begin
+        # Any group of the current user, other than the one new files get
+        default_group = File.info(path).group_id
+        group = `id -G`.split.find { |id| id != default_group }
+        pending!("no secondary group to test with") unless group
+
+        File.chown(path, gid: group.to_i)
+        File.chmod(path, 0o640)
+        EXIF::Data.open(path).tap(&.artist=("Jane Doe")).save(path)
+
+        info = File.info(path)
+        info.group_id.should eq group
+        info.permissions.value.should eq 0o640
+        EXIF::Data.open(path).artist.should eq "Jane Doe"
+      ensure
+        File.delete?(path)
+      end
+    end
+
     it "leaves the file intact on errors" do
       path = File.tempname("exif-spec", ".jpg")
       File.write(path, "not a JPEG")

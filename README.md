@@ -184,8 +184,8 @@ Log.setup("exif.*", :debug)
 - Only JPEG images (and raw EXIF blocks) are supported. TIFF-based formats
   (TIFF, DNG and most camera RAW formats) can't be read reliably, since libexif
   only loads the first 64 KiB of data, while their metadata can be anywhere in the file.
-- `Data#save` replaces the file atomically, keeping its permissions,
-  but not its ownership (relevant only when writing other users' files).
+- `Data#save` replaces the file atomically, keeping its permissions, owner and group;
+  it refuses to replace files whose owner or group it can't keep (i.e. other users' files).
 - Maker notes are read-only, and reflect the data as loaded.
 
 ## Examples
