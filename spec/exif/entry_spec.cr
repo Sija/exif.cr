@@ -93,6 +93,28 @@ describe EXIF::Entry do
       end
     end
 
+    it "converts Unicode user comments when changing the byte order" do
+      data = EXIF::Data.new
+      data.byte_order = :intel
+      data.user_comment = "Zażółć"
+
+      data.byte_order = :motorola
+      data.user_comment.should eq "Zażółć"
+      data[:user_comment].to_slice[8, 2].should eq Bytes[0x00, 0x5A]
+      EXIF::Data.new(data.to_slice).user_comment.should eq "Zażółć"
+
+      data.byte_order = :motorola # unchanged
+      data.byte_order = :intel
+      data.user_comment.should eq "Zażółć"
+
+      # Comments with byte order marks are left as they are
+      bom = "UNICODE\0".to_slice + Bytes[0xFF, 0xFE, 0x48, 0x00, 0x69, 0x00]
+      data[:user_comment] = bom
+      data.byte_order = :motorola
+      data[:user_comment].to_slice.should eq bom
+      data.user_comment.should eq "Hi"
+    end
+
     it "encodes Windows XP tags as UTF-16" do
       data = EXIF::Data.new
       data[:xp_title] = "Tytuł"

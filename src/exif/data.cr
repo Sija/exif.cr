@@ -269,7 +269,12 @@ module EXIF
 
     # Sets the byte order, converting all existing entries.
     def byte_order=(byte_order : ByteOrder) : ByteOrder
+      return byte_order if byte_order == self.byte_order
+
       retain { |ptr| LibEXIF.exif_data_set_byte_order(ptr, byte_order) }
+      # libexif leaves `Format::Undefined` entries as they are, including Unicode
+      # user comments, which are stored in the byte order of the data
+      each(&.swap_unicode_user_comment)
       byte_order
     end
 

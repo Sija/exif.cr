@@ -289,6 +289,13 @@ module EXIF
       end
     end
 
+    # :nodoc:
+    #
+    # Converts a Unicode `Tag::UserComment` to the other byte order (see `Data#byte_order=`).
+    protected def swap_unicode_user_comment : Nil
+      retain { Codec.new(self, data.byte_order).swap_unicode_user_comment }
+    end
+
     # Fixes the format and components of the entry to bring it into specification.
     def fix : self
       retain { |ptr| LibEXIF.exif_entry_fix(ptr) }
@@ -422,6 +429,21 @@ module EXIF
 
       # Decodes UTF-16 text in the byte order of the data, unless it starts with
       # a byte order mark (some writers use UTF-16LE regardless of the data byte order).
+      # Converts a Unicode `Tag::UserComment` without a byte order mark to the other
+      # byte order, since it's stored in the byte order of the data.
+      def swap_unicode_user_comment : Nil
+        return unless user_comment_tag? && raw.format.undefined?
+
+        bytes = @entry.to_slice
+        return unless bytes[0, USER_COMMENT_UNICODE.size]? == USER_COMMENT_UNICODE
+
+        text = bytes + USER_COMMENT_UNICODE.size
+        return if text[0, 2]?.in?(Bytes[0xFF, 0xFE], Bytes[0xFE, 0xFF])
+
+        (text.size // 2).times { |i| text.swap(i * 2, i * 2 + 1) }
+        commit(raw.format, bytes, bytes.size)
+      end
+
       private def decode_unicode_user_comment(bytes : Bytes) : String
         case bytes[0, 2]?
         when Bytes[0xFF, 0xFE] then decode_utf16(bytes[2..], IO::ByteFormat::LittleEndian)
