@@ -182,7 +182,7 @@ module EXIF
     # Returns the first component of the primary image entry for the given *tag*,
     # or `nil` (i.e. the first value of a multi-valued `Tag::ISOSpeedRatings`).
     private def scalar?(tag : AnyTag) : Scalar?
-      primary_entry(tag).try(&.as_a?).try(&.first?)
+      self[tag]?.try(&.as_a?).try(&.first?)
     end
 
     private def string?(tag : AnyTag) : String?

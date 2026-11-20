@@ -235,6 +235,12 @@ describe EXIF::Data do
       data.ifd(:zero).delete(:x_resolution)
       thumbnail_resolution = data.ifd(:one)[:x_resolution].value
 
+      data[:x_resolution]?.should be_nil
+      data.has_key?(:x_resolution).should be_false
+      expect_raises(KeyError) { data[:x_resolution] }
+      data[:compression]?.should be_nil # IFD1 only
+      data.ifd(:one).has_key?(:compression).should be_true
+
       data[:x_resolution] = 300
       data.ifd(:zero)[:x_resolution].value.should eq 300
       data.ifd(:one)[:x_resolution].value.should eq thumbnail_resolution

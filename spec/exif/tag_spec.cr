@@ -36,6 +36,13 @@ describe EXIF::Tag do
   it "returns the default IFD" do
     EXIF::Tag::Make.default_ifd.should eq EXIF::IFD::Zero
     EXIF::Tag::ExposureTime.default_ifd.should eq EXIF::IFD::EXIF
+    EXIF::Tag::InteroperabilityIndex.default_ifd.should eq EXIF::IFD::Interoperability
+    # Recorded only in the thumbnail IFD
+    EXIF::Tag::JPEGInterchangeFormat.default_ifd.should be_nil
+  end
+
+  it "is looked up in the primary image IFDs" do
+    EXIF::Tag::Make.lookup_ifds.should_not contain EXIF::IFD::One
   end
 end
 

@@ -307,8 +307,11 @@ module EXIF
 
     # Returns the entry for the given *tag*, or `nil`.
     #
-    # `Tag`s are looked up in the `IFD::Zero`, `IFD::EXIF`, `IFD::Interoperability`
-    # and `IFD::One` (thumbnail) IFDs in turn, `GPSTag`s in the `IFD::GPS` one.
+    # `Tag`s are looked up in the `IFD::Zero`, `IFD::EXIF` and `IFD::Interoperability`
+    # IFDs in turn (see `Tag#lookup_ifds`), `GPSTag`s in the `IFD::GPS` one.
+    #
+    # NOTE: Entries of `IFD::One`, describing the thumbnail, are left out,
+    # use `ifd(:one)[tag]?` to access these.
     def []?(tag : AnyTag) : Entry?
       find_entry(tag, tag.lookup_ifds)
     end
@@ -330,13 +333,11 @@ module EXIF
     # If there's no such entry, it's created in the IFD
     # the tag belongs to (see `Tag#default_ifd`).
     # Setting `nil` removes the entry.
-    #
-    # NOTE: Unlike `#[]?`, it leaves `IFD::One` (thumbnail) entries alone,
-    # use `ifd(:one)[tag] = value` to change these.
     def []=(tag : AnyTag, value) : Nil
-      if entry = primary_entry(tag)
+      if entry = self[tag]?
         entry.value = value
       else
+        tag.check_settable if tag.is_a?(Tag)
         ifd = tag.default_ifd || raise ArgumentError.new("Cannot determine IFD for tag: #{tag}")
         ifd(ifd)[tag] = value
       end
@@ -348,24 +349,8 @@ module EXIF
     end
 
     # Removes the entry for the given *tag*, returning it (or `nil` if not found).
-    #
-    # NOTE: Unlike `#[]?`, it leaves `IFD::One` (thumbnail) entries alone,
-    # use `ifd(:one).delete(tag)` to remove these.
     def delete(tag : AnyTag) : Entry?
-      primary_entry(tag).try(&.delete)
-    end
-
-    # IFDs describing the primary image (i.e. excluding `IFD::One`, which describes the thumbnail).
-    PRIMARY_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability}
-
-    # Returns the entry for the given *tag* describing the primary image, or `nil`.
-    private def primary_entry(tag : Tag) : Entry?
-      find_entry(tag, PRIMARY_IFDS)
-    end
-
-    # :ditto:
-    private def primary_entry(tag : GPSTag) : Entry?
-      self[tag]?
+      self[tag]?.try(&.delete)
     end
 
     # :nodoc:
