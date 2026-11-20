@@ -276,10 +276,10 @@ module EXIF
     # a character code), so these are formatted from their decoded `#value` instead,
     # without any trailing padding.
     def to_s(io : IO) : Nil
-      return format_value(io, value) unless ifd?
       if user_comment? && (text = value.as?(String))
         return io << text.rstrip
       end
+      return format_value(io, value) unless ifd?
 
       maxlen = bytesize * format_ratio + 64
       if maxlen <= FORMAT_BUFFER_SIZE

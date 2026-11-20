@@ -181,6 +181,8 @@ describe EXIF::Entry do
       data[:user_comment] = "UNICODE\0".to_slice + Bytes[0, 0x48, 0, 0x69, 0, 0x20, 0, 0x20]
       data[:user_comment].value.should eq "Hi  "
       data[:user_comment].to_s.should eq "Hi"
+      # Also once removed
+      data[:user_comment].delete.to_s.should eq "Hi"
 
       # Kept when copying values
       data.user_comment = "é "
