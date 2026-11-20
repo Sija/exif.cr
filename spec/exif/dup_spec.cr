@@ -32,7 +32,8 @@ describe EXIF::Data do
     it "refuses to copy entries beyond the 64 KB libexif loads" do
       data = EXIF::Data.new
       data.artist = "A"
-      data.image_description = "x" * 70_000
+      # Fewer components than libexif saves, but too large to load
+      data.image_description = "x" * 65_520
       expect_raises(EXIF::Error, /too large to copy/) { data.dup }
 
       data.image_description = "x" * 60_000

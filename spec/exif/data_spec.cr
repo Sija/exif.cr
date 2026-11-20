@@ -160,6 +160,17 @@ describe EXIF::Data do
       EXIF::Data.new(EXIF::Data.new(options: :none).to_slice, options: :none).empty?.should be_true
     end
 
+    it "refuses to save entries with more components than libexif saves" do
+      data = EXIF::Data.new
+      data.image_description = "x" * 70_000
+      expect_raises(EXIF::Error, /ImageDescription too large \(70001 > 65536 components\)/) { data.to_slice }
+      expect_raises(EXIF::Error, /too large/) { data.dup }
+      expect_raises(EXIF::Error, /too large/) { data.embed(fixture("plain.jpg")) }
+
+      data.image_description = "x" * 65_535
+      data.to_slice.size.should be > 65_536
+    end
+
     it "raises NoDataError for invalid TIFF headers" do
       empty = EXIF::Data.new(options: :none).to_slice
       # IFD 0 entry count at the very end

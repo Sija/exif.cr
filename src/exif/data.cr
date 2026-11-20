@@ -139,6 +139,10 @@ module EXIF
     # so a block which can be loaded (i.e. by `#dup`) might still be too large to embed.
     MAX_BLOCK_SIZE = 0xFFFE
 
+    # Maximum number of components of an entry libexif saves (since 0.6.26),
+    # leaving out the value of larger entries (which wouldn't fit into a block anyway).
+    MAX_COMPONENTS = 65_536
+
     # Reads the rest of an EXIF block from *io*, *read* bytes of which (not counting
     # the `Exif\0\0` header) were already read, up to `MAX_BLOCK_SIZE`.
     private def self.read_block(io : IO, read : Int32) : Bytes
@@ -492,7 +496,15 @@ module EXIF
 
     # Returns the raw EXIF block (including the `Exif\0\0` header),
     # suitable for embedding as a JPEG APP1 segment.
+    #
+    # Raises `Error` for entries with more components than libexif saves (see `MAX_COMPONENTS`).
     def to_slice : Bytes
+      if entry = find(&.components.> MAX_COMPONENTS)
+        raise Error.new(
+          "EXIF entry #{entry.name} too large (#{entry.components} > #{MAX_COMPONENTS} components)"
+        )
+      end
+
       buf = Pointer(UInt8).null
       size = 0_u32
       retain do |ptr|
