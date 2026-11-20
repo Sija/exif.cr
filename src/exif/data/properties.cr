@@ -236,7 +236,8 @@ module EXIF
       end
 
       if (subsec = string?(subsec_tag)) && subsec.each_char.all?(&.ascii_number?)
-        time += (("0." + subsec).to_f * 1_000_000_000).round.to_i.nanoseconds
+        # Truncated to nanoseconds, so that i.e. `"9999999999"` doesn't round up to the next second
+        time += subsec[0, 9].ljust(9, '0').to_i.nanoseconds
       end
       time
     end
@@ -254,10 +255,16 @@ module EXIF
 
     private def write_time(time : Time?, tag : Tag, offset_tag : Tag, subsec_tag : Tag) : Time?
       if time
-        self[tag] = time.to_s(TIME_FORMAT)
-        self[offset_tag] = time.to_s("%:z")
+        local = time
+        # Offsets are recorded in whole minutes, so the time is converted
+        # to the closest such offset (i.e. from local mean time), keeping the instant
+        unless (offset = time.offset) % 60 == 0
+          local = time.in(Time::Location.fixed((offset / 60).round.to_i * 60))
+        end
+        self[tag] = local.to_s(TIME_FORMAT)
+        self[offset_tag] = local.to_s("%:z")
         # Fractional seconds, with trailing zeros removed (`nil` if none)
-        subsec = time.to_s("%N").rstrip('0').presence
+        subsec = local.to_s("%N").rstrip('0').presence
         self[subsec_tag] = subsec
       else
         {tag, offset_tag, subsec_tag}.each { |key| delete(key) }

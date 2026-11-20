@@ -128,6 +128,23 @@ describe EXIF::Data do
       data.has_key?(:sub_sec_time).should be_false
     end
 
+    it "truncates fractional seconds beyond nanoseconds" do
+      data = EXIF::Data.new
+      data[:date_time] = "2024:01:02 03:04:05"
+      data[:sub_sec_time] = "9999999999"
+      data.date_time.should eq Time.utc(2024, 1, 2, 3, 4, 5, nanosecond: 999_999_999)
+    end
+
+    it "writes times with offsets in seconds" do
+      time = Time.local(2024, 1, 2, 3, 4, 5, location: Time::Location.fixed(3600 + 61))
+
+      data = EXIF::Data.new
+      data.date_time = time
+      data[:date_time].value.should eq "2024:01:02 03:04:04"
+      data[:offset_time].value.should eq "+01:01"
+      data.date_time.should eq time
+    end
+
     it "writes the orientation" do
       data = EXIF::Data.new
       data.orientation = :left_bottom
