@@ -29,6 +29,29 @@ describe EXIF::Entry do
       data[:shutter_speed_value].value.should be_a(EXIF::SRational)
       data[:exif_version].value.should eq "0220".to_slice
     end
+
+    it "decodes entries without data as empty values of their format" do
+      data = EXIF::Data.new
+      clear = ->(entry : EXIF::Entry) do
+        raw = entry.to_unsafe
+        EXIF.free(raw.value.data)
+        raw.value.data, raw.value.size, raw.value.components = Pointer(UInt8).null, 0_u32, 0_u64
+        entry
+      end
+
+      data[:orientation] = 1
+      clear.call(data[:orientation]).value.should eq [] of Int64
+      data[:orientation].as_a.should be_empty
+
+      data[:x_resolution] = 72
+      clear.call(data[:x_resolution]).value.should eq [] of EXIF::URational
+
+      data[:model] = "x"
+      clear.call(data[:model]).value.should eq ""
+
+      data[:maker_note] = Bytes[1]
+      clear.call(data[:maker_note]).value.should eq Bytes.empty
+    end
   end
 
   it "decodes non-UTF-8 text as ISO-8859-1" do
@@ -91,6 +114,16 @@ describe EXIF::Entry do
         data[:user_comment] = "UNICODE\0".to_slice + Bytes[0xFE, 0xFF, 0x00, 0x48, 0x00, 0x69]
         data.user_comment.should eq "Hi"
       end
+    end
+
+    it "strips the padding of user comments" do
+      data = EXIF::Data.new
+      data.byte_order = :motorola
+      data[:user_comment] = "ASCII\0\0\0Hi  \0".to_slice
+      data.user_comment.should eq "Hi"
+
+      data[:user_comment] = "UNICODE\0".to_slice + Bytes[0, 0x48, 0, 0x69, 0, 0x20, 0, 0x20]
+      data[:user_comment].value.should eq "Hi"
     end
 
     it "converts Unicode user comments when changing the byte order" do

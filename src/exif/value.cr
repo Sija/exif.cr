@@ -11,6 +11,8 @@ module EXIF
   # - `Format::Rational` and `Format::SRational` are decoded as
   #   `URational` and `SRational` respectively
   #
-  # Entries with more than one component are decoded as an `Array`.
+  # Entries with no or more than one component are decoded as an `Array`
+  # (numeric formats only; empty `Format::Ascii` and `Format::Undefined` ones
+  # are decoded as an empty `String` and `Bytes` respectively).
   alias Value = Scalar | Bytes | Array(Int64) | Array(Float64) | Array(URational) | Array(SRational)
 end

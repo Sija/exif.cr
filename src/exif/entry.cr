@@ -362,9 +362,8 @@ module EXIF
 
       def decode : Value
         data = raw.data
-        return raw.format.ascii? ? "" : Bytes.empty if data.null?
-
-        bytes = Slice.new(data, raw.size.to_i)
+        # Entries without any data decode as empty values of their format
+        bytes = data.null? ? Bytes.empty : Slice.new(data, raw.size.to_i)
         decode_text(bytes) || decode_numbers(bytes) || bytes.dup
       end
 
@@ -420,8 +419,9 @@ module EXIF
         return "" if bytes.size < 8
 
         charset, text = bytes[0, 8], bytes[8..]
+        # Padded with spaces (or NUL characters) by some writers
         if charset == USER_COMMENT_UNICODE
-          decode_unicode_user_comment(text)
+          decode_unicode_user_comment(text).rstrip(" ")
         else
           decode_string(text).rstrip("\0 ")
         end
