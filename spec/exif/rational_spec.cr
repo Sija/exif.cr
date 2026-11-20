@@ -24,6 +24,9 @@ describe EXIF::Rational do
 
     # smaller than the smallest representable fraction
     EXIF::URational.new(1e-12).should eq EXIF::URational.new(0, 1)
+    # closer than the last convergent fitting within range (0/1)
+    EXIF::URational.new(2.0 ** -32).should eq EXIF::URational.new(1, UInt32::MAX)
+    EXIF::SRational.new(-(2.0 ** -31)).should eq EXIF::SRational.new(-1, Int32::MAX)
     EXIF::URational.new(4_000_000_000.5).denominator.should eq 1
   end
 

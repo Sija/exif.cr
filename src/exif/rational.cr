@@ -39,7 +39,16 @@ module EXIF
       x = target
       loop do
         a = x.floor
-        break if a * h1 + h0 > max || a * k1 + k0 > max
+        if a * h1 + h0 > max || a * k1 + k0 > max
+          # A semiconvergent with the largest term that still fits might be closer
+          # than the last convergent (i.e. 1/4294967295 rather than 0/1 for 2**-32)
+          term = Math.min(h1.zero? ? max : (max - h0) // h1, (max - k0) // k1)
+          if term > 0
+            h, k = term * h1 + h0, term * k1 + k0
+            h1, k1 = h, k if (h / k - target).abs < (h1 / k1 - target).abs
+          end
+          break
+        end
 
         a = a.to_i64
         h0, h1 = h1, a * h1 + h0
