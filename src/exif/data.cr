@@ -215,11 +215,15 @@ module EXIF
     # Returns an independent copy of the data, with the same options and warnings.
     #
     # NOTE: libexif can't copy its data structures, so the copy is created by
-    # re-loading the serialized data (see `#to_slice`).
+    # re-loading the serialized data (see `#to_slice`), raising `Error` if the
+    # entries take more than the 64 KB libexif loads (the thumbnail is copied apart).
     def dup : self
       # libexif loads at most 64 KB, which a large thumbnail alone could exceed
       thumbnail = thumbnail?
       bytes = without_thumbnail { to_slice }
+      if bytes.size > MAX_BLOCK_SIZE
+        raise Error.new("EXIF data too large to copy (#{bytes.size} > #{MAX_BLOCK_SIZE} bytes)")
+      end
 
       copy = self.class.new(bytes, options: Options::None)
       copy.thumbnail = thumbnail

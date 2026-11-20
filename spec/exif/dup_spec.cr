@@ -29,6 +29,16 @@ describe EXIF::Data do
       data.thumbnail?.try(&.size).should eq 70_000
     end
 
+    it "refuses to copy entries beyond the 64 KB libexif loads" do
+      data = EXIF::Data.new
+      data.artist = "A"
+      data.image_description = "x" * 70_000
+      expect_raises(EXIF::Error, /too large to copy/) { data.dup }
+
+      data.image_description = "x" * 60_000
+      data.dup.image_description.try(&.size).should eq 60_000
+    end
+
     it "copies warnings" do
       data = EXIF::Data.new(canon_data.to_slice[0, 500])
       data.dup.warnings.should eq data.warnings
