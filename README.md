@@ -20,7 +20,7 @@ It also includes a facade to read, modify and write EXIF metadata in a more idio
 
 ### Prerequisites
 
-  * Crystal: `>= 1.13.1`
+  * Crystal: `>= 1.19.0`
   * libexif: `>= 0.6.24`
 
 To install libexif, you can use `homebrew` or `apt-get`, depending on the platform:

@@ -9,7 +9,7 @@ development_dependencies:
     github: crystal-ameba/ameba
     version: ~> 1.7.0
 
-crystal: '>= 1.13.1'
+crystal: '>= 1.19.0'
 
 libraries:
   libexif: ">= 0.6.24"
