@@ -90,10 +90,7 @@ module EXIF
 
       # NOTE: libexif's loader stops at JPEG segments it doesn't know (i.e. APP12),
       # missing the EXIF segments following them, so JPEG streams are read here
-      if JPEG.jpeg?(head[0, size])
-        exif = JPEG.read_exif?(io) || raise NoDataError.new
-        return load_block(exif, options)
-      end
+      return load_jpeg(io, options) if JPEG.jpeg?(head[0, size])
 
       size += EXIF.read_up_to(io, head[size, 2]) if size == 2
       if head[0, size].in?(TIFF_HEADERS)
@@ -113,6 +110,23 @@ module EXIF
           break if LibEXIF.exif_loader_write(loader, buffer, read.to_u32).zero?
         end
       end
+    end
+
+    # Loads the first valid EXIF segment from the JPEG stream *io*,
+    # positioned right after the SOI marker.
+    #
+    # NOTE: Some images carry an empty or corrupt EXIF segment
+    # before the actual one, so all of them are tried in turn.
+    private def self.load_jpeg(io : IO, options : Options) : self
+      error = nil
+      while exif = JPEG.read_exif?(io)
+        begin
+          return load_block(exif, options)
+        rescue ex : NoDataError
+          error ||= ex
+        end
+      end
+      raise error || NoDataError.new
     end
 
     # Byte order marks and magic numbers starting a TIFF structure.

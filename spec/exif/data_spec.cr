@@ -91,6 +91,26 @@ describe EXIF::Data do
       end
     end
 
+    it "skips empty or corrupt EXIF segments preceding a valid one" do
+      segment = ->(payload : Bytes) do
+        Bytes[0xFF, 0xE1, (payload.size + 2) >> 8, (payload.size + 2) & 0xFF] + payload
+      end
+      image = EXIF::JPEG.strip(fixture("canon.jpg"))[2..]
+      valid = segment.call(canon_data.to_slice)
+
+      [
+        "Exif\0\0".to_slice,
+        "Exif\0\0".to_slice + Bytes.new(20),
+      ].each do |bogus|
+        jpeg = Bytes[0xFF, 0xD8] + segment.call(bogus) + valid + image
+        EXIF::Data.new(jpeg).model.should eq "Canon PowerShot S70"
+
+        # The first error is reported if there's no valid one
+        jpeg = Bytes[0xFF, 0xD8] + segment.call(bogus) + image
+        expect_raises(EXIF::NoDataError, /No valid EXIF data found/) { EXIF::Data.new(jpeg) }
+      end
+    end
+
     it "loads truncated EXIF segments" do
       jpeg = fixture("canon.jpg")
       data = EXIF::Data.new(jpeg[0, 600])
