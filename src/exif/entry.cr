@@ -145,6 +145,7 @@ module EXIF
         tag.check_settable
       end
       retain { Codec.new(self, data.byte_order).encode(value) }
+      data.maker_note_replaced if raw_tag.maker_note? && !gps?
     end
 
     # Returns the value as a `String`.

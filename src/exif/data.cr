@@ -25,6 +25,9 @@ module EXIF
     @log : LibEXIF::EXIFLog*
     @warnings = [] of String
 
+    # Set once the `Tag::MakerNote` entry gets a new value, outdating the maker note parsed by libexif.
+    @maker_note_replaced = false
+
     # Returns the options affecting loading and saving.
     getter options : Options
 
@@ -408,13 +411,21 @@ module EXIF
 
     # Returns the parsed maker note, or `nil` if missing or unsupported.
     #
-    # NOTE: libexif parses the maker note when loading the data, so later
-    # changes to the `Tag::MakerNote` entry aren't reflected (apart from removing it).
+    # NOTE: libexif parses the maker note when loading the data, so once the
+    # `Tag::MakerNote` entry gets removed or set, `nil` is returned (until reloaded).
     def maker_note? : MakerNote?
-      return unless has_key?(Tag::MakerNote)
+      return if @maker_note_replaced || !has_key?(Tag::MakerNote)
 
       ptr = LibEXIF.exif_data_get_mnote_data(@ptr)
       MakerNote.new(self, ptr) unless ptr.null?
+    end
+
+    # :nodoc:
+    #
+    # Marks the parsed maker note as outdated by a new `Tag::MakerNote` value,
+    # which libexif would otherwise overwrite with it when saving the data.
+    def maker_note_replaced : Nil
+      @maker_note_replaced = true
     end
 
     # Fixes the EXIF data to bring it into specification
@@ -429,7 +440,17 @@ module EXIF
     def to_slice : Bytes
       buf = Pointer(UInt8).null
       size = 0_u32
-      retain { |ptr| LibEXIF.exif_data_save_data(ptr, pointerof(buf), pointerof(size)) }
+      retain do |ptr|
+        # libexif regenerates the `Tag::MakerNote` entry from the parsed maker note,
+        # unless told not to, which would undo a new value of the entry
+        keep_maker_note = @maker_note_replaced && !options.dont_change_maker_note?
+        LibEXIF.exif_data_set_option(ptr, Options::DontChangeMakerNote) if keep_maker_note
+        begin
+          LibEXIF.exif_data_save_data(ptr, pointerof(buf), pointerof(size))
+        ensure
+          LibEXIF.exif_data_unset_option(ptr, Options::DontChangeMakerNote) if keep_maker_note
+        end
+      end
       raise Error.new("Could not save EXIF data") if buf.null?
       begin
         Slice.new(buf, size.to_i).dup
