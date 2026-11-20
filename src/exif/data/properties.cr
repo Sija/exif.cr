@@ -256,10 +256,11 @@ module EXIF
     private def write_time(time : Time?, tag : Tag, offset_tag : Tag, subsec_tag : Tag) : Time?
       if time
         local = time
-        # Offsets are recorded in whole minutes, so the time is converted
-        # to the closest such offset (i.e. from local mean time), keeping the instant
+        # Offsets are recorded in whole minutes, so the time is converted to such an offset
+        # (i.e. from local mean time), keeping the instant; truncated rather than rounded,
+        # so that it stays within the supported range (i.e. for `+25:59:59`)
         unless (offset = time.offset) % 60 == 0
-          local = time.in(Time::Location.fixed((offset / 60).round.to_i * 60))
+          local = time.in(Time::Location.fixed(offset.tdiv(60) * 60))
         end
         self[tag] = local.to_s(TIME_FORMAT)
         self[offset_tag] = local.to_s("%:z")

@@ -143,6 +143,11 @@ describe EXIF::Data do
       data[:date_time].value.should eq "2024:01:02 03:04:04"
       data[:offset_time].value.should eq "+01:01"
       data.date_time.should eq time
+
+      time = Time.local(2024, 1, 2, 3, 4, 5, location: Time::Location.fixed(26 * 3600 - 1))
+      data.date_time = time
+      data[:offset_time].value.should eq "+25:59"
+      data.date_time.should eq time
     end
 
     it "writes the orientation" do
