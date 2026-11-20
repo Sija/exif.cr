@@ -44,6 +44,13 @@ describe EXIF::MakerNote do
     EXIF::Data.new(data.to_slice)[:maker_note].as_bytes.should eq raw
   end
 
+  it "isn't affected by maker note entries of other IFDs" do
+    data = canon_data
+    size = data.maker_note?.try(&.size)
+    data.ifd(:one)[:maker_note] = Bytes[1, 2, 3, 4]
+    data.maker_note?.try(&.size).should eq size
+  end
+
   it "keeps the maker note when saving otherwise" do
     data = canon_data
     data.artist = "Jane Doe"

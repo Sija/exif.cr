@@ -146,7 +146,8 @@ module EXIF
         tag.check_settable
       end
       retain { Codec.new(self, data.byte_order).encode(value) }
-      data.maker_note_replaced if raw_tag.maker_note? && !gps?
+      # Only the maker note of the EXIF IFD is parsed by libexif
+      data.maker_note_replaced if raw_tag.maker_note? && ifd? == IFD::EXIF
     end
 
     # Returns the value as a `String`.
