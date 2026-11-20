@@ -183,6 +183,16 @@ describe EXIF::Data do
       data.warnings.should eq ["The tag 'ResolutionUnit' contains an invalid number of components (3, expected 1)."]
     end
 
+    it "keeps the order of the problems, scaling to many of them" do
+      data = EXIF::Data.new
+      messages = Array.new(20_000) { |i| "Problem #{i}" }
+      elapsed = Time.measure do
+        2.times { messages.each { |message| data.add_warning(message) } }
+      end
+      data.warnings.should eq messages
+      elapsed.should be < 1.second
+    end
+
     it "returns a copy" do
       data = EXIF::Data.new(canon_data.to_slice[0, 300])
       data.warnings.clear

@@ -23,7 +23,8 @@ module EXIF
 
     @ptr : LibEXIF::EXIFData*
     @log : LibEXIF::EXIFLog*
-    @warnings = [] of String
+    # Insertion ordered, so that warnings are reported in order (once each)
+    @warnings = Set(String).new
 
     # Set once the `Tag::MakerNote` entry gets a new value, outdating the maker note parsed by libexif.
     @maker_note_replaced = false
@@ -60,13 +61,13 @@ module EXIF
     # data.warnings # => ["Bogus offset of IFD1."]
     # ```
     def warnings : Array(String)
-      @warnings.dup
+      @warnings.to_a
     end
 
     # :nodoc:
     def add_warning(message : String) : Nil
       # NOTE: The same problems get reported on every formatting of an entry
-      @warnings << message unless @warnings.includes?(message)
+      @warnings << message
     end
 
     # Loads EXIF data from the given *bytes*, see `.new(io)`.
