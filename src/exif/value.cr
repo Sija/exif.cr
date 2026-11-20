@@ -12,7 +12,8 @@ module EXIF
   #   `URational` and `SRational` respectively
   #
   # Text tags are decoded as `String` regardless: `Tag::UserComment` (taking its character
-  # code into account) and the UTF-16 `Tag::XPTitle`-like tags (stored as `Format::Byte`).
+  # code into account, except for unsupported JIS text decoded as `Bytes`) and the UTF-16
+  # `Tag::XPTitle`-like tags (stored as `Format::Byte`).
   #
   # Entries with no or more than one component are decoded as an `Array`
   # (numeric formats only; empty `Format::Ascii` and `Format::Undefined` ones

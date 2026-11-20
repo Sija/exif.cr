@@ -1,5 +1,8 @@
 # Removes EXIF data from the given JPEG image(s), keeping the orientation.
 #
+# NOTE: The orientation is read only from EXIF data preceding the image data
+# (as the specification requires), while EXIF segments are removed throughout.
+#
 # Usage: crystal examples/strip.cr -- photo.jpg [...]
 require "../src/exif"
 
