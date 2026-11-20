@@ -412,6 +412,21 @@ describe EXIF::Data do
       end
     end
 
+    it "creates new files with the default permissions" do
+      dir = File.tempname("exif-spec")
+      Dir.mkdir(dir)
+      begin
+        path, reference = File.join(dir, "new.jpg"), File.join(dir, "reference")
+        File.write(reference, "") # with the default permissions (minus the umask)
+        canon_data.save(path, source: fixture_path("canon.jpg"))
+
+        File.info(path).permissions.should eq File.info(reference).permissions
+        Dir.children(dir).sort.should eq ["new.jpg", "reference"]
+      ensure
+        FileUtils.rm_rf(dir)
+      end
+    end
+
     it "keeps the file group" do
       path = File.tempname("exif-spec", ".jpg")
       File.copy(fixture_path("canon.jpg"), path)

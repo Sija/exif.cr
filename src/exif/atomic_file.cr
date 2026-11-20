@@ -28,16 +28,22 @@ module EXIF
     end
 
     private def replace(path : Path, bytes : Bytes) : Nil
-      tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
+      info = File.info?(path)
+      # Readable only by the owner until it gets the owner, group and permissions
+      # of the replaced file, which might not be readable by others (i.e. a private photo)
+      perm = info ? File::Permissions.new(0o600) : File::DEFAULT_CREATE_PERMISSIONS
+      tempfile, file = create_tempfile(path, perm)
       begin
-        if info = File.info?(path)
-          # Readable only by the owner until it gets the owner, group and permissions
-          # of the replaced file, which might not be readable by others (i.e. a private photo)
-          File.write(tempfile, bytes, perm: File::Permissions.new(0o600))
+        begin
+          file.write(bytes)
+          # Flushed to the disk before the rename, so that a crash can't leave an empty file behind
+          file.fsync
+        ensure
+          file.close
+        end
+        if info
           keep_ownership(tempfile, path, info)
           File.chmod(tempfile, info.permissions)
-        else
-          File.write(tempfile, bytes)
         end
         File.rename(tempfile, path)
       ensure
@@ -45,15 +51,42 @@ module EXIF
       end
     end
 
+    # Creates a temporary file next to *path* with the given *perm* (minus the umask).
+    #
+    # NOTE: Created exclusively, so that no file or symbolic link
+    # planted in its place (i.e. in a shared directory) gets written to.
+    private def create_tempfile(path : Path, perm : File::Permissions) : {String, IO::FileDescriptor}
+      flags = LibC::O_WRONLY | LibC::O_CREAT | LibC::O_EXCL | LibC::O_CLOEXEC
+      100.times do
+        tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
+        fd = LibC.open(tempfile, flags, perm.value.to_i32)
+        return {tempfile, IO::FileDescriptor.new(handle: fd)} unless fd < 0
+        next if Errno.value.eexist?
+
+        raise File::Error.from_errno("Error creating temporary file", file: tempfile)
+      end
+      raise File::Error.new("Cannot create a unique temporary file", file: path.to_s)
+    end
+
     # Gives the *tempfile* the owner and group of the file at *path*, described by *info*.
+    #
+    # Raises `Error` if the owner can't be kept, or the group can't be kept
+    # while it has any permissions (which would apply to another group otherwise).
     private def keep_ownership(tempfile : String, path : Path, info : File::Info) : Nil
       temp_info = File.info(tempfile)
-      return if temp_info.owner_id == info.owner_id && temp_info.group_id == info.group_id
+      owner = info.owner_id unless temp_info.owner_id == info.owner_id
+      group = info.group_id unless temp_info.group_id == info.group_id
+      return unless owner || group
 
-      File.chown(tempfile, info.owner_id.to_i, info.group_id.to_i)
-    rescue ex : File::Error
-      # Otherwise its permissions would apply to another owner or group
-      raise Error.new("Cannot keep the owner and group of #{path}, leaving it intact", cause: ex)
+      begin
+        File.chown(tempfile, (owner || -1).to_i, (group || -1).to_i)
+      rescue ex : File::Error
+        # Without any permissions for its group, the file is no more
+        # accessible to the other group than it was to the original one
+        unless owner.nil? && (info.permissions.value & 0o070).zero?
+          raise Error.new("Cannot keep the owner and group of #{path}, leaving it intact", cause: ex)
+        end
+      end
     end
   end
 end

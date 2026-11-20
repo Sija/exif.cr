@@ -188,7 +188,8 @@ Log.setup("exif.*", :debug)
   (TIFF, DNG and most camera RAW formats) can't be read reliably, since libexif
   only loads the first 64 KiB of data, while their metadata can be anywhere in the file.
 - `Data#save` replaces the file atomically, keeping its permissions, owner and group;
-  it refuses to replace files whose owner or group it can't keep (i.e. other users' files).
+  it refuses to replace files whose owner it can't keep (i.e. other users' files),
+  or whose group it can't keep while the group has any permissions.
 - Maker notes are read-only, and reflect the data as loaded.
 
 ## Examples
