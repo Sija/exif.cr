@@ -208,7 +208,7 @@ $ crystal run examples/strip.cr -- photo.jpg
 ## Development
 
 ```
-$ crystal spec 
+$ crystal spec
 $ ./lib/ameba/bin/ameba.cr
 ```
 
