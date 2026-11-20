@@ -190,7 +190,9 @@ Log.setup("exif.*", :debug)
 - `Data#save` replaces the file atomically, keeping its permissions, owner and group;
   it refuses to replace files whose owner it can't keep (i.e. other users' files),
   or whose group it can't keep while the group has any permissions.
-- Maker notes are read-only, and reflect the data as loaded.
+- Maker notes are read-only, and reflect the data as loaded. A new `MakerNote` value
+  is saved as is, so one copied over from another image might not be readable
+  (some vendors store offsets relative to the start of the EXIF data within it).
 
 ## Examples
 

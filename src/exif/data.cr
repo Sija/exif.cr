@@ -133,6 +133,9 @@ module EXIF
     TIFF_HEADERS = {"II*\0".to_slice, "MM\0*".to_slice}
 
     # Maximum size of the EXIF block (including the `Exif\0\0` header) libexif loads.
+    #
+    # NOTE: One byte more than fits into a JPEG segment (see `JPEG::MAX_SEGMENT_SIZE`),
+    # so a block which can be loaded (i.e. by `#dup`) might still be too large to embed.
     MAX_BLOCK_SIZE = 0xFFFE
 
     # Reads the rest of an EXIF block from *io*, *read* bytes of which (not counting
@@ -432,6 +435,11 @@ module EXIF
     #
     # NOTE: libexif parses the maker note when loading the data, so once the
     # `Tag::MakerNote` entry gets removed or set, `nil` is returned (until reloaded).
+    #
+    # WARNING: A new `Tag::MakerNote` value is saved as is, while some vendors
+    # (i.e. Canon) store offsets relative to the start of the TIFF structure
+    # within it, which libexif adjusts only for the maker note it parsed;
+    # i.e. one copied over from another image might end up pointing elsewhere.
     def maker_note? : MakerNote?
       return if @maker_note_replaced || !has_key?(Tag::MakerNote)
 

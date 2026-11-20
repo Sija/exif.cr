@@ -13,7 +13,8 @@ module EXIF
 
     EXIF_HEADER = "Exif\0\0".to_slice
 
-    # Maximum payload size of a single JPEG segment.
+    # Maximum payload size of a single JPEG segment (and so of the embedded
+    # EXIF data), see also `Data::MAX_BLOCK_SIZE`.
     MAX_SEGMENT_SIZE = UInt16::MAX - 2
 
     # Returns `true` if *bytes* start with a JPEG SOI marker.
