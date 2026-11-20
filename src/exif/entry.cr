@@ -135,7 +135,8 @@ module EXIF
     # Encodes and stores the given *value*.
     #
     # Integers, floats and rationals may be given either as a scalar or an `Array`,
-    # `String` is accepted by `Format::Ascii` and `Format::Undefined` entries,
+    # `String` is accepted by `Format::Ascii`, `Format::Undefined` and `Format::Byte` entries
+    # (encoded as defined for `Tag::UserComment` and the `Tag::XPTitle`-like tags),
     # `Bytes` by `Format::Undefined`, `Format::Byte` and `Format::SByte` ones.
     #
     # Raises `ValueError` if the value can't be stored in the entry format,
