@@ -147,6 +147,9 @@ data.to_slice # => Bytes[69, 120, 105, 102, 0, 0, ...]
 
 # strip EXIF data from a JPEG image
 EXIF::JPEG.strip(File.read("photo.jpg").to_slice)
+
+# ...or replace the file in place (atomically, see `Data#save`)
+EXIF::JPEG.update("photo.jpg") { |jpeg| EXIF::JPEG.strip(jpeg) }
 ```
 
 ### Options
