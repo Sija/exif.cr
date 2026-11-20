@@ -35,7 +35,7 @@ module EXIF
         )
       end
 
-      rewrite(jpeg) do |io|
+      rewrite(jpeg, exif.size + 4) do |io|
         io.write_byte 0xFF_u8
         io.write_byte APP1
         io.write_bytes (exif.size + 2).to_u16, IO::ByteFormat::BigEndian
@@ -124,11 +124,14 @@ module EXIF
       marker == 0x01 || 0xD0 <= marker <= 0xD7
     end
 
+    # Copies the *jpeg* image without its EXIF segments, yielding to write
+    # the new one (if any, taking *inserted_size* bytes) in their place.
+    #
     # ameba:disable Metrics/CyclomaticComplexity
-    private def rewrite(jpeg : Bytes, & : IO ->) : Bytes
+    private def rewrite(jpeg : Bytes, inserted_size : Int32 = 0, & : IO ->) : Bytes
       raise JPEGError.new("Not a JPEG image (missing SOI marker)") unless jpeg?(jpeg)
 
-      io = IO::Memory.new(jpeg.size + MAX_SEGMENT_SIZE)
+      io = IO::Memory.new(jpeg.size + inserted_size)
       io.write jpeg[0, 2]
 
       inserted = false
@@ -170,6 +173,11 @@ module EXIF
         unless length && (segment = jpeg[pos, length + 2]?)
           if marker == APP1 && exif_prefix?(jpeg[Math.min(pos + 4, jpeg.size)..])
             raise JPEGError.new("Truncated EXIF segment at offset #{pos}")
+          end
+          # Inserted before (rather than after) a truncated APP0 segment
+          unless inserted
+            yield io
+            inserted = true
           end
           io.write jpeg[pos..]
           break

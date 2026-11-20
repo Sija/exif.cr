@@ -50,6 +50,15 @@ describe EXIF::JPEG do
     EXIF::JPEG.strip(jpeg).should eq jpeg
   end
 
+  it "inserts EXIF data before a truncated APP0 segment" do
+    # SOI, APP0 claiming 65535 bytes, truncated
+    jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE0, 0xFF, 0xFF, 1, 2, 3]
+    embedded = EXIF::JPEG.embed(jpeg, exif)
+    embedded[2, 2].should eq Bytes[0xFF, 0xE1]
+    embedded[-7..].should eq jpeg[2..]
+    EXIF::Data.new(embedded).model.should eq "Canon PowerShot S70"
+  end
+
   it "refuses to keep truncated EXIF segments" do
     # SOI, APP1 claiming 65535 bytes, truncated within the EXIF header or after it
     [
