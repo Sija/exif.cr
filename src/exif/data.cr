@@ -278,6 +278,19 @@ module EXIF
       @ptr
     end
 
+    # Returns the first entry with more components than libexif saves, or `nil`.
+    private def oversized_entry? : Entry?
+      # Read directly, without wrapping all entries
+      IFDS.each do |ifd|
+        content = raw_ifd(ifd).value
+        content.count.times do |i|
+          ptr = content.entries[i]
+          return Entry.new(self, ptr) if ptr.value.components > MAX_COMPONENTS
+        end
+      end
+      nil
+    end
+
     # Returns an independent copy of the data, with the same options and warnings.
     #
     # NOTE: libexif can't copy its data structures, so the copy is created by
@@ -519,7 +532,7 @@ module EXIF
     #
     # Raises `Error` for entries with more components than libexif saves (see `MAX_COMPONENTS`).
     def to_slice : Bytes
-      if entry = find(&.components.> MAX_COMPONENTS)
+      if entry = oversized_entry?
         raise Error.new(
           "EXIF entry #{entry.name} too large (#{entry.components} > #{MAX_COMPONENTS} components)"
         )
