@@ -58,9 +58,21 @@ module EXIF
           File.chmod(tempfile, info.permissions)
         end
         File.rename(tempfile, path)
+        sync_directory(path.dirname)
       ensure
         File.delete?(tempfile)
       end
+    end
+
+    # Syncs the *dir*ectory, so that a file renamed within it stays replaced after a crash.
+    #
+    # NOTE: Best effort, since not all file systems support it, and the file
+    # has been replaced already (so raising would suggest otherwise).
+    private def sync_directory(dir : String) : Nil
+      fd = LibC.open(dir, LibC::O_RDONLY | LibC::O_CLOEXEC)
+      return if fd < 0
+      LibC.fsync(fd)
+      LibC.close(fd)
     end
 
     # Creates a temporary file next to *path* with the given *perm* (minus the umask).
