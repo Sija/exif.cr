@@ -460,6 +460,21 @@ describe EXIF::Data do
       end
     end
 
+    it "replaces files with long names" do
+      dir = File.tempname("exif-spec")
+      Dir.mkdir(dir)
+      begin
+        path = File.join(dir, "#{"a" * 250}.jpg")
+        File.copy(fixture_path("plain.jpg"), path)
+        canon_data.save(path)
+
+        EXIF::Data.open(path).model.should eq "Canon PowerShot S70"
+        Dir.children(dir).should eq [File.basename(path)]
+      ensure
+        FileUtils.rm_rf(dir)
+      end
+    end
+
     it "creates new files with the default permissions" do
       dir = File.tempname("exif-spec")
       Dir.mkdir(dir)

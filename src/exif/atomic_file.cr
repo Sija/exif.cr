@@ -69,8 +69,10 @@ module EXIF
     # planted in its place (i.e. in a shared directory) gets written to.
     private def create_tempfile(path : Path, perm : File::Permissions) : {String, IO::FileDescriptor}
       flags = LibC::O_WRONLY | LibC::O_CREAT | LibC::O_EXCL | LibC::O_CLOEXEC
+      # Shortened, so that the name doesn't exceed the length limit (255 bytes) for long file names
+      prefix = ".#{path.basename[0, 32]}"
       100.times do
-        tempfile = File.tempname(".#{path.basename}", ".tmp", dir: path.dirname)
+        tempfile = File.tempname(prefix, ".tmp", dir: path.dirname)
         fd = LibC.open(tempfile, flags, perm.value.to_i32)
         return {tempfile, IO::FileDescriptor.new(handle: fd)} unless fd < 0
         next if Errno.value.eexist?
