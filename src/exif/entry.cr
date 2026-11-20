@@ -272,10 +272,14 @@ module EXIF
     # Returns the human-readable (localized) value of the entry, as formatted by libexif.
     #
     # NOTE: libexif can't format entries removed from their IFD (it needs their
-    # byte order), nor Unicode user comments, so these are formatted from their
-    # decoded `#value` instead.
+    # byte order), nor most user comments (i.e. Unicode ones, or ones without
+    # a character code), so these are formatted from their decoded `#value` instead,
+    # without any trailing padding.
     def to_s(io : IO) : Nil
-      return format_value(io, value) if !ifd? || unicode_user_comment?
+      return format_value(io, value) unless ifd?
+      if user_comment? && (text = value.as?(String))
+        return io << text.rstrip
+      end
 
       maxlen = bytesize * format_ratio + 64
       if maxlen <= FORMAT_BUFFER_SIZE
@@ -319,8 +323,8 @@ module EXIF
       retain { Codec.new(self, data.byte_order).swap_unicode_user_comment }
     end
 
-    private def unicode_user_comment? : Bool
-      retain { Codec.new(self, data.byte_order).unicode_user_comment? }
+    private def user_comment? : Bool
+      raw_tag.user_comment? && !gps?
     end
 
     # Fixes the format and components of the entry to bring it into specification.
@@ -366,10 +370,11 @@ module EXIF
       # Character code prefixes used by `Tag::UserComment`.
       USER_COMMENT_ASCII   = "ASCII\0\0\0".to_slice
       USER_COMMENT_UNICODE = "UNICODE\0".to_slice
+      USER_COMMENT_JIS     = "JIS\0\0\0\0\0".to_slice
 
       # All character code prefixes defined by the specification (the last one being undefined).
       USER_COMMENT_CHARSETS = {
-        USER_COMMENT_ASCII, USER_COMMENT_UNICODE, "JIS\0\0\0\0\0".to_slice, "\0\0\0\0\0\0\0\0".to_slice,
+        USER_COMMENT_ASCII, USER_COMMENT_UNICODE, USER_COMMENT_JIS, "\0\0\0\0\0\0\0\0".to_slice,
       }
 
       # Tags holding UTF-16LE strings, stored in `Format::Byte`.
@@ -448,15 +453,19 @@ module EXIF
         string.valid_encoding? ? string : String.new(bytes, "ISO-8859-1")
       end
 
-      private def decode_user_comment(bytes : Bytes) : String
+      # Decodes a `Tag::UserComment`, keeping trailing spaces (padding used by some writers,
+      # see `Entry#to_s`), or returns `nil` for JIS text, which isn't supported
+      # (so that it's decoded as `Bytes` rather than misdecoded).
+      private def decode_user_comment(bytes : Bytes) : String?
         return "" if bytes.size < 8
 
         charset, text = bytes[0, 8], bytes[8..]
-        # Padded with spaces (or NUL characters) by some writers
-        if charset == USER_COMMENT_UNICODE
-          decode_unicode_user_comment(text).rstrip(" ")
+        case charset
+        when USER_COMMENT_UNICODE then decode_unicode_user_comment(text)
+        when USER_COMMENT_JIS     then nil
         else
-          decode_string(text).rstrip("\0 ")
+          # Not NUL-terminated, but padded with NUL characters by some writers
+          decode_string(text).rstrip('\0')
         end
       end
 

@@ -153,6 +153,7 @@ describe EXIF::Entry do
 
       # Without a character code
       store.call("Hello".to_slice)
+      data[:user_comment].to_s.should eq "Hello"
       data.user_comment.should eq "Hello"
     end
 
@@ -169,14 +170,30 @@ describe EXIF::Entry do
       end
     end
 
-    it "strips the padding of user comments" do
+    it "strips the padding of user comments only when formatting them" do
       data = EXIF::Data.new
       data.byte_order = :motorola
-      data[:user_comment] = "ASCII\0\0\0Hi  \0".to_slice
+      data[:user_comment] = "ASCII\0\0\0Hi  \0\0".to_slice
+      data[:user_comment].value.should eq "Hi  "
+      data[:user_comment].to_s.should eq "Hi"
       data.user_comment.should eq "Hi"
 
       data[:user_comment] = "UNICODE\0".to_slice + Bytes[0, 0x48, 0, 0x69, 0, 0x20, 0, 0x20]
-      data[:user_comment].value.should eq "Hi"
+      data[:user_comment].value.should eq "Hi  "
+      data[:user_comment].to_s.should eq "Hi"
+
+      # Kept when copying values
+      data.user_comment = "é "
+      data[:user_comment].value.should eq "é "
+    end
+
+    it "doesn't decode JIS user comments" do
+      data = EXIF::Data.new
+      bytes = "JIS\0\0\0\0\0".to_slice + Bytes[0x24, 0x22]
+      data[:user_comment] = bytes
+      data[:user_comment].value.should eq bytes
+      data[:user_comment].to_s.should eq "Unsupported JIS string"
+      data.user_comment.should be_nil
     end
 
     it "converts Unicode user comments when changing the byte order" do
