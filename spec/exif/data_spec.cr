@@ -114,6 +114,35 @@ describe EXIF::Data do
       end
     end
 
+    it "prefers intact EXIF segments over empty or partially loaded ones" do
+      segment = ->(payload : Bytes) do
+        Bytes[0xFF, 0xE1, (payload.size + 2) >> 8, (payload.size + 2) & 0xFF] + payload
+      end
+      image = EXIF::JPEG.strip(fixture("canon.jpg"))[2..]
+      intact = EXIF::Data.new.tap(&.artist=("Jane Doe")).to_slice
+      empty = EXIF::Data.new(options: :none).to_slice
+      partial = canon_data.to_slice[0, 500] # yields warnings
+
+      {EXIF::Options::None, EXIF::Options::FollowSpecification}.each do |options|
+        [empty, partial].each do |first|
+          jpeg = Bytes[0xFF, 0xD8] + segment.call(first) + segment.call(intact) + image
+          data = EXIF::Data.new(jpeg, options: options)
+          data.artist.should eq "Jane Doe"
+          data.options.should eq options
+        end
+
+        # Partially loaded rather than empty data, if nothing loads intact
+        jpeg = Bytes[0xFF, 0xD8] + segment.call(empty) + segment.call(partial) + image
+        data = EXIF::Data.new(jpeg, options: options)
+        data.make.should eq "Canon"
+        data.warnings.should_not be_empty
+
+        # Empty data is fixed as requested
+        jpeg = Bytes[0xFF, 0xD8] + segment.call(empty) + image
+        EXIF::Data.new(jpeg, options: options).empty?.should eq options.none?
+      end
+    end
+
     it "loads truncated EXIF segments" do
       jpeg = fixture("canon.jpg")
       data = EXIF::Data.new(jpeg[0, 600])

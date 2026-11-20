@@ -116,18 +116,38 @@ module EXIF
     # Loads the first valid EXIF segment from the JPEG stream *io*,
     # positioned right after the SOI marker.
     #
-    # NOTE: Some images carry an empty or corrupt EXIF segment
-    # before the actual one, so all of them are tried in turn.
+    # NOTE: Some images carry an empty or corrupt EXIF segment before the actual one,
+    # so all of them are tried in turn, until one loads intact. Otherwise the first one
+    # loaded partially (with warnings) is returned, or else the first empty one.
     private def self.load_jpeg(io : IO, options : Options) : self
-      error = nil
+      # Fixed only once chosen, since fixing adds mandatory entries to empty data
+      unfixed = options & ~Options::FollowSpecification
+      error = fallback = nil
       while exif = JPEG.read_exif?(io)
         begin
-          return load_block(exif, options)
+          data = load_block(exif, unfixed)
         rescue ex : NoDataError
           error ||= ex
+          next
         end
+        return data.loaded(options) if !data.blank? && data.warnings.empty?
+
+        fallback = data if fallback.nil? || (fallback.blank? && !data.blank?)
       end
+      return fallback.loaded(options) if fallback
       raise error || NoDataError.new
+    end
+
+    # Returns `true` if there are neither entries nor a thumbnail.
+    protected def blank? : Bool
+      empty? && @ptr.value.size.zero?
+    end
+
+    # Applies the *options* the data was loaded with, fixing it
+    # if `Options::FollowSpecification` is set (as libexif does when loading).
+    protected def loaded(options : Options) : self
+      self.options = options
+      options.follow_specification? ? fix : self
     end
 
     # Byte order marks and magic numbers starting a TIFF structure.
