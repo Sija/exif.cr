@@ -42,7 +42,8 @@ module EXIF
         parse_time(Tag::{{ tags[0].id }}, Tag::{{ tags[1].id }}, Tag::{{ tags[2].id }}, location)
       end
 
-      # Sets the `Tag::{{ tags[0].id }}` and `Tag::{{ tags[1].id }}` entries (or removes them, if `nil`).
+      # Sets the `Tag::{{ tags[0].id }}`, `Tag::{{ tags[1].id }}` and `Tag::{{ tags[2].id }}`
+      # entries (or removes them, if `nil`), the latter only for times with fractional seconds.
       def {{ name.id }}=(time : Time?) : Time?
         write_time(time, Tag::{{ tags[0].id }}, Tag::{{ tags[1].id }}, Tag::{{ tags[2].id }})
       end
@@ -203,7 +204,11 @@ module EXIF
     # Returns the first component of the primary image entry for the given *tag*,
     # or `nil` (i.e. the first value of a multi-valued `Tag::ISOSpeedRatings`).
     private def scalar?(tag : AnyTag) : Scalar?
-      self[tag]?.try(&.as_a?).try(&.first?)
+      case value = self[tag]?.try(&.value)
+      when Bytes, Nil then nil
+      when Array      then value.first?
+      else                 value
+      end
     end
 
     private def string?(tag : AnyTag) : String?
