@@ -226,6 +226,20 @@ describe EXIF::Data do
       data.gps.should be_nil
     end
 
+    it "ignores out of range GPS coordinates" do
+      data = EXIF::Data.new
+      data.gps = EXIF::GPS.new(1.0, 2.0)
+      data[EXIF::GPSTag::GPSLatitude] = [EXIF::URational.new(90), EXIF::URational.new(0), EXIF::URational.new(0)]
+      data[EXIF::GPSTag::GPSLongitude] = [EXIF::URational.new(180), EXIF::URational.new(0), EXIF::URational.new(0)]
+      data.gps.should eq EXIF::GPS.new(90.0, 180.0)
+
+      data[EXIF::GPSTag::GPSLatitude] = [EXIF::URational.new(100), EXIF::URational.new(0), EXIF::URational.new(0)]
+      data.gps.should be_nil
+      data[EXIF::GPSTag::GPSLatitude] = EXIF::URational.new(1)
+      data[EXIF::GPSTag::GPSLongitude] = [EXIF::URational.new(179), EXIF::URational.new(60), EXIF::URational.new(1)]
+      data.gps.should be_nil
+    end
+
     it "replaces stale GPS entries when setting the position" do
       data = EXIF::Data.new
       data.gps = EXIF::GPS.new(1.0, 2.0, 3.0)

@@ -120,13 +120,13 @@ module EXIF
       int?(Tag::Flash).try(&.bit(0).==(1))
     end
 
-    # Returns the GPS position, or `nil` if not recorded.
+    # Returns the GPS position, or `nil` if not recorded (or malformed, i.e. out of range).
     #
     # NOTE: Besides the degrees/minutes/seconds triples required by the specification,
     # coordinates stored as a single value (decimal degrees) are accepted too.
     def gps : GPS?
-      return unless latitude = coordinate?(GPSTag::GPSLatitude, GPSTag::GPSLatitudeRef, "S")
-      return unless longitude = coordinate?(GPSTag::GPSLongitude, GPSTag::GPSLongitudeRef, "W")
+      return unless latitude = coordinate?(GPSTag::GPSLatitude, GPSTag::GPSLatitudeRef, "S", 90)
+      return unless longitude = coordinate?(GPSTag::GPSLongitude, GPSTag::GPSLongitudeRef, "W", 180)
 
       altitude = float?(GPSTag::GPSAltitude).try do |value|
         next unless value.finite?
@@ -138,17 +138,18 @@ module EXIF
     end
 
     # Returns the coordinate (in decimal degrees) from the *tag* entry, negated
-    # if the *ref_tag* entry equals *negative_ref*, or `nil` if missing or malformed.
+    # if the *ref_tag* entry equals *negative_ref*, or `nil` if missing or malformed
+    # (including coordinates beyond *max* degrees, which `#gps=` refuses).
     #
     # NOTE: Some writers store signed values; their sign is used when there's
     # no reference, which otherwise takes precedence.
-    private def coordinate?(tag : GPSTag, ref_tag : GPSTag, negative_ref : String) : Float64?
+    private def coordinate?(tag : GPSTag, ref_tag : GPSTag, negative_ref : String, max : Int32) : Float64?
       return unless values = self[tag]?.try(&.as_a?)
       return unless values.size.in?(1..3) && values.all?(URational | SRational | Int64 | Float64)
 
       # The sign applies to the whole coordinate (i.e. -52 degrees 30 minutes is -52.5 degrees)
       degrees = GPS.from_dms(values.map(&.to_f.abs))
-      return unless degrees.finite?
+      return unless degrees <= max # also `false` for `NaN`
 
       case string?(ref_tag).try(&.upcase)
       when negative_ref then -degrees
