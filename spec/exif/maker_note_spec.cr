@@ -44,11 +44,20 @@ describe EXIF::MakerNote do
     EXIF::Data.new(data.to_slice)[:maker_note].as_bytes.should eq raw
   end
 
-  it "isn't affected by maker note entries of other IFDs" do
+  it "refuses maker note values outside of the EXIF IFD" do
     data = canon_data
     size = data.maker_note?.try(&.size)
-    data.ifd(:one)[:maker_note] = Bytes[1, 2, 3, 4]
+    expect_raises(ArgumentError, "EXIF IFD") { data.ifd(:one)[:maker_note] = Bytes[1, 2, 3, 4] }
+    expect_raises(ArgumentError, "EXIF IFD") { data.ifd(:gps)[EXIF::GPSTag.new(0x927C)] = Bytes[1, 2, 3, 4] }
+    data.ifd(:one).has_key?(:maker_note).should be_false
+    data.ifd(:gps).empty?.should be_true
     data.maker_note?.try(&.size).should eq size
+    data.options.dont_change_maker_note?.should be_false
+
+    # Detached entries don't affect the data
+    entry = data.delete(:maker_note).should_not be_nil
+    entry.value = Bytes[1, 2, 3, 4]
+    entry.value.should eq Bytes[1, 2, 3, 4]
   end
 
   it "keeps the maker note when saving otherwise" do

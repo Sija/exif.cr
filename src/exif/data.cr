@@ -505,6 +505,9 @@ module EXIF
     # (i.e. Canon) store offsets relative to the start of the TIFF structure
     # within it, which libexif adjusts only for the maker note it parsed;
     # i.e. one copied over from another image might end up pointing elsewhere.
+    #
+    # NOTE: libexif replaces the `Tag::MakerNote` entries of other IFDs with the parsed maker note
+    # when saving, so values can't be set in these (raising `ArgumentError`, see `Entry#value=`).
     def maker_note? : MakerNote?
       return if @maker_note_replaced || !has_key?(Tag::MakerNote)
 

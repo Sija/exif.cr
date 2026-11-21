@@ -192,7 +192,7 @@ Log.setup("exif.*", :debug)
   or whose group it can't keep while the group has other permissions than others. Being a new file,
   it doesn't keep extended attributes (i.e. macOS Finder tags) nor other hard links to the file.
 - Maker notes are read-only, and reflect the data as loaded. A new `MakerNote` value
-  is saved as is, so one copied over from another image might not be readable
+  (only allowed in the EXIF IFD) is saved as is, so one copied over from another image might not be readable
   (some vendors store offsets relative to the start of the EXIF data within it).
 
 ## Examples
