@@ -177,6 +177,8 @@ describe EXIF::Data do
       expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0x00]) }
       expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0x00]) }
       expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0x00, 0x01]) }
+      # Truncated right after the start of the EXIF header
+      expect_raises(EXIF::NoDataError) { EXIF::Data.new(Bytes[0xFF, 0xD8, 0xFF, 0xE1, 0x00, 0x20] + "Exif".to_slice) }
     end
 
     it "exposes options" do

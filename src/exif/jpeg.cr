@@ -92,15 +92,29 @@ module EXIF
         length = io.read_bytes(UInt16, IO::ByteFormat::BigEndian).to_i - 2
         return if length.negative?
 
-        unless marker == APP1 && length >= EXIF_HEADER.size
+        if marker == APP1
+          payload = read_exif_payload?(io, length)
+          return payload if payload
+        else
           io.skip(length)
-          next
         end
-        payload = Bytes.new(length)
-        payload = payload[0, EXIF.read_up_to(io, payload)]
-        return payload if payload[0, EXIF_HEADER.size]? == EXIF_HEADER
       end
     rescue IO::EOFError
+    end
+
+    # Reads the payload of the APP1 segment of the given *length* if it's an EXIF one
+    # (possibly truncated), or else skips it without reading it (i.e. XMP ones, of up to 64 KB).
+    private def read_exif_payload?(io : IO, length : Int32) : Bytes?
+      header = Bytes.new(Math.min(length, EXIF_HEADER.size))
+      read = EXIF.read_up_to(io, header)
+      # Neither shorter segments nor truncated headers match (unread bytes being zeros, like its end)
+      unless read == EXIF_HEADER.size && header == EXIF_HEADER
+        io.skip(length - read)
+        return
+      end
+      payload = Bytes.new(length)
+      header.copy_to(payload)
+      payload[0, read + EXIF.read_up_to(io, payload + read)]
     end
 
     # Returns the offset of the first marker (or of the fill bytes preceding it) following
