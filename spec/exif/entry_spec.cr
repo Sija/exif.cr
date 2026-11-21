@@ -376,6 +376,20 @@ describe EXIF::Entry do
     end
   end
 
+  it "names tags unknown in their IFD after the same kind of tags only" do
+    data = EXIF::Data.new
+    data.ifd(:exif)[:make] = "Canon"
+    data.ifd(:zero)[EXIF::Tag.new(0x0005)] = Bytes[1]
+    data.ifd(:gps)[EXIF::GPSTag.new(0x010F)] = "Canon"
+
+    data.ifd(:exif)[:make].name.should eq "Make"
+    data.ifd(:zero)[EXIF::Tag.new(0x0005)].name.should eq "0x0005"
+    data.ifd(:zero)[EXIF::Tag.new(0x0005)].title.should be_nil
+    gps = data.ifd(:gps)[EXIF::GPSTag.new(0x010F)]
+    gps.name.should eq "0x010f"
+    gps.delete.name.should eq "0x010f"
+  end
+
   it "hashes consistently with equality" do
     data = canon_data
     data[:make].hash.should eq data[:make].hash

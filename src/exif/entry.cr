@@ -81,22 +81,29 @@ module EXIF
 
     # Returns the EXIF name of the entry tag (i.e. `"FNumber"`).
     def name : String
-      raw_tag.name(name_ifd) || raw_tag.name || "0x%04x" % raw_tag.value
+      tag_string { |ifd| raw_tag.name(ifd) } || "0x%04x" % raw_tag.value
     end
 
     # Returns the localized title of the entry tag (i.e. `"F-Number"`).
     def title : String?
-      raw_tag.title(name_ifd) || raw_tag.title
+      tag_string { |ifd| raw_tag.title(ifd) }
     end
 
     # Returns the localized description of the entry tag.
     def description : String?
-      raw_tag.description(name_ifd) || raw_tag.description
+      tag_string { |ifd| raw_tag.description(ifd) }
     end
 
-    # Returns the IFD the tag names are looked up in.
-    private def name_ifd : IFD?
-      ifd? || (IFD::GPS if gps?)
+    # Returns the string yielded for the IFD the entry is stored in, or else for any IFD
+    # holding the same kind of tags (`nil`, see `Tag#name`), since `GPSTag`s overlap
+    # numerically with other tags.
+    private def tag_string(& : IFD? -> String?) : String?
+      return yield IFD::GPS if gps?
+
+      if ifd = ifd?
+        string = yield ifd
+      end
+      string || yield nil
     end
 
     # Returns the support level of this entry within its IFD.

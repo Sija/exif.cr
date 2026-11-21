@@ -11,6 +11,14 @@ describe EXIF::Tag do
     EXIF::Tag::InteroperabilityIndex.name(:interoperability).should eq "InteroperabilityIndex"
   end
 
+  it "doesn't resolve to the GPS tags overlapping numerically" do
+    EXIF::Tag.new(0x0005).name.should be_nil
+    EXIF::Tag.new(0x0005).title.should be_nil
+    EXIF::Tag.new(0x0005).description.should be_nil
+    EXIF::Tag::InteroperabilityIndex.name.should eq "InteroperabilityIndex"
+    EXIF::GPSTag::GPSAltitudeRef.name.should eq "GPSAltitudeRef"
+  end
+
   describe ".from_name?" do
     it "finds tags by name" do
       EXIF::Tag.from_name?("Model").should eq EXIF::Tag::Model

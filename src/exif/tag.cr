@@ -124,6 +124,10 @@ module EXIF
   # IFDs describing the primary image, in which (non-GPS) `Tag`s are looked up,
   # in order of priority. `IFD::One`, describing the thumbnail, is left out.
   TAG_LOOKUP_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability}
+
+  # IFDs holding `Tag`s (as opposed to `GPSTag`s), in which the names,
+  # titles and descriptions of tags are looked up by default.
+  TAG_IFDS = {IFD::Zero, IFD::EXIF, IFD::Interoperability, IFD::One}
 end
 
 enum LibEXIF::EXIFTag
@@ -146,22 +150,34 @@ enum LibEXIF::EXIFTag
     from_name?(name) || raise ArgumentError.new("Unknown EXIF tag: #{name.inspect}")
   end
 
-  # Returns the EXIF name of the tag (i.e. `"FNumber"`).
+  # Returns the EXIF name of the tag (i.e. `"FNumber"`) within the given *ifd*,
+  # or (without one) the first one found within the IFDs holding `Tag`s (see `TAG_IFDS`).
   def name(ifd : LibEXIF::EXIFIfd? = nil) : String?
-    ::EXIF.string? \
-      ifd ? LibEXIF.exif_tag_get_name_in_ifd(self, ifd) : LibEXIF.exif_tag_get_name(self)
+    lookup(ifd) { |in_ifd| LibEXIF.exif_tag_get_name_in_ifd(self, in_ifd) }
   end
 
-  # Returns the localized title of the tag (i.e. `"F-Number"`).
+  # Returns the localized title of the tag (i.e. `"F-Number"`), see `#name`.
   def title(ifd : LibEXIF::EXIFIfd? = nil) : String?
-    ::EXIF.string? \
-      ifd ? LibEXIF.exif_tag_get_title_in_ifd(self, ifd) : LibEXIF.exif_tag_get_title(self)
+    lookup(ifd) { |in_ifd| LibEXIF.exif_tag_get_title_in_ifd(self, in_ifd) }
   end
 
-  # Returns the localized description of the tag.
+  # Returns the localized description of the tag, see `#name`.
   def description(ifd : LibEXIF::EXIFIfd? = nil) : String?
-    ::EXIF.string? \
-      ifd ? LibEXIF.exif_tag_get_description_in_ifd(self, ifd) : LibEXIF.exif_tag_get_description(self)
+    lookup(ifd) { |in_ifd| LibEXIF.exif_tag_get_description_in_ifd(self, in_ifd) }
+  end
+
+  # Returns the string yielded for the given *ifd*, or (without one) the first one yielded for `TAG_IFDS`.
+  #
+  # NOTE: libexif's own lookup across all IFDs would resolve the tags overlapping
+  # numerically with `GPSTag`s (i.e. `0x0005`) to GPS tags.
+  private def lookup(ifd : LibEXIF::EXIFIfd?, & : LibEXIF::EXIFIfd -> LibC::Char*) : String?
+    return ::EXIF.string?(yield ifd) if ifd
+
+    ::EXIF::TAG_IFDS.each do |tag_ifd|
+      ptr = yield tag_ifd
+      return String.new(ptr) unless ptr.null?
+    end
+    nil
   end
 
   # Returns the support level of the tag in the given *ifd*.
