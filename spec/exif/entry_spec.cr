@@ -273,6 +273,19 @@ describe EXIF::Entry do
       expect_raises(EXIF::ValueError) { data[:f_number] = EXIF::SRational.new(-28, 10) }
     end
 
+    it "raises ValueError for text containing NUL characters" do
+      data = EXIF::Data.new
+      {EXIF::Tag::Artist, EXIF::Tag::XPTitle, EXIF::Tag::UserComment}.each do |tag|
+        expect_raises(EXIF::ValueError, "NUL") { data[tag] = "Jane\0Doe" }
+        data.has_key?(tag).should be_false
+      end
+      expect_raises(EXIF::ValueError, "NUL") { data[:user_comment] = "Zażółć\0" }
+
+      # Stored as is in other formats
+      data[:maker_note] = "a\0b"
+      data[:maker_note].value.should eq "a\0b".to_slice
+    end
+
     it "uses the specification formats for tags without a libexif default" do
       data = EXIF::Data.new
       data[:subject_area] = [1, 2]
