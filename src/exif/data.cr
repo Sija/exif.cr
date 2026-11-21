@@ -233,11 +233,12 @@ module EXIF
 
     # Loads the EXIF data from the raw *buf* (an EXIF block or a JPEG image).
     #
-    # Raises `NoDataError` if nothing could be loaded, due to corrupt data.
+    # Raises `NoDataError` if nothing (neither entries nor a thumbnail)
+    # could be loaded, due to corrupt data.
     private def self.load_data(buf : UInt8*, size : UInt32, options : Options) : self
       data = new(options)
       data.retain { |ptr| LibEXIF.exif_data_load_data(ptr, buf, size) }
-      if data.empty? && (warning = data.warnings.first?)
+      if data.blank? && (warning = data.warnings.first?)
         raise NoDataError.new("No valid EXIF data found (#{warning})")
       end
       data

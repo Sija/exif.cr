@@ -143,6 +143,28 @@ describe EXIF::Data do
       end
     end
 
+    it "loads thumbnails of EXIF segments with no intact entries" do
+      thumbnail = EXIF::JPEG.strip(fixture("canon.jpg"))
+      data = EXIF::Data.new(options: :none)
+      data[:exposure_time] = EXIF::URational.new(1, 250) # pointed to by the only IFD 0 entry
+      data.thumbnail = thumbnail
+      exif = data.to_slice
+
+      # Points the EXIF IFD past the end of the data
+      tiff = exif + EXIF::JPEG::EXIF_HEADER.size
+      format = tiff[0, 2] == "II".to_slice ? IO::ByteFormat::LittleEndian : IO::ByteFormat::BigEndian
+      ifd0 = format.decode(UInt32, tiff[4, 4])
+      format.encode(0xFFFF_u32, tiff[ifd0 + 2 + 8, 4])
+
+      jpeg = Bytes[0xFF, 0xD8, 0xFF, 0xE1, (exif.size + 2) >> 8, (exif.size + 2) & 0xFF] + exif + thumbnail[2..]
+      {EXIF::Options::None, EXIF::Options.default}.each do |options|
+        loaded = EXIF::Data.new(jpeg, options: options)
+        loaded.thumbnail?.should eq thumbnail
+        loaded.has_key?(:exposure_time).should be_false
+        loaded.warnings.should_not be_empty
+      end
+    end
+
     it "loads truncated EXIF segments" do
       jpeg = fixture("canon.jpg")
       data = EXIF::Data.new(jpeg[0, 600])
