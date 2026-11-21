@@ -72,6 +72,21 @@ describe EXIF::Rational do
     rational.to_s.should eq "28/10"
   end
 
+  it "converts between signed and unsigned rationals" do
+    EXIF::SRational.new(EXIF::URational.new(28, 10)).numerator.should eq 28
+    EXIF::URational.new(EXIF::SRational.new(-2, -4)).should eq EXIF::URational.new(1, 2)
+    rational = EXIF::URational.new(EXIF::SRational.new(-1, -2))
+    rational.numerator.should eq 1
+    rational.denominator.should eq 2
+    EXIF::SRational.new(EXIF::URational.new(3_000_000_000, 3_000_000_000)).should eq EXIF::SRational.new(1, 1)
+    EXIF::SRational.new(EXIF::URational.new(1, 3_000_000_000)).to_f.should be_close(1 / 3e9, 1e-9)
+    EXIF::URational.new(EXIF::SRational.new(1, 0)).undefined?.should be_true
+
+    expect_raises(OverflowError) { EXIF::URational.new(EXIF::SRational.new(-1, 2)) }
+    expect_raises(OverflowError) { EXIF::URational.new(EXIF::SRational.new(2, -4)) }
+    expect_raises(OverflowError) { EXIF::SRational.new(EXIF::URational.new(3_000_000_000, 1)) }
+  end
+
   it "raises on overflow" do
     expect_raises(OverflowError) { EXIF::URational.new(-1, 2) }
   end

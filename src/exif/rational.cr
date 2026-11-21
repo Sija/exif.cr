@@ -62,6 +62,28 @@ module EXIF
       new(value.negative? ? -h1 : h1, k1)
     end
 
+    # Returns the given *value* (i.e. a rational of the other signedness) as a rational
+    # of this type: with the same components if these fit, or else in lowest terms
+    # (with a positive denominator), or else as its closest approximation (see `.new(Float)`).
+    #
+    # ```
+    # EXIF::URational.new(EXIF::SRational.new(-1, -2)) # => EXIF::URational(1/2)
+    # ```
+    #
+    # Raises `OverflowError` for values out of `T`'s range.
+    def self.new(value : Rational) : self
+      n, d = value.numerator.to_i64, value.denominator.to_i64
+      unless fits?(n) && fits?(d)
+        n, d = value.normalized
+        return new(value.to_f) unless d.zero? || (fits?(n) && fits?(d))
+      end
+      new(n, d)
+    end
+
+    private def self.fits?(value : Int64) : Bool
+      T::MIN <= value <= T::MAX
+    end
+
     protected def self.from(value : LibEXIF::EXIFRational | LibEXIF::EXIFSRational) : self
       new(value.numerator, value.denominator)
     end

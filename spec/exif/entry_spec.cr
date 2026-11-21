@@ -264,6 +264,15 @@ describe EXIF::Entry do
       data.has_key?(:f_number).should be_false
     end
 
+    it "converts rationals of the other signedness" do
+      data = EXIF::Data.new
+      data[:f_number] = EXIF::SRational.new(-28, -10)
+      data[:f_number].value.should eq EXIF::URational.new(28, 10)
+      data[:exposure_bias_value] = EXIF::URational.new(3_000_000_000, 3_000_000_000)
+      data[:exposure_bias_value].value.should eq EXIF::SRational.new(1, 1)
+      expect_raises(EXIF::ValueError) { data[:f_number] = EXIF::SRational.new(-28, 10) }
+    end
+
     it "uses the specification formats for tags without a libexif default" do
       data = EXIF::Data.new
       data[:subject_area] = [1, 2]

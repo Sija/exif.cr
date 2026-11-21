@@ -666,8 +666,8 @@ module EXIF
 
       private def write(p : UInt8*, format : Format, value : Rational) : Nil
         case format
-        when .rational?   then LibEXIF.exif_set_rational(p, @byte_order, URational.new(value.numerator, value.denominator).to_lib)
-        when .s_rational? then LibEXIF.exif_set_srational(p, @byte_order, SRational.new(value.numerator, value.denominator).to_lib)
+        when .rational?   then LibEXIF.exif_set_rational(p, @byte_order, URational.new(value).to_lib)
+        when .s_rational? then LibEXIF.exif_set_srational(p, @byte_order, SRational.new(value).to_lib)
         else                   write(p, format, value.to_f)
         end
       rescue OverflowError
