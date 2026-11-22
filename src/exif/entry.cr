@@ -286,14 +286,14 @@ module EXIF
     # Returns the human-readable (localized) value of the entry, as formatted by libexif.
     #
     # NOTE: libexif can't format entries removed from their IFD (it needs their
-    # byte order), nor most user comments (i.e. Unicode ones, or ones without
-    # a character code), so these are formatted from their decoded `#value` instead,
-    # without any trailing padding.
+    # byte order), `Format::Float` and `Format::Double` values, nor most user comments
+    # (i.e. Unicode ones, or ones without a character code), so these are formatted
+    # from their decoded `#value` instead (user comments without any trailing padding).
     def to_s(io : IO) : Nil
       if user_comment? && (text = value.as?(String))
         return io << text.rstrip
       end
-      return format_value(io, value) unless ifd?
+      return format_value(io, value) if ifd?.nil? || format.float? || format.double?
 
       maxlen = bytesize * format_ratio + 64
       if maxlen <= FORMAT_BUFFER_SIZE

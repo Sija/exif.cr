@@ -412,6 +412,18 @@ describe EXIF::Entry do
     gps.delete.name.should eq "0x010f"
   end
 
+  it "formats floating point values, which libexif doesn't" do
+    data = EXIF::Data.new
+    {EXIF::Format::Float, EXIF::Format::Double}.each_with_index do |format, i|
+      tag = EXIF::Tag.new(0xC000 + i)
+      data.ifd(:zero)[tag] = 1
+      entry = data.ifd(:zero)[tag]
+      entry.to_unsafe.value.format = format
+      entry.value = [1.5, -2.25]
+      entry.to_s.should eq "1.5, -2.25"
+    end
+  end
+
   it "hashes consistently with equality" do
     data = canon_data
     data[:make].hash.should eq data[:make].hash
