@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        crystal: [latest, nightly]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Update APT package index
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update -qq
+
+      - name: Install APT packages
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install libevent-dev libyaml-dev libexif-dev libexif12
+
+      - name: Install homebrew packages
+        if: matrix.os == 'macos-latest'
+        run: brew install libexif
+
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: ${{ matrix.crystal }}
+
+      - name: Download source
+        uses: actions/checkout@v7
+
+      - name: Install dependencies
+        run: shards install
+
+      - name: Run specs
+        run: crystal spec --order random
+
+      - name: Run specs (release)
+        run: crystal spec --order random --release
