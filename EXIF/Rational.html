@@ -280,7 +280,7 @@ so they're preserved when writing the value back.</p>
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L6" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L6" target="_blank">
         exif/rational.cr
       </a>
     
@@ -311,6 +311,13 @@ so they're preserved when writing the value back.</p>
         <a href="#new%28value%3AFloat%29%3Aself-class-method" class="signature"><strong>.new</strong>(value : Float) : <span class="k">self</span></a>
         
           <div class="summary"><p>Returns the closest rational approximation of the given floating-point <em>value</em> whose components fit within <code>T</code>, using continued fractions.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28value%3ARational%29%3Aself-class-method" class="signature"><strong>.new</strong>(value : Rational) : <span class="k">self</span></a>
+        
+          <div class="summary"><p>Returns the given <em>value</em> (i.e.</p></div>
         
       </li>
     
@@ -498,7 +505,7 @@ so they're preserved when writing the value back.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -525,7 +532,32 @@ for values out of <code>T</code>'s range.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L28" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(value:Rational):self-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(value : <a href="../EXIF/Rational.html">Rational</a>) : <span class="k">self</span>
+
+        <a class="method-permalink" href="#new%28value%3ARational%29%3Aself-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the given <em>value</em> (i.e. a rational of the other signedness) as a rational
+of this type: with the same components if these fit, or else in lowest terms
+(with a positive denominator), or else as its closest approximation (see <code><a href="../EXIF/Rational.html#new%28value%3AFloat%29%3Aself-class-method">.new(Float)</a></code>).</p>
+<pre><code class="language-crystal"><span class="t">EXIF</span><span class="t">::</span><span class="t">URational</span>.new(<span class="t">EXIF</span><span class="t">::</span><span class="t">SRational</span>.new(<span class="n">-1</span>, <span class="n">-2</span>)) <span class="c"># =&gt; EXIF::URational(1/2)</span></code></pre>
+<p>Raises <code>OverflowError</code> for values out of <code>T</code>'s range.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L74" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -576,7 +608,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L107" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -598,7 +630,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L114" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L145" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -614,7 +646,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L118" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L149" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -630,7 +662,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -655,7 +687,7 @@ or <code>nil</code> if the two objects are not comparable.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L122" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -689,7 +721,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L161" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -705,7 +737,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -726,7 +758,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L91" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L122" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -747,7 +779,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L74" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L105" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -768,7 +800,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L80" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L111" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -789,7 +821,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L85" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L116" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -814,7 +846,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L126" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L157" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -835,7 +867,7 @@ p1.inspect <span class="c"># &quot;Point(@x=1, @y=2)&quot;</span></code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/rational.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/rational.cr#L100" target="_blank">View source</a>]
         
       </div>
     </div>

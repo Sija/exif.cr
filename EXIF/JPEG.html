@@ -277,7 +277,7 @@
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/jpeg.cr#L5" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L5" target="_blank">
         exif/jpeg.cr
       </a>
     
@@ -323,7 +323,8 @@
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Maximum payload size of a single JPEG segment.</p>
+        <p>Maximum payload size of a single JPEG segment (and so of the embedded
+EXIF data), see also <code><a href="../EXIF/Data.html#MAX_BLOCK_SIZE">Data::MAX_BLOCK_SIZE</a></code>.</p>
       </dd>
       
     
@@ -373,9 +374,30 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#read_exif%3F%28io%3AIO%29%3ABytes%7CNil-instance-method" class="signature"><strong>#read_exif?</strong>(io : IO) : Bytes | Nil</a>
+        
+          <div class="summary"><p>Reads the payload of the first EXIF segment (starting with the <code>Exif\0\0</code> header) from the JPEG stream <em>io</em>, positioned right after the SOI marker.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#strip%28jpeg%3ABytes%29%3ABytes-instance-method" class="signature"><strong>#strip</strong>(jpeg : Bytes) : Bytes</a>
         
           <div class="summary"><p>Returns a copy of the <em>jpeg</em> image without any EXIF segments.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update%28path%3APath%7CString%2C%26%3ABytes-%3EBytes%29%3ANil-instance-method" class="signature"><strong>#update</strong>(path : Path | String, & : Bytes -> Bytes) : Nil</a>
+        
+          <div class="summary"><p>Replaces the image at <em>path</em> with the one returned by the block, which is given the current image (see <code><a href="../EXIF/JPEG.html#write%28path%3APath%7CString%2Cjpeg%3ABytes%29%3ANil-instance-method">.write</a></code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#write%28path%3APath%7CString%2Cjpeg%3ABytes%29%3ANil-instance-method" class="signature"><strong>#write</strong>(path : Path | String, jpeg : Bytes) : Nil</a>
+        
+          <div class="summary"><p>Writes the <em>jpeg</em> image to <em>path</em>.</p></div>
         
       </li>
     
@@ -420,7 +442,7 @@ replaced with <em>exif</em> (an APP1 payload, as returned by <code><a href="../E
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/jpeg.cr#L26" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -441,7 +463,32 @@ replaced with <em>exif</em> (an APP1 payload, as returned by <code><a href="../E
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/jpeg.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L21" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="read_exif?(io:IO):Bytes|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>read_exif?</strong>(io : IO) : Bytes | Nil
+
+        <a class="method-permalink" href="#read_exif%3F%28io%3AIO%29%3ABytes%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Reads the payload of the first EXIF segment (starting with the <code>Exif\0\0</code> header)
+from the JPEG stream <em>io</em>, positioned right after the SOI marker.</p>
+<p>Reads only up to the EXIF segment, skipping over any other ones, and returns
+<code>nil</code> once the image data is reached, or for malformed and truncated streams.
+A truncated EXIF segment is returned as is.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L79" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -462,7 +509,56 @@ replaced with <em>exif</em> (an APP1 payload, as returned by <code><a href="../E
       <br/>
       <div>
         
-          [<a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/jpeg.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update(path:Path|String,&amp;:Bytes-&gt;Bytes):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>update</strong>(path : Path | String, & : Bytes -> Bytes) : Nil
+
+        <a class="method-permalink" href="#update%28path%3APath%7CString%2C%26%3ABytes-%3EBytes%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Replaces the image at <em>path</em> with the one returned by the block,
+which is given the current image (see <code><a href="../EXIF/JPEG.html#write%28path%3APath%7CString%2Cjpeg%3ABytes%29%3ANil-instance-method">.write</a></code>).</p>
+<pre><code class="language-crystal"><span class="t">EXIF</span><span class="t">::</span><span class="t">JPEG</span>.update(<span class="s">&quot;photo.jpg&quot;</span>) { <span class="o">|</span>jpeg<span class="o">|</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">JPEG</span>.strip(jpeg) }</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L57" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="write(path:Path|String,jpeg:Bytes):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>write</strong>(path : Path | String, jpeg : Bytes) : Nil
+
+        <a class="method-permalink" href="#write%28path%3APath%7CString%2Cjpeg%3ABytes%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Writes the <em>jpeg</em> image to <em>path</em>.</p>
+<p>The image is written to a temporary file first, which then replaces
+<em>path</em> atomically, so that <em>path</em> is never left partially written.
+The permissions, owner and group of the replaced file are kept, raising
+<code><a href="../EXIF/Error.html">Error</a></code> (and leaving it intact) if they can't be. Symbolic links are followed.</p>
+<p><span class="flag purple">NOTE</span>  Extended attributes aren't kept, and other hard links to the file keep the previous image.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/jpeg.cr#L69" target="_blank">View source</a>]
         
       </div>
     </div>

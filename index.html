@@ -226,7 +226,7 @@ It also includes a facade to read, modify and write EXIF metadata in a more idio
   </svg>
 </a>Features</h2>
 <ul>
-<li>Reading EXIF data from JPEG files, <code>IO</code>s, byte slices and raw EXIF blocks</li>
+<li>Reading EXIF data from JPEG files, <code>IO</code>s, byte slices and raw EXIF blocks (with or without the <code>Exif\0\0</code> header, i.e. from PNG <code>eXIf</code> chunks)</li>
 <li>Typed entry values (<code>String</code>, <code>Int64</code>, <code>Float64</code>, rationals, arrays, ...), with <code>#as_s</code>-style helpers</li>
 <li>Human-readable (localized) entry values, as formatted by libexif</li>
 <li>Semantic accessors for common tags (camera, exposure, time, orientation, GPS, ...)</li>
@@ -247,7 +247,7 @@ It also includes a facade to read, modify and write EXIF metadata in a more idio
   </svg>
 </a>Prerequisites</h3>
 <ul>
-<li>Crystal: <code>&gt;= 1.13.1</code></li>
+<li>Crystal: <code>&gt;= 1.19.0</code></li>
 <li>libexif: <code>&gt;= 0.6.24</code></li>
 </ul>
 <p>To install libexif, you can use <code>homebrew</code> or <code>apt-get</code>, depending on the platform:</p>
@@ -373,7 +373,10 @@ data.save(<span class="s">&quot;copy.jpg&quot;</span>, source: <span class="s">&
 data.to_slice <span class="c"># =&gt; Bytes[69, 120, 105, 102, 0, 0, ...]</span>
 
 <span class="c"># strip EXIF data from a JPEG image</span>
-<span class="t">EXIF</span><span class="t">::</span><span class="t">JPEG</span>.strip(<span class="t">File</span>.read(<span class="s">&quot;photo.jpg&quot;</span>).to_slice)</code></pre>
+<span class="t">EXIF</span><span class="t">::</span><span class="t">JPEG</span>.strip(<span class="t">File</span>.read(<span class="s">&quot;photo.jpg&quot;</span>).to_slice)
+
+<span class="c"># ...or replace the file in place (atomically, see `Data#save`)</span>
+<span class="t">EXIF</span><span class="t">::</span><span class="t">JPEG</span>.update(<span class="s">&quot;photo.jpg&quot;</span>) { <span class="o">|</span>jpeg<span class="o">|</span> <span class="t">EXIF</span><span class="t">::</span><span class="t">JPEG</span>.strip(jpeg) }</code></pre>
 <h3><a id="options" class="anchor" href="#options">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -410,9 +413,13 @@ data.warnings <span class="c"># =&gt; [&quot;Tag data past end of buffer (188 &g
 <li>Only JPEG images (and raw EXIF blocks) are supported. TIFF-based formats
 (TIFF, DNG and most camera RAW formats) can't be read reliably, since libexif
 only loads the first 64 KiB of data, while their metadata can be anywhere in the file.</li>
-<li><code>Data#save</code> replaces the file atomically, keeping its permissions,
-but not its ownership (relevant only when writing other users' files).</li>
-<li>Maker notes are read-only, and reflect the data as loaded.</li>
+<li><code>Data#save</code> replaces the file atomically, keeping its permissions, owner and group;
+it refuses to replace files whose owner it can't keep (i.e. other users' files),
+or whose group it can't keep while the group has other permissions than others. Being a new file,
+it doesn't keep extended attributes (i.e. macOS Finder tags) nor other hard links to the file.</li>
+<li>Maker notes are read-only, and reflect the data as loaded. A new <code>MakerNote</code> value
+(only allowed in the EXIF IFD) is saved as is, so one copied over from another image might not be readable
+(some vendors store offsets relative to the start of the EXIF data within it).</li>
 </ul>
 <h2><a id="examples" class="anchor" href="#examples">
   <svg class="octicon-link" aria-hidden="true">
@@ -429,7 +436,7 @@ $ crystal run examples/strip.cr -- photo.jpg</code></pre>
     <use href="#octicon-link"/>
   </svg>
 </a>Development</h2>
-<pre><code class="language-crystal">$ crystal spec 
+<pre><code class="language-crystal">$ crystal spec
 $ ./lib/ameba/bin/ameba.cr</code></pre>
 <p>Test fixture <code>spec/fixtures/canon.jpg</code> comes from the <a href="https://github.com/libexif/libexif/tree/master/test/testdata">libexif test suite</a>.</p>
 <h2><a id="contributing" class="anchor" href="#contributing">

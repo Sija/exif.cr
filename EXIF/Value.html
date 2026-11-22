@@ -244,7 +244,12 @@
 <li><code>Format::Rational</code> and <code>Format::SRational</code> are decoded as
 <code>URational</code> and <code>SRational</code> respectively</li>
 </ul>
-<p>Entries with more than one component are decoded as an <code>Array</code>.</p>
+<p>Text tags are decoded as <code>String</code> regardless: <code>Tag::UserComment</code> (taking its character
+code into account, except for unsupported JIS text decoded as <code>Bytes</code>) and the UTF-16
+<code>Tag::XPTitle</code>-like tags (stored as <code>Format::Byte</code>).</p>
+<p>Entries with no or more than one component are decoded as an <code>Array</code>
+(numeric formats only; empty <code>Format::Ascii</code> and <code>Format::Undefined</code> ones
+are decoded as an empty <code>String</code> and <code>Bytes</code> respectively).</p>
 
 
 
@@ -281,7 +286,7 @@
   </h2>
   
     
-      <a href="https://github.com/Sija/exif.cr/blob/f4c59c8/src/exif/value.cr#L15" target="_blank">
+      <a href="https://github.com/Sija/exif.cr/blob/0c20529/src/exif/value.cr#L21" target="_blank">
         exif/value.cr
       </a>
     
